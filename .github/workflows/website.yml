@@ -14,6 +14,10 @@ jobs:
     steps:
       - name: Check out repository code
         uses: actions/checkout@v2
+      - name: Use node 16
+        uses: actions/setup-node@v2
+        with:
+          node-version: "16"
       - name: Install dependencies
         run: |
           npm install gh-pages gatsby -g
