@@ -8,6 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       AWS_RUNTIME_DIR: ./aws-runtime
+      CLI_DIR: ./cli
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       NUGET_TOKEN: ${{ secrets.NUGET_TOKEN }}
       PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
@@ -20,17 +21,25 @@ jobs:
       - name: Build aws-runtime
         run: yarn install && yarn build && yarn package
         working-directory: ${{env.AWS_RUNTIME_DIR}}
-      - name: Publish NPM package
+      - name: Publish aws-runtime (NPM)
         run: |
           printf "//registry.npmjs.org/:_authToken=${NPM_TOKEN}\nregistry=https://registry.npmjs.org/\nalways-auth=true\n" > .npmrc
           npm publish --access=public
         working-directory: ${{env.AWS_RUNTIME_DIR}}
-      - name: Publish PyPI package
+      - name: Publish aws-runtime (PyPI)
         run: |
           printf "[pypi]\n  username = __token__\n  password = ${PYPI_TOKEN}\n" > $HOME/.pypirc
           twine upload dist/python/*
         working-directory: ${{env.AWS_RUNTIME_DIR}}
-      - name: Publish NuGet package
+      - name: Publish aws-runtime (NuGet)
         run: |
           dotnet nuget push $(ls -1 dist/dotnet/*.nupkg) --api-key ${NUGET_TOKEN} --source https://api.nuget.org/v3/index.json
         working-directory: ${{env.AWS_RUNTIME_DIR}}
+      - name: Build cli
+        run: yarn install
+        working-directory: ${{env.CLI_DIR}}
+      - name: Publish cli (NPM)
+        run: |
+          printf "//registry.npmjs.org/:_authToken=${NPM_TOKEN}\nregistry=https://registry.npmjs.org/\nalways-auth=true\n" > .npmrc
+          npm publish --access=public
+        working-directory: ${{env.CLI_DIR}}

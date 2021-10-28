@@ -1,12 +1,21 @@
 {
-  "name": "@cloudcamp/cli",
+  "name": "cloudcamp",
+  "description": "CloudCamp - Launch faster by automating your infrastructure.",
   "bin": {
     "camp": "bin/camp"
   },
   "author": {
     "name": "Markus Ecker",
+    "email": "markus.ecker@gmail.com",
     "organization": false
   },
+  "repository": {
+    "url": "https://github.com/cloudcamphq/cloudcamp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/cloudcamphq/cloudcamp/issues"
+  },
+  "homepage": "https://cloudcamphq.com",
   "devDependencies": {
     "@oclif/dev-cli": "^1.26.0",
     "@types/figlet": "^1.5.4",

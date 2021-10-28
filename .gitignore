@@ -44,3 +44,4 @@ yarn-error.log*
 !/LICENSE
 !/package.json
 .DS_Store
+.npmrc
