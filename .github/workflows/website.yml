@@ -19,6 +19,10 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: "16"
+      - name: Set git author
+        run: |
+          git config --global user.email "markus.ecker@gmail.com"
+          git config --global user.name "Markus Ecker"
       - name: Install dependencies
         run: |
           npm install gh-pages gatsby -g
