@@ -1,0 +1,31 @@
+name: "Publish Website"
+on:
+  push:
+    branches:
+      - release
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    if: ${{ contains(github.event.head_commit.message, 'chore(release):') ||  contains(github.event.head_commit.message, 'docs:')}}
+    env:
+      WEBSITE_DIR: ./website
+      PLUGIN_DIR: ./website/plugins/gatsby-api-source/
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+      - name: Install dependencies
+        run: |
+          npm install gh-pages gatsby -g
+      - name: Install packages
+        run: npm install
+        working-directory: ${{env.WEBSITE_DIR}}
+      - name: Install plugin packages
+        run: npm install
+        working-directory: ${{env.PLUGIN_DIR}}
+      - name: Build Website
+        run: gatsby build
+        working-directory: ${{env.WEBSITE_DIR}}
+      - name: Publish to GitHub Pages
+        run: gh-pages --dist public --branch master --repo https://${{ env.GH_TOKEN }}@github.com/cloudcamphq/cloudcamphq.github.io.git
+        working-directory: ${{env.WEBSITE_DIR}}

@@ -259,12 +259,13 @@ function ApiMethod(props: { className: string; meth: JsiiMethod }) {
 function ApiArgument(props: { param: JsiiParameter }) {
   // @ts-ignore
   const [context] = useContext(Context);
+  let language = context ? context.language : "ts";
 
   return (
     <li>
       <span>
         <span className="font-mono text-sm bg-purple-100 text-purple-900 border border-purple-200 p-0.5 pl-1 pr-1 rounded-md mr-3">
-          {props.param.name == "props" && context.language == "python"
+          {props.param.name == "props" && language == "python"
             ? "**kwargs"
             : props.param.name}
         </span>

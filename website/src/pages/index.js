@@ -3,12 +3,13 @@ import { Link } from "gatsby";
 import Layout from "../components/Layout";
 import { DuplicateIcon } from "@heroicons/react/outline";
 import Header from "../components/Header";
+import Main from "../components/Main";
 
 export default function Index({ location }) {
   return (
-    <div>
-      Work in progress. For now, checkout the{" "}
-      <a href="/docs/tutorial">Tutorial</a>
-    </div>
+    <>
+      <Header title="TODO" canonical="/" />
+      <Main>TODO</Main>
+    </>
   );
 }

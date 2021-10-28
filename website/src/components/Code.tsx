@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { ClipboardIcon, ClipboardCheckIcon } from "@heroicons/react/outline";
+import DomParser from "dom-parser";
 
 function hashCode(text: string) {
   var hash = 0,
@@ -15,11 +16,11 @@ function hashCode(text: string) {
 }
 
 export function Code({ html, language }: { html: string; language: string }) {
-  // @ts-ignore
-  const element = document.createElement("div");
-  element.innerHTML = html;
-  let codeEl = element.getElementsByTagName("code")[0];
-  let code = codeEl.innerText;
+  let parser = new DomParser();
+  var dom = parser.parseFromString(html);
+
+  let codeEl = dom.getElementsByTagName("code")[0];
+  let code = codeEl.innerHTML.replace(/<[^>]*>/g, "");
 
   if (code.trim().startsWith("$")) {
     let parts = code.trim().split("\n");
@@ -99,21 +100,27 @@ export function Code({ html, language }: { html: string; language: string }) {
 }
 
 function injectCopyButton(html: string) {
-  const element = document.createElement("div");
-  element.innerHTML = html;
+  let parser = new DomParser();
+  var dom = parser.parseFromString("<div id='root'>" + html + "</div>");
+  let element = dom.getElementById("root");
+
   return Array.from(element.childNodes).map((child) => {
-    if (child instanceof Text) {
-      return child.data;
+    // if child is a text node
+    if (child.nodeType == 3) {
+      return child.textContent;
     }
-    let el = child as HTMLElement;
-    let key = hashCode(el.innerText + (el.dataset?.language || "")).toString();
-    if (el.className?.includes("gatsby-highlight")) {
-      return (
-        <Code html={el.outerHTML} language={el.dataset.language} key={key} />
-      );
+    let attributes = {};
+    for (let attr of child.attributes) {
+      attributes[(attr as any).name] = (attr as any).value;
+    }
+    let language = attributes["data-language"] || "";
+    let className = attributes["class"] || attributes["className"] || "";
+    let key = hashCode(child.innerHTML + language).toString();
+    if (className.includes("gatsby-highlight")) {
+      return <Code html={child.outerHTML} language={language} key={key} />;
     } else {
       return (
-        <div dangerouslySetInnerHTML={{ __html: el.outerHTML }} key={key} />
+        <div dangerouslySetInnerHTML={{ __html: child.outerHTML }} key={key} />
       );
     }
   });
