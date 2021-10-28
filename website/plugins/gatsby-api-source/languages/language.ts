@@ -152,9 +152,6 @@ export abstract class Language {
   }
 }
 
-console.log(__dirname);
-console.log(path.join(__dirname, "..", "..", "..", "..", "aws-runtime"));
-
 class RosettaTranslation {
   private static JSII_ASSEMBLY_DIR = path.join(
     __dirname,
