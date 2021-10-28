@@ -14,7 +14,7 @@ jobs:
     steps:
       - name: Check out repository code
         uses: actions/checkout@v2
-      - name: Use node 16
+      - name: Use node version 16
         uses: actions/setup-node@v2
         with:
           node-version: "16"
