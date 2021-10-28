@@ -44,7 +44,6 @@ export abstract class Language {
     if (type == undefined) {
       return "void";
     }
-
     if (type.primitive) {
       return type.primitive;
     } else if (type.fqn) {
