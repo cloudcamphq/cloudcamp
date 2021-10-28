@@ -5,7 +5,8 @@ title: "Internals"
 category: "operations-guide"
 ---
 
-As a regular user of CloudCamp, you don't need to read this document.
+Unless you want to dive deep into the internals of CloudCamp, you don't need to
+read this document.
 
 # SSM usage
 
