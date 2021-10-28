@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1024px" height="1024px" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Desktop</title>
+    <g id="Desktop" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Group" transform="translate(59.000000, 179.000000)">
+            <path d="M676.722408,222 L676.722,222.029 L680.425864,222 C803.761208,222 903.977782,319.414869 905.96978,440.328824 L906,444 C906,566.607214 805.007019,666 680.425864,666 C679.18907,666 677.954602,665.990204 676.722533,665.970687 L676.722408,666 L225.574136,666 L221.843855,665.970258 C98.9832204,664.009823 0,565.381142 0,444 C0,321.392786 100.992981,222 225.574136,222 L225.574136,222 L676.722408,222 Z" id="Combined-Shape" stroke="#FFFFFF" stroke-width="17.9799851" fill="#2D82FF"></path>
+            <ellipse id="Oval-Copy-2" stroke="#FFFFFF" stroke-width="17.9851473" fill="#3B83FF" cx="451.148272" cy="222" rx="225.574136" ry="222"></ellipse>
+            <ellipse id="Oval-Copy" fill="#2D82FF" cx="643.020959" cy="437.0625" rx="216.046154" ry="215.0625"></ellipse>
+        </g>
+    </g>
+</svg>

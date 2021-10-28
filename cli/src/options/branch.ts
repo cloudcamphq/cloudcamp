@@ -1,0 +1,37 @@
+import chalk from "chalk";
+import { GitRepository } from "../git";
+import { Input } from "../option";
+import { UX } from "../ux";
+let pressAnyKey = require("press-any-key");
+
+/**
+ * Pick a git branch
+ */
+export class BranchInput extends Input<string> {
+  message = "Main branch";
+  code = "branch";
+  value!: string;
+
+  constructor() {
+    super();
+  }
+
+  async init() {
+    let git = new GitRepository();
+    this.value = await git.getCurrentBranch();
+    return this;
+  }
+
+  get displayValue() {
+    return `${this.value} [current]`;
+  }
+
+  async edit(ux: UX): Promise<void> {
+    ux.log(
+      chalk.cyan("❯"),
+      "To use another branch as main, change the branch in git."
+    );
+    ux.log();
+    await pressAnyKey();
+  }
+}

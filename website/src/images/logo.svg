@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="48px" height="36px" viewBox="0 0 48 36" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Group</title>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Desktop-HD" transform="translate(-117.000000, -175.000000)">
+            <g id="Group-2-Copy" transform="translate(117.983003, 176.200000)">
+                <g id="Group" transform="translate(0.000000, 0.000000)">
+                    <path d="M34.6594408,11.3777778 L34.659,11.3797778 L34.8491193,11.3777778 C41.1300489,11.3777778 46.2403301,16.3138384 46.3984929,22.46189 L46.4022663,22.7555556 C46.4022663,29.0393287 41.2297462,34.1333333 34.8491193,34.1333333 C34.7857666,34.1333333 34.7225329,34.1328311 34.6594221,34.1318306 L34.6594408,34.1333333 L11.5531469,34.1333333 L11.254955,34.1296173 C5.01214164,33.9738552 0,28.9411448 0,22.7555556 C0,16.4717824 5.17252007,11.3777778 11.5531469,11.3777778 L11.5531469,11.3777778 L34.6594408,11.3777778 Z" id="Combined-Shape" stroke="#FFFFFF" stroke-width="0.920906516" fill="#2D82FF"></path>
+                    <ellipse id="Oval-Copy-2" stroke="#FFFFFF" stroke-width="0.921170916" fill="#3B83FF" cx="23.1062939" cy="11.3777778" rx="11.5531469" ry="11.3777778"></ellipse>
+                    <ellipse id="Oval-Copy" fill="#2D82FF" cx="32.9333662" cy="22.4" rx="11.0651558" ry="11.0222222"></ellipse>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

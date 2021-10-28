@@ -1,0 +1,22 @@
+{
+  "packageFiles": [
+    {
+      "filename": "package.json",
+      "type": "json"
+    }
+  ],
+  "bumpFiles": [
+    {
+      "filename": "package.json",
+      "type": "json"
+    },
+    {
+      "filename": "cli/package.json",
+      "type": "json"
+    },
+    {
+      "filename": "aws-runtime/package.json",
+      "type": "json"
+    }
+  ]
+}

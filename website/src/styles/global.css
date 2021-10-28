@@ -1,0 +1,109 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+ * General - Set up antialiasing
+ */
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/*
+ * scroll smooth
+ */
+html {
+  scroll-behavior: smooth;
+}
+
+.gatsby-highlight,
+pre,
+code {
+  @apply font-mono  !important;
+}
+
+/*
+ * code - short code pieces
+ */
+li > code.language-text,
+p > code.language-text {
+  @apply text-purple-600 p-0 shadow-none rounded font-semibold border-none bg-transparent text-sm !important;
+}
+
+/*
+ * code - rounded corners
+ */
+div.gatsby-highlight > pre {
+  @apply bg-gray-50 text-sm  border-none p-5 !important;
+}
+
+/*
+ * code - change the blue to something more readable.
+ */
+
+.token.atrule,
+.token.keyword,
+.token.attr-name,
+.token.function,
+.language-autohotkey .token.selector {
+  @apply text-purple-900 font-normal !important;
+}
+
+.token.string,
+.token.attr-value,
+.token.deleted,
+.language-autohotkey .token.tag {
+  @apply text-pink-900 font-normal  !important;
+}
+
+.token.namespace {
+  opacity: 1 !important;
+}
+
+.token.entity,
+.token.url,
+.token.symbol,
+.token.number,
+.token.boolean,
+.token.variable,
+.token.constant,
+.token.property,
+.token.regex,
+.token.inserted {
+  @apply text-green-700 font-normal !important;
+}
+
+/*
+ * ApiDocs - link in a method signature
+ */
+.signature-type {
+  @apply text-purple-900 !important;
+}
+
+a.signature-type {
+  @apply hover:border-b border-purple-900 !important;
+}
+
+/*
+ * Don't line break in li
+ */
+
+li p {
+  display: inline;
+}
+
+#main em {
+  font-weight: 500 !important;
+}
+
+/*
+ * lists in api
+ */
+.api ul {
+  @apply list-disc list-inside;
+}
+
+.api li {
+  @apply py-1;
+}

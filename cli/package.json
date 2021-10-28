@@ -1,0 +1,92 @@
+{
+  "name": "@cloudcamp/cli",
+  "bin": {
+    "camp": "bin/camp"
+  },
+  "author": {
+    "name": "Markus Ecker",
+    "organization": false
+  },
+  "devDependencies": {
+    "@oclif/dev-cli": "^1.26.0",
+    "@types/figlet": "^1.5.4",
+    "@types/jest": "^27.0.2",
+    "@types/lodash": "^4.14.173",
+    "@types/netmask": "^1.0.30",
+    "@types/node": "^10.17.0",
+    "@types/node-notifier": "^8.0.1",
+    "@typescript-eslint/eslint-plugin": "^4.31.2",
+    "@typescript-eslint/parser": "^4.31.2",
+    "eslint": "^7.32.0",
+    "eslint-import-resolver-node": "^0.3.6",
+    "eslint-import-resolver-typescript": "^2.5.0",
+    "eslint-plugin-import": "^2.24.2",
+    "jest": "^27.2.1",
+    "jest-junit": "^12",
+    "json-schema": "^0.3.0",
+    "npm-check-updates": "^11",
+    "ts-jest": "^27.0.5",
+    "ts-node": "^10.2.1",
+    "typescript": "^4.4.3"
+  },
+  "dependencies": {
+    "@aws-sdk/client-acm": "^3.33.0",
+    "@aws-sdk/client-cloudformation": "^3.33.0",
+    "@aws-sdk/client-cloudwatch-logs": "^3.33.0",
+    "@aws-sdk/client-codebuild": "^3.33.0",
+    "@aws-sdk/client-codepipeline": "^3.33.0",
+    "@aws-sdk/client-ec2": "^3.33.0",
+    "@aws-sdk/client-route-53": "^3.33.0",
+    "@aws-sdk/client-secrets-manager": "^3.33.0",
+    "@aws-sdk/client-ssm": "^3.33.0",
+    "@aws-sdk/client-sts": "^3.33.0",
+    "@aws-sdk/credential-provider-ini": "^3.33.0",
+    "@cloudcamp/aws-runtime": "0.0.1-alpha.7",
+    "@inquirer/expand": "0.0.15-alpha.0",
+    "@inquirer/input": "0.0.15-alpha.0",
+    "@oclif/command": "^1.8.0",
+    "@oclif/config": "^1.17.0",
+    "@oclif/plugin-help": "^3.2.3",
+    "@oclif/plugin-not-found": "^1.2.4",
+    "@octokit/auth-oauth-device": "^3.1.2",
+    "@octokit/core": "^3.5.1",
+    "aws-cdk": "1.115.0",
+    "chalk": "^4.1.2",
+    "cli-ux": "^5.6.3",
+    "config-ini-parser": "^1.5.9",
+    "docker-file-parser": "^1.0.5",
+    "figlet": "^1.5.2",
+    "fs-extra": "^10.0.0",
+    "glob": "^7.1.7",
+    "glob-promise": "^4.2.0",
+    "inquirer": "^8.1.5",
+    "jsii-rosetta": "^1.34.0",
+    "lodash": "^4.17.21",
+    "netmask": "^2.0.2",
+    "node-notifier": "^10.0.0",
+    "press-any-key": "^0.1.1",
+    "simple-git": "^2.45.1",
+    "tslib": "^2.3.1",
+    "typescript": "^4.4.3",
+    "word-wrap": "^1.2.3"
+  },
+  "bundledDependencies": [],
+  "main": "lib/index.js",
+  "license": "MIT",
+  "version": "0.0.1-alpha.7",
+  "types": "lib/index.d.ts",
+  "files": [
+    "/bin",
+    "/lib",
+    "/npm-shrinkwrap.json",
+    "/oclif.manifest.json"
+  ],
+  "oclif": {
+    "commands": "./lib/commands",
+    "bin": "camp",
+    "plugins": [
+      "@oclif/plugin-help",
+      "@oclif/plugin-not-found"
+    ]
+  }
+}

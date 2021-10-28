@@ -1,0 +1,12 @@
+{
+  "files.exclude": {
+    "aws-runtime/lib": true,
+    "cli/lib": true,
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/CVS": true,
+    "**/.DS_Store": true,
+    "**/node_modules": true
+  }
+}

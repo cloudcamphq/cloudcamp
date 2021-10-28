@@ -1,0 +1,36 @@
+name: release
+on:
+  push:
+    branches:
+      - release
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    env:
+      AWS_RUNTIME_DIR: ./aws-runtime
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      NUGET_TOKEN: ${{ secrets.NUGET_TOKEN }}
+      PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+      - name: Install dependencies
+        run: |
+          pip install twine
+      - name: Build aws-runtime
+        run: yarn install && yarn build && yarn package
+        working-directory: ${{env.AWS_RUNTIME_DIR}}
+      - name: Publish NPM package
+        run: |
+          printf "//registry.npmjs.org/:_authToken=${NPM_TOKEN}\nregistry=https://registry.npmjs.org/\nalways-auth=true\n" > .npmrc
+          npm publish --access=public
+        working-directory: ${{env.AWS_RUNTIME_DIR}}
+      - name: Publish PyPI package
+        run: |
+          printf "[pypi]\n  username = __token__\n  password = ${PYPI_TOKEN}\n" > $HOME/.pypirc
+          twine upload dist/python/*
+        working-directory: ${{env.AWS_RUNTIME_DIR}}
+      - name: Publish NuGet package
+        run: |
+          dotnet nuget push $(ls -1 dist/dotnet/*.nupkg) --api-key ${NUGET_TOKEN} --source https://api.nuget.org/v3/index.json
+        working-directory: ${{env.AWS_RUNTIME_DIR}}

@@ -1,0 +1,162 @@
+{
+  "name": "@cloudcamp/aws-runtime",
+  "description": "CloudCamp - Launch faster by automating your infrastructure.",
+  "main": "lib/index.js",
+  "scripts": {
+    "build": "jsii -v && cp .jsii ../website/content/api/api.json",
+    "build:watch": "fswatch -o .jsii | xargs -n1 -I{} cp .jsii ../website/content/api/api.json & jsii --watch; killall -KILL fswatch",
+    "package": "jsii-pacmak"
+  },
+  "keywords": [
+    "aws",
+    "cdk",
+    "cloud",
+    "cloud-computing",
+    "cloud-infrastructure",
+    "iac",
+    "infrastructure-as-code"
+  ],
+  "author": {
+    "name": "Markus Ecker",
+    "email": "markus.ecker@gmail.com"
+  },
+  "repository": {
+    "url": "https://github.com/cloudcamphq/cloudcamp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/cloudcamphq/cloudcamp/issues"
+  },
+  "homepage": "https://cloudcamphq.com",
+  "license": "MIT",
+  "stability": "experimental",
+  "types": "lib/index.d.ts",
+  "jsii": {
+    "outdir": "dist",
+    "tsc": {
+      "outDir": "lib",
+      "rootDir": "src"
+    },
+    "versionFormat": "short",
+    "targets": {
+      "java": {
+        "package": "cloudcamp.aws.runtime",
+        "maven": {
+          "groupId": "cloudcamp.aws",
+          "artifactId": "runtime"
+        }
+      },
+      "python": {
+        "distName": "cloudcamp.aws-runtime",
+        "module": "cloudcamp.aws_runtime"
+      },
+      "dotnet": {
+        "namespace": "Cloudcamp.Aws.Runtime",
+        "packageId": "Cloudcamp.Aws.Runtime",
+        "iconUrl": "https://raw.githubusercontent.com/cloudcamphq/cloudcamp/master/nuget-icon.png"
+      }
+    },
+    "metadata": {
+      "jsii": {
+        "rosetta": {
+          "strict": true
+        }
+      }
+    }
+  },
+  "devDependencies": {
+    "@aws-cdk/assert": "^1.129.0",
+    "@types/jest": "^27.0.2",
+    "@types/lodash": "^4.14.173",
+    "@types/node": "^10.17.0",
+    "@typescript-eslint/eslint-plugin": "^4.31.2",
+    "@typescript-eslint/parser": "^4.31.2",
+    "eslint": "^7.32.0",
+    "eslint-import-resolver-node": "^0.3.6",
+    "eslint-import-resolver-typescript": "^2.5.0",
+    "eslint-plugin-import": "^2.24.2",
+    "jest": "^27.2.1",
+    "jest-junit": "^12",
+    "jsii": "^1.34.0",
+    "jsii-diff": "^1.34.0",
+    "jsii-docgen": "^3.6.3",
+    "jsii-pacmak": "^1.34.0",
+    "json-schema": "^0.3.0",
+    "npm-check-updates": "^11",
+    "ts-jest": "^27.0.5",
+    "typescript": "^4.4.3",
+    "@aws-cdk/aws-applicationautoscaling": "1.129.0",
+    "@aws-cdk/aws-certificatemanager": "1.129.0",
+    "@aws-cdk/aws-chatbot": "1.129.0",
+    "@aws-cdk/aws-cloudwatch": "1.129.0",
+    "@aws-cdk/aws-cloudwatch-actions": "1.129.0",
+    "@aws-cdk/aws-codepipeline": "1.129.0",
+    "@aws-cdk/aws-codepipeline-actions": "1.129.0",
+    "@aws-cdk/aws-ec2": "1.129.0",
+    "@aws-cdk/aws-ecs": "1.129.0",
+    "@aws-cdk/aws-ecs-patterns": "1.129.0",
+    "@aws-cdk/aws-elasticloadbalancingv2": "1.129.0",
+    "@aws-cdk/aws-logs": "1.129.0",
+    "@aws-cdk/aws-rds": "1.129.0",
+    "@aws-cdk/aws-route53": "1.129.0",
+    "@aws-cdk/aws-secretsmanager": "1.129.0",
+    "@aws-cdk/aws-sns": "1.129.0",
+    "@aws-cdk/aws-sns-subscriptions": "1.129.0",
+    "@aws-cdk/aws-ssm": "1.129.0",
+    "@aws-cdk/core": "1.129.0",
+    "@aws-cdk/cx-api": "1.129.0",
+    "@aws-cdk/pipelines": "1.129.0",
+    "constructs": "3.3.161"
+  },
+  "peerDependencies": {
+    "@aws-cdk/aws-applicationautoscaling": "^1.129.0",
+    "@aws-cdk/aws-certificatemanager": "^1.129.0",
+    "@aws-cdk/aws-chatbot": "^1.129.0",
+    "@aws-cdk/aws-cloudwatch": "^1.129.0",
+    "@aws-cdk/aws-cloudwatch-actions": "^1.129.0",
+    "@aws-cdk/aws-codepipeline": "^1.129.0",
+    "@aws-cdk/aws-codepipeline-actions": "^1.129.0",
+    "@aws-cdk/aws-ec2": "^1.129.0",
+    "@aws-cdk/aws-ecs": "^1.129.0",
+    "@aws-cdk/aws-ecs-patterns": "^1.129.0",
+    "@aws-cdk/aws-elasticloadbalancingv2": "^1.129.0",
+    "@aws-cdk/aws-logs": "^1.129.0",
+    "@aws-cdk/aws-rds": "^1.129.0",
+    "@aws-cdk/aws-route53": "^1.129.0",
+    "@aws-cdk/aws-secretsmanager": "^1.129.0",
+    "@aws-cdk/aws-sns": "^1.129.0",
+    "@aws-cdk/aws-sns-subscriptions": "^1.129.0",
+    "@aws-cdk/aws-ssm": "^1.129.0",
+    "@aws-cdk/core": "^1.129.0",
+    "@aws-cdk/cx-api": "^1.129.0",
+    "@aws-cdk/pipelines": "^1.129.0",
+    "constructs": "^3.3.161"
+  },
+  "dependencies": {
+    "@aws-cdk/aws-applicationautoscaling": "^1.129.0",
+    "@aws-cdk/aws-certificatemanager": "^1.129.0",
+    "@aws-cdk/aws-chatbot": "^1.129.0",
+    "@aws-cdk/aws-cloudwatch": "^1.129.0",
+    "@aws-cdk/aws-cloudwatch-actions": "^1.129.0",
+    "@aws-cdk/aws-codepipeline": "^1.129.0",
+    "@aws-cdk/aws-codepipeline-actions": "^1.129.0",
+    "@aws-cdk/aws-ec2": "^1.129.0",
+    "@aws-cdk/aws-ecs": "^1.129.0",
+    "@aws-cdk/aws-ecs-patterns": "^1.129.0",
+    "@aws-cdk/aws-elasticloadbalancingv2": "^1.129.0",
+    "@aws-cdk/aws-logs": "^1.129.0",
+    "@aws-cdk/aws-rds": "^1.129.0",
+    "@aws-cdk/aws-route53": "^1.129.0",
+    "@aws-cdk/aws-secretsmanager": "^1.129.0",
+    "@aws-cdk/aws-sns": "^1.129.0",
+    "@aws-cdk/aws-sns-subscriptions": "^1.129.0",
+    "@aws-cdk/aws-ssm": "^1.129.0",
+    "@aws-cdk/core": "^1.129.0",
+    "@aws-cdk/cx-api": "^1.129.0",
+    "@aws-cdk/pipelines": "^1.129.0",
+    "lodash": "^4.17.21"
+  },
+  "bundledDependencies": [
+    "lodash"
+  ],
+  "version": "0.0.1-alpha.7"
+}

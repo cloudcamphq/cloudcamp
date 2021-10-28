@@ -1,0 +1,26 @@
+{
+  "private": true,
+  "workspaces": [
+    "cli",
+    "aws-runtime"
+  ],
+  "devDependencies": {
+    "commitizen": "^4.2.4",
+    "cz-conventional-changelog": "3.3.0"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
+  "scripts": {
+    "commit": "git-cz",
+    "release": "standard-version"
+  },
+  "standard-version": {
+    "scripts": {
+      "postbump": "jq \".dependencies.\\\"@cloudcamp/aws-runtime\\\" = \\\"$(jq -r '.version' package.json)\\\"\" cli/package.json | sponge cli/package.json"
+    }
+  },
+  "version": "0.0.1-alpha.7"
+}
