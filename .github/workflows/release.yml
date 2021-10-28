@@ -5,8 +5,9 @@ on:
       - release
 jobs:
   release:
+    name: "Release Packages"
     runs-on: ubuntu-latest
-    if: "contains(github.event.head_commit.message, 'chore(release)')"
+    if: ${{ contains(github.event.head_commit.message, 'chore(release)') }}
     env:
       AWS_RUNTIME_DIR: ./aws-runtime
       CLI_DIR: ./cli
