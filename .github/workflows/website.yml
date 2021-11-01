@@ -39,5 +39,5 @@ jobs:
         run: gatsby build
         working-directory: ${{env.WEBSITE_DIR}}
       - name: Publish to GitHub Pages
-        run: gh-pages --dist public --branch master --repo https://${{ env.GH_TOKEN }}@github.com/cloudcamphq/cloudcamphq.github.io.git
+        run: gh-pages --dist public --branch main --repo https://${{ env.GH_TOKEN }}@github.com/cloudcamphq/cloudcamphq.github.io.git
         working-directory: ${{env.WEBSITE_DIR}}
