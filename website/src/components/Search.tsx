@@ -88,7 +88,7 @@ export default function Search() {
                     as="h3"
                     className="text-lg leading-6 font-medium text-gray-900"
                   >
-                    Payment successful
+                    Search goes here
                   </Dialog.Title>
                   <div className="mt-2">
                     <p className="text-sm text-gray-500">
@@ -104,7 +104,7 @@ export default function Search() {
                   className="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm"
                   onClick={() => setOpen(false)}
                 >
-                  Go back to dashboard
+                  Go back
                 </button>
               </div>
             </div>
