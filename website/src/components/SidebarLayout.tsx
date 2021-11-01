@@ -12,7 +12,6 @@ import logo from "../images/logo.svg";
 import TableOfContents from "./TableOfContents";
 import { Link } from "gatsby";
 import OnThisPage from "./OnThisPage";
-import PreserveScroll from "./PreserveScroll";
 
 export default function SidebarLayout({
   children,
@@ -34,6 +33,8 @@ export default function SidebarLayout({
     <Store>
       <Search />
       <div className="h-screen overflow-y-hidden flex">
+        {/* Table of Contents */}
+
         <div className="flex-1 h-full min-w-max hidden lg:flex flex-col">
           <div className="h-16 border-b bg-white items-center flex flex-none justify-end flex-shrink-0">
             <div className={`${leftBarWidth} ${leftBarPadding}`}>
@@ -56,6 +57,8 @@ export default function SidebarLayout({
           </div>
         </div>
 
+        {/* Main */}
+
         <div className="flex h-full flex-grow overflow-y-hidden xl:max-w-4xl flex-col">
           <div className="h-16 border-b bg-white items-center flex flex-none">
             <Link to="/">
@@ -74,6 +77,8 @@ export default function SidebarLayout({
             {children}
           </div>
         </div>
+
+        {/* On this page */}
         <div className="flex-1 h-full min-w-max hidden xl:flex flex-col">
           <div className="h-16 border-b bg-white flex items-center flex-shrink-0">
             <Social />
