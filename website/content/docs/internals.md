@@ -21,19 +21,19 @@ This is a list of all SSM keys used internally by CloudCamp.
 </thead>
 <tbody>
 <tr>
-  <td class="p-2 border">/cloudcamp/${appname}/_/stack/${stackname}</td>
+  <td class="p-2 border"><code>/cloudcamp/${appname}/_/stack/${stackname}</code></td>
   <td class="p-2 border">Finding all stacks of an app.</td>
 </tr>
 <tr>
-  <td class="p-2 border">/cloudcamp/${appname}/_/codepipeline</td>
+  <td class="p-2 border"><code>/cloudcamp/${appname}/_/codepipeline</code></td>
   <td class="p-2 border">Finding the main code pipeline.</td>
 </tr>
 <tr>
-  <td class="p-2 border">/cloudcamp/${appname}/_/pipeline-stack</td>
+  <td class="p-2 border"><code>/cloudcamp/${appname}/_/pipeline-stack</code></td>
   <td class="p-2 border">Finding the pipeline stack.</td>
 </tr>
 <tr>
-  <td class="p-2 border">/cloudcamp/global/certificate/${domainname}</td>
+  <td class="p-2 border"><code>/cloudcamp/global/certificate/${domainname}</code></td>
   <td class="p-2 border">Storing the ARN of a certificate.</td>
 </tr>
 </tbody>
