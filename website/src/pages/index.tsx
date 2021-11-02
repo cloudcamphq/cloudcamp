@@ -10,12 +10,15 @@ export default function Index({}) {
   let installCommand = "npm install cloudcamp";
   return (
     <>
-      <Header title="CloudCamp - Launch faster" canonical="/" />
+      <Header
+        title="Launch faster by building scalable infrastructure in few lines of code"
+        canonical="/"
+      />
       <Main>
         <div className="xl:max-w-5xl m-auto">
           <Link to="/">
             <img
-              className="lg:mt-10 h-10 w-auto flex-shrink-0"
+              className="lg:mt-10 h-12 w-auto flex-shrink-0"
               src={logoText}
               alt="cloudcamp"
             />
