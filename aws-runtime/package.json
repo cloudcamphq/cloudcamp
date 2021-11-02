@@ -52,7 +52,7 @@
       "dotnet": {
         "namespace": "Cloudcamp.Aws.Runtime",
         "packageId": "Cloudcamp.Aws.Runtime",
-        "iconUrl": "https://raw.githubusercontent.com/cloudcamphq/cloudcamp/master/nuget-icon.png"
+        "iconUrl": "https://raw.githubusercontent.com/cloudcamphq/cloudcamp/main/assets/img/nuget-icon.png"
       }
     },
     "metadata": {
