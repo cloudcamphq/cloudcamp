@@ -37,6 +37,9 @@ jobs:
       - name: Build Website
         run: gatsby build
         working-directory: ${{env.WEBSITE_DIR}}
+      - name: Add CNAME file
+        run: echo "cloudcamphq.com" > public/CNAME
+        working-directory: ${{env.WEBSITE_DIR}}
       - name: Publish to GitHub Pages
         run: gh-pages --dist public --branch main --repo https://${{ env.GH_TOKEN }}@github.com/cloudcamphq/cloudcamphq.github.io.git
         working-directory: ${{env.WEBSITE_DIR}}
