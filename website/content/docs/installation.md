@@ -5,18 +5,18 @@ title: "Installation"
 category: "getting-started"
 ---
 
-Learn how to get cloudcamp up and running for your project.
+Learn how to get CloudCamp up and running for your project.
 
 # Prerequisites
 
-To install cloudcamp, you need to have node.js V14 or higher installed. You can
+To install CloudCamp, you need to have node.js V14 or higher installed. You can
 either [install it with your package
 manager](https://nodejs.org/en/download/package-manager/), or [download an
 installer](https://nodejs.org/en/download/) for your OS.
 
-# Installing cloudcamp
+# Installing CloudCamp
 
-Cloudcamp comes with `camp`, a command line program.
+CloudCamp comes with `camp`, a command line program.
 
 Install it via `npm`
 

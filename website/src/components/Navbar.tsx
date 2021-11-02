@@ -65,12 +65,12 @@ export default function Navbar({ pathname, showLanguage = false }) {
                     <img
                       className="block sm:hidden h-8 w-auto"
                       src={logo}
-                      alt="cloudcamp"
+                      alt="CloudCamp"
                     />
                     <img
                       className="hidden sm:block h-8 w-auto"
                       src={logoText}
-                      alt="cloudcamp"
+                      alt="CloudCamp"
                     />
                   </Link>
                 </div>

@@ -105,7 +105,7 @@ export default function TableOfContents({
       </nav>
       <nav>
         <h1 className="tracking-wide font-semibold text-xs uppercase py-2 px-4">
-          Using cloudcamp
+          Using CloudCamp
         </h1>
         <ul>
           {operationsGuide.map((node) => {

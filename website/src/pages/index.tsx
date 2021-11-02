@@ -20,7 +20,7 @@ export default function Index({}) {
             <img
               className="lg:mt-10 h-12 w-auto flex-shrink-0"
               src={logoText}
-              alt="cloudcamp"
+              alt="CloudCamp"
             />
           </Link>
           <h1 className="mt-10 mb-32 text-5xl sm:text-6xl lg:text-7xl leading-none font-extrabold tracking-tight text-gray-900">

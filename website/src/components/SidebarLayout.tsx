@@ -42,7 +42,7 @@ export default function SidebarLayout({
                 <img
                   className="hidden sm:block h-8 w-auto flex-shrink-0"
                   src={logoText}
-                  alt="cloudcamp"
+                  alt="CloudCamp"
                 />
               </Link>
             </div>
@@ -65,7 +65,7 @@ export default function SidebarLayout({
               <img
                 className="block lg:hidden h-8 w-auto flex-shrink-0 ml-6"
                 src={logo}
-                alt="cloudcamp"
+                alt="CloudCamp"
               />
             </Link>
             <PillsNav pathname={location.pathname} />

@@ -6,14 +6,14 @@ category: "getting-started"
 ---
 
 This tutorial will show you how to build and deploy an application with
-cloudcamp.
+CloudCamp.
 
 Once you have learned the basics, you will be able to set up any cloud
 application way faster than by hand or using configuration files. You will learn
 how to automate all aspects of your app in surprisingly few lines of code -
 while still having the full flexibility of AWS at your fingertips.
 
-Make sure that [cloudcamp is
+Make sure that [CloudCamp is
 installed](/docs/installation/#installing-cloudcamp) and your [AWS account is
 configured](/docs/installation/#aws-setup).
 
@@ -27,7 +27,7 @@ clean state.
 
 # The source repository
 
-To learn the basics of cloudcamp, we will deploy a simple web application. Fork
+To learn the basics of CloudCamp, we will deploy a simple web application. Fork
 the <a href="https://github.com/cloudcamphq/tutorial" target="_blank">tutorial
 repository on GitHub</a>, then clone it:
 
@@ -60,7 +60,7 @@ $ git checkout java</code></pre>
 
 # Creating an app
 
-Cloudcamp organizes your deployments into "apps" - lightweight
+CloudCamp organizes your deployments into "apps" - lightweight
 infrastructure-as-code programs that live in your project alongside the rest of
 your application code.
 
@@ -131,7 +131,7 @@ Let's take a look at what we just created.
 
 # Infrastructure as Code
 
-Cloudcamp is based on _Amazon Cloud Development Kit (CDK), a declarative way of
+CloudCamp is based on _Amazon Cloud Development Kit (CDK), a declarative way of
 building infrastructure_. This means that instead of imperatively creating and
 updating resources, we define a model of what our infrastructure should look
 like. CDK then takes care of making the necessary changes to accomplish our
@@ -322,7 +322,7 @@ To delete all resources we created during this tutorial, run `destroy` in your c
 $ camp destroy
 ```
 
-Cloudcamp will list and upon confirmation destroy all the resources you created.
+CloudCamp will list and upon confirmation destroy all the resources you created.
 
 If you added a custom domain, use this command to delete the DNS zone:
 

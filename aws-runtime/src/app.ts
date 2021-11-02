@@ -137,7 +137,7 @@ export class App extends cdk.App {
    * @topic Stacks
    *
    * @remarks To deploy resources to the cloud, they are added to a ``Stack``.
-   * Cloudcamp comes with three default stacks:
+   * CloudCamp comes with three default stacks:
    */
   get network(): Stack {
     return this.getOrAddStage("network").stack;
@@ -235,7 +235,7 @@ export class App extends cdk.App {
    * @topic Stages
    *
    * @remarks Stages are responsible for building your stacks. By default,
-   * cloudcamp creates a stage for each stack and gives it the same name. You
+   * CloudCamp creates a stage for each stack and gives it the same name. You
    * can customize this behaviour by adding your own stages.
    */
 
@@ -279,7 +279,7 @@ export class App extends cdk.App {
    *
    * @param name The name of the stage.
    *
-   * @param stage An optional stage object. If not specifed, cloudcamp will
+   * @param stage An optional stage object. If not specifed, CloudCamp will
    * create and return an empty stage.
    */
   public addStage(name: string, stage?: Stage): Stage {

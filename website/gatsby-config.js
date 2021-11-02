@@ -1,15 +1,15 @@
 module.exports = {
   siteMetadata: {
     siteUrl: "https://cloudcamphq.com",
-    title: "cloudcamp",
+    title: "CloudCamp",
   },
   plugins: [
     "gatsby-plugin-react-helmet",
     {
       resolve: "gatsby-plugin-manifest",
       options: {
-        name: "cloudcamp",
-        short_name: "cloudcamp",
+        name: "CloudCamp",
+        short_name: "CloudCamp",
         start_url: "/",
         background_color: "#FFFFFF",
         theme_color: "#2DA2FF",

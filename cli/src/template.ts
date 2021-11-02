@@ -43,7 +43,7 @@ interface DynamicallyLoadedTemplate {
 }
 
 /**
- * A cloudcamp template.
+ * A CloudCamp template.
  */
 export abstract class Template {
   /**
@@ -196,7 +196,7 @@ export abstract class Template {
   }
 
   /**
-   * Copy a resource to cloudcamp home or project root
+   * Copy a resource to CloudCamp home or project root
    */
   protected copyResource(fileOrDir: string, targetPath: string): void {
     let appDir = path.join(CAMP_HOME_DIR, targetPath);
