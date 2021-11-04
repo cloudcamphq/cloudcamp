@@ -8,12 +8,39 @@ import Main from "../components/Main";
 
 export default function Index({}) {
   let installCommand = "npm install cloudcamp";
+  let cssAnimation = `
+  .blink {
+    animation: blink-animation 2s steps(5, start) infinite;
+  }
+  @keyframes blink-animation {
+    to {
+      visibility: hidden;
+    }
+  }
+  `;
+  let code = `
+  <div class="gatsby-highlight" data-language="ts"><pre class="ts language-ts" style="background-color: white !important; font-size: 18px !important;"><code class="ts language-ts"><span class="token comment">// Launch faster by building</span>
+<span class="token comment">// scalable infrastructure</span>
+<span class="token comment">// in few lines of code.</span>
+
+<span class="token comment">// Available for Typescript, Javascript, Python, .Net and Java</span>
+
+
+<span class="token keyword">import</span> <span class="token punctuation">{</span> App<span class="token punctuation">,</span> WebServer <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">"@cloudcamp/aws-runtime"</span><span class="token punctuation">;</span>
+
+<span class="token keyword">let</span> app <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">App</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">new</span> <span class="token class-name">WebServer</span><span class="token punctuation">(</span>app<span class="token punctuation">.</span>production<span class="token punctuation">,</span> <span class="token string">"prod-web"</span><span class="token punctuation">,</span> <span class="token punctuation">{</span>
+  dockerfile<span class="token operator">:</span> <span class="token string">"../Dockerfile"</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre></div>
+`;
   return (
     <>
       <Header
         title="Launch faster by building scalable infrastructure in few lines of code"
         canonical="/"
       />
+      <style>{cssAnimation}</style>
       <Main>
         <div className="xl:max-w-5xl m-auto">
           <Link to="/">
@@ -23,21 +50,20 @@ export default function Index({}) {
               alt="CloudCamp"
             />
           </Link>
-          <h1 className="mt-10 mb-32 text-5xl sm:text-6xl lg:text-7xl leading-none font-extrabold tracking-tight text-gray-900">
-            Launch faster by building scalable infrastructure in few lines of
-            code.
-          </h1>
+          <div dangerouslySetInnerHTML={{ __html: code }} />
+
           <div className="flex flex-wrap space-y-4 sm:space-y-0 sm:space-x-4 text-center">
             <Link
               className={
-                "w-full sm:w-auto flex-none bg-blue-600 " +
+                "w-full sm:w-auto flex-none bg-black " +
                 "text-white text-lg leading-6 font-semibold py-3 px-6 border border-transparent rounded-xl " +
                 "focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 focus:outline-none " +
-                "transition-all duration-200 "
+                "transition-all duration-200 relative pr-10 "
               }
               to="/docs/tutorial"
             >
-              Get started
+              Get started{" "}
+              <div className="w-3 h-5 ml-3 bg-white inline-block absolute top-3 right-4 blink"></div>
             </Link>
             <button
               type="button"
