@@ -1,6 +1,7 @@
 import "./src/styles/global.css";
 import "@fontsource/karla/variable.css";
 import "@fontsource/inter/variable.css";
+import "@fontsource/source-code-pro";
 import "prism-themes/themes/prism-ghcolors.css";
 
 import React from "react";
