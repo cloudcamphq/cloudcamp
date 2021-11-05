@@ -68,11 +68,11 @@ export default function LanguageMenu() {
   return (
     <Menu
       as="div"
-      className="relative inline-block text-left lg:ml-8 ml-6 w-40 group min-w-max"
+      className="relative inline-block text-left lg:ml-8 ml-6 mr-1 w-40 group min-w-max"
       tabIndex={0}
     >
       <div>
-        <Menu.Button className="inline-flex justify-left w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500">
+        <Menu.Button className="inline-flex justify-left w-full rounded-md px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500">
           <img src={logo} className="h-5 mr-2 flex-shrink-0 flex-none" />
           {language}
           <ChevronDownIcon

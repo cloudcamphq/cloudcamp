@@ -36,7 +36,7 @@ export default function SidebarLayout({
         {/* Table of Contents */}
 
         <div className="flex-1 h-full min-w-max hidden lg:flex flex-col">
-          <div className="h-16 border-b bg-white items-center flex flex-none justify-end flex-shrink-0">
+          <div className="h-16  bg-white items-center flex flex-none justify-end flex-shrink-0">
             <div className={`${leftBarWidth} ${leftBarPadding}`}>
               <Link to="/">
                 <img
@@ -48,7 +48,9 @@ export default function SidebarLayout({
             </div>
           </div>
 
-          <div className="h-full flex overflow-hidden justify-end">
+          <div className="h-full flex overflow-hidden justify-end relative">
+            <div className="hidden lg:block h-12 pointer-events-none absolute inset-x-0 z-10 bg-gradient-to-b from-white"></div>
+
             <div
               className={`${leftBarWidth} ${leftBarPadding} h-full overflow-auto min-w-0 flex flex-col pt-12 space-y-6 pb-12`}
             >
@@ -68,9 +70,9 @@ export default function SidebarLayout({
                 alt="CloudCamp"
               />
             </Link>
-            <PillsNav pathname={location.pathname} />
-            <LanguageMenu />
             <SearchButton />
+            <LanguageMenu />
+
             <Social classname="hidden md:flex xl:hidden" />
           </div>
           <div className="h-full overflow-hidden min-w-0 flex flex-col">
@@ -80,11 +82,13 @@ export default function SidebarLayout({
 
         {/* On this page */}
         <div className="flex-1 h-full min-w-max hidden xl:flex flex-col">
-          <div className="h-16 border-b bg-white flex items-center flex-shrink-0">
+          <div className="h-16 bg-white flex items-center flex-shrink-0">
             <Social />
           </div>
 
-          <div className="h-full flex overflow-hidden justify-start">
+          <div className="h-full flex overflow-hidden justify-start relative">
+            <div className="hidden lg:block h-12 pointer-events-none absolute inset-x-0 z-10 bg-gradient-to-b from-white"></div>
+
             <div
               className={`${rightBarWidth} ${rightBarPadding} h-full overflow-auto min-w-0 flex flex-col pt-12 space-y-6 pb-12`}
             >

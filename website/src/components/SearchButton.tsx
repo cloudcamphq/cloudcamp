@@ -28,21 +28,21 @@ export default function SearchButton() {
 
   return (
     <button
-      className="flex-1 flex border border-gray-300 rounded-md shadow-sm items-center bg-white hover:bg-gray-50 justify-center overflow-hidden ml-6 mr-6 group focus:ring-indigo-500 focus:ring-2 focus:ring-offset-2 focus:outline-none"
+      className="flex-1 flex rounded-md items-center bg-white py-2 overflow-hidden ml-6 mr-6 group focus:ring-indigo-500 focus:ring-2 focus:ring-offset-2 focus:outline-none"
       onClick={() => dispatch({ type: "SET_SEARCHBOX_VISIBLE", payload: true })}
       id="global-search-button"
       tabIndex={0}
     >
       <div className="inset-y-0 pl-3 flex items-center pointer-events-none">
         <SearchIcon
-          className="h-5 w-5 text-gray-400 group-hover:text-gray-700"
+          className="h-6 w-6 text-gray-400 group-hover:text-gray-500"
           aria-hidden="true"
         />
       </div>
-      <div className="block text-sm w-full py-2 px-2 text-gray-700  font-medium overflow-ellipsis overflow-hidden whitespace-nowrap">
+      <div className="block text-md ml-4 w-full text-gray-600 font-medium overflow-ellipsis overflow-hidden whitespace-nowrap text-left">
         Search Documentation{" "}
         {shortcut && (
-          <span className="text-gray-400 border rounded-md px-1 py-1 border-gray-300 ml-1 text-xs min-w-max inline-flex">
+          <span className="text-gray-400 border rounded-md px-2 py-1 border-gray-300 ml-4 text-sm min-w-max inline-flex">
             {shortcut}
           </span>
         )}
