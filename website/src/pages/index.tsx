@@ -10,19 +10,25 @@ export default function Index({}) {
   let installCommand = "npm install cloudcamp";
 
   let code = `
-  <div class="gatsby-highlight" data-language="ts"><pre class="ts language-ts" style="background-color: white !important; font-size: 18px !important; padding: 0px !important; margin-top: 60px; margin-bottom: 60px; overflow-y: hidden !important;"><code class="ts language-ts"><span class="token comment">// Launch faster by building</span>
+  <div class="gatsby-highlight" data-language="ts"><pre class="ts language-ts" style="font-size: 16px !important; margin-top: 40px; margin-bottom: 40px; overflow-y: hidden !important;"><code class="ts language-ts"><span class="token comment">// Launch faster by building</span>
 <span class="token comment">// scalable infrastructure</span>
 <span class="token comment">// in few lines of code.</span>
 
 
 
-<span class="token keyword">import</span> <span class="token punctuation">{</span> App<span class="token punctuation">,</span> WebServer <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">"@cloudcamp/aws-runtime"</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> App<span class="token punctuation">,</span> WebService <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">"@cloudcamp/aws-runtime"</span><span class="token punctuation">;</span>
 
 <span class="token keyword">let</span> app <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">App</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-<span class="token keyword">new</span> <span class="token class-name">WebServer</span><span class="token punctuation">(</span>app<span class="token punctuation">.</span>production<span class="token punctuation">,</span> <span class="token string">"prod-web"</span><span class="token punctuation">,</span> <span class="token punctuation">{</span>
+<span class="token keyword">let</span> web <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">WebService</span><span class="token punctuation">(</span>app<span class="token punctuation">.</span>production<span class="token punctuation">,</span> <span class="token string">"prod-web"</span><span class="token punctuation">,</span> <span class="token punctuation">{</span>
   dockerfile<span class="token operator">:</span> <span class="token string">"../Dockerfile"</span>
-<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre></div>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+web<span class="token punctuation">.</span><span class="token function">scaleOnMetric</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  cpu<span class="token operator">:</span> <span class="token number">80</span><span class="token punctuation">,</span>
+  max<span class="token operator">:</span> <span class="token number">5</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre></div>
 `;
   return (
     <>
@@ -44,11 +50,12 @@ export default function Index({}) {
           <div className="flex flex-wrap space-y-4 sm:space-y-0 sm:space-x-4 text-center">
             <Link
               className={
-                "w-full sm:w-auto flex-none bg-black " +
+                "w-full sm:w-auto flex-none " +
                 "text-white text-lg leading-6 font-semibold py-3 px-6 border border-transparent rounded-xl " +
                 "focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 focus:outline-none " +
                 "transition-all duration-200 "
               }
+              style={{ backgroundColor: "#2C80FF" }}
               to="/docs/tutorial"
             >
               Get started

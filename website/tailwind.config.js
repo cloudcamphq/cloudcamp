@@ -13,7 +13,7 @@ module.exports = {
       fontFamily: {
         sans: ["InterVariable", ...defaultTheme.fontFamily.sans],
         display: ["KarlaVariable", ...defaultTheme.fontFamily.sans],
-        mono: ["Source Code Pro", ...defaultTheme.fontFamily.mono],
+        mono: ["Roboto Mono", ...defaultTheme.fontFamily.mono],
       },
     },
   },

@@ -32,10 +32,19 @@ p > code.language-text {
 }
 
 /*
- * code - rounded corners
+ * code - background-color
  */
 div.gatsby-highlight > pre {
-  @apply bg-gray-50 text-sm  border-none p-5 !important;
+  background-color: #f8f8f8 !important;
+  @apply text-sm border-none p-5 !important;
+}
+
+/*
+ * code - base color
+ */
+code[class*="language-"],
+pre[class*="language-"] {
+  color: #525252 !important;
 }
 
 /*
@@ -47,14 +56,16 @@ div.gatsby-highlight > pre {
 .token.attr-name,
 .token.function,
 .language-autohotkey .token.selector {
-  @apply text-purple-900 font-normal !important;
+  color: #2973b7 !important;
+  @apply font-normal !important;
 }
 
 .token.string,
 .token.attr-value,
 .token.deleted,
 .language-autohotkey .token.tag {
-  @apply text-pink-900 font-normal  !important;
+  color: #42b983 !important;
+  @apply font-normal  !important;
 }
 
 .token.namespace {
@@ -65,6 +76,7 @@ div.gatsby-highlight > pre {
  * code - no italics for comments
  */
 .token.comment {
+  color: #7f8890 !important;
   font-style: normal !important;
 }
 
@@ -78,7 +90,8 @@ div.gatsby-highlight > pre {
 .token.property,
 .token.regex,
 .token.inserted {
-  @apply text-green-700 font-normal !important;
+  color: #d63200 !important;
+  @apply font-normal !important;
 }
 
 /*
