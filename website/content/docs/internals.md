@@ -5,8 +5,42 @@ title: "Internals"
 category: "operations-guide"
 ---
 
-Unless you want to dive deep into the internals of CloudCamp, you don't need to
-read this document.
+This guide documents the internals of CloudCamp. It might come in handy if you
+want to make a source code contribution.
+
+# Software
+
+This software is used to build/release CloudCamp for various programming languages:
+
+- npm (https://www.npmjs.com)
+- yarn (https://yarnpkg.com/)
+- sponge (https://linux.die.net/man/1/sponge)
+- jsii tooling (https://github.com/aws/jsii)
+- fswatch (https://github.com/emcrisostomo/fswatch)
+- twine (https://pypi.org/project/twine/)
+- dotnet (https://dotnet.microsoft.com)
+
+# Releasing
+
+To prerelease, run:
+
+```bash
+$ git checkout main
+$ yarn release --prerelease alpha
+$ git checkout release
+$ git merge main
+$ git push
+```
+
+To release, run:
+
+```bash
+$ git checkout main
+$ yarn release
+$ git checkout release
+$ git merge main
+$ git push
+```
 
 # SSM usage
 
