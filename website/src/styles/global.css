@@ -61,6 +61,13 @@ div.gatsby-highlight > pre {
   opacity: 1 !important;
 }
 
+/*
+ * code - no italics for comments
+ */
+.token.comment {
+  font-style: normal !important;
+}
+
 .token.entity,
 .token.url,
 .token.symbol,

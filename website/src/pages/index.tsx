@@ -8,22 +8,12 @@ import Main from "../components/Main";
 
 export default function Index({}) {
   let installCommand = "npm install cloudcamp";
-  let cssAnimation = `
-  .blink {
-    animation: blink-animation 2s steps(5, start) infinite;
-  }
-  @keyframes blink-animation {
-    to {
-      visibility: hidden;
-    }
-  }
-  `;
+
   let code = `
-  <div class="gatsby-highlight" data-language="ts"><pre class="ts language-ts" style="background-color: white !important; font-size: 18px !important;"><code class="ts language-ts"><span class="token comment">// Launch faster by building</span>
+  <div class="gatsby-highlight" data-language="ts"><pre class="ts language-ts" style="background-color: white !important; font-size: 18px !important; padding: 0px !important; margin-top: 60px; margin-bottom: 60px; overflow-y: hidden !important;"><code class="ts language-ts"><span class="token comment">// Launch faster by building</span>
 <span class="token comment">// scalable infrastructure</span>
 <span class="token comment">// in few lines of code.</span>
 
-<span class="token comment">// Available for Typescript, Javascript, Python, .Net and Java</span>
 
 
 <span class="token keyword">import</span> <span class="token punctuation">{</span> App<span class="token punctuation">,</span> WebServer <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">"@cloudcamp/aws-runtime"</span><span class="token punctuation">;</span>
@@ -40,12 +30,11 @@ export default function Index({}) {
         title="Launch faster by building scalable infrastructure in few lines of code"
         canonical="/"
       />
-      <style>{cssAnimation}</style>
       <Main>
-        <div className="xl:max-w-5xl m-auto">
+        <div className="md:max-w-2xl flex flex-col mx-auto">
           <Link to="/">
             <img
-              className="lg:mt-10 h-12 w-auto flex-shrink-0"
+              className=" h-12 w-auto flex-shrink-0"
               src={logoText}
               alt="CloudCamp"
             />
@@ -58,12 +47,11 @@ export default function Index({}) {
                 "w-full sm:w-auto flex-none bg-black " +
                 "text-white text-lg leading-6 font-semibold py-3 px-6 border border-transparent rounded-xl " +
                 "focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 focus:outline-none " +
-                "transition-all duration-200 relative pr-10 "
+                "transition-all duration-200 "
               }
               to="/docs/tutorial"
             >
-              Get started{" "}
-              <div className="w-3 h-5 ml-3 bg-white inline-block absolute top-3 right-4 blink"></div>
+              Get started
             </Link>
             <button
               type="button"
