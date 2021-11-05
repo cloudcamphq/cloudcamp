@@ -116,10 +116,8 @@ Stack              ID            Type          Value
 TutorialProduction productionweb WebServer URL http://Cloud-tutor-1WOJ5XGFE5KAP-751011628.us-east-1.elb.amazonaws.com
 ```
 
-Once finished, status will print the the URL of our web server. Copy and paste the
-URL in your browser to verify everything is working:
-
-![Browser screenshot](./img/tutorial-screen-1.png)
+Once finished, status will print the the URL of our web server. You can copy and paste the
+URL in your browser to verify everything is working.
 
 🎉 **Congratulations!** In a few minutes, you created:
 
@@ -144,7 +142,7 @@ import { App, WebServer } from "@cloudcamp/aws-runtime";
 
 let app = new App();
 
-new WebServer(app.production, "web", {
+const web = new WebServer(app.production, "web", {
   dockerfile: "../../Dockerfile",
   port: 3000,
 });
@@ -199,8 +197,6 @@ $ camp status --wait --notify
 
 When refreshing our app in the browser we can see that it is now connected to
 the database.
-
-![Browser screenshot](./img/tutorial-screen-2.png)
 
 # Setting up monitoring
 
