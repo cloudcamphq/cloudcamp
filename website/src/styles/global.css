@@ -28,7 +28,8 @@ code {
  */
 li > code.language-text,
 p > code.language-text {
-  @apply text-purple-600 p-0 shadow-none rounded font-semibold border-none bg-transparent text-sm !important;
+  color: #d63200 !important;
+  @apply p-0 shadow-none rounded font-semibold border-none bg-transparent text-sm !important;
 }
 
 /*

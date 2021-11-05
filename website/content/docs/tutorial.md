@@ -5,66 +5,24 @@ title: "Tutorial"
 category: "getting-started"
 ---
 
-This tutorial will show you how to build and deploy an application with
-CloudCamp.
-
-Once you have learned the basics, you will be able to set up any cloud
-application way faster than by hand or using configuration files. You will learn
-how to automate all aspects of your app in surprisingly few lines of code -
-while still having the full flexibility of AWS at your fingertips.
-
-Make sure that [CloudCamp is
+This tutorial will walk you through build and deploying an application with
+CloudCamp. Make sure that [CloudCamp is
 installed](/docs/installation/#installing-cloudcamp) and your [AWS account is
 configured](/docs/installation/#aws-setup).
 
-<div class="p-5 bg-gray-50 text-sm px-10 border-l-4 border-blue-500 relative">
-<div class="text-white bg-blue-500 w-5 h-5 text-center font-bold absolute" style="left:-4px; top:0px;">i</div>
-The resources you create in this tutorial are covered by the AWS free
-tier. When you are done, you can tear down all resources with <a
-href="#cleaning-up">a single command</a>, leaving your AWS account in a
-clean state.
-</div>
+# Clone the tutorial repo
 
-# The source repository
-
-To learn the basics of CloudCamp, we will deploy a simple web application. Fork
-the <a href="https://github.com/cloudcamphq/tutorial" target="_blank">tutorial
-repository on GitHub</a>, then clone it:
+The easiest way to get started is to fork <a
+href="https://github.com/cloudcamphq/tutorial" target="_blank"> the tutorial
+repository</a> and then clone it:
 
 ```bash
-$ git clone git@github.com:YOUR-USERNAME/tutorial.git
+$ git clone git@github.com:YOUR-USERNAME/tutorial.git && cd tutorial
 ```
 
-Next, change directory and checkout the branch for your language:
+# Setting up camp
 
-<div class="gatsby-highlight" data-language="ts">
-  <pre class="ts language-ts"><code class="ts language-ts">$ cd tutorial
-$ git checkout typescript</code></pre>
-</div>
-<div class="gatsby-highlight" data-language="javascript">
-  <pre class="javascript language-javascript"><code class="javascript language-javascript">$ cd tutorial
-$ git checkout javascript</code></pre>
-</div>
-<div class="gatsby-highlight" data-language="python">
-  <pre class="python language-python"><code class="python language-python">$ cd tutorial
-$ git checkout python</code></pre>
-</div>
-<div class="gatsby-highlight" data-language="csharp">
-  <pre class="csharp language-csharp"><code class="csharp language-csharp">$ cd tutorial
-$ git checkout csharp</code></pre>
-</div>
-<div class="gatsby-highlight" data-language="java">
-  <pre class="java language-java"><code class="java language-java">$ cd tutorial
-$ git checkout java</code></pre>
-</div>
-
-# Creating an app
-
-CloudCamp organizes your deployments into "apps" - lightweight
-infrastructure-as-code programs that live in your project alongside the rest of
-your application code.
-
-Run `camp init` to create one:
+To add CloudCamp to your project, run `camp init`:
 
 ```bash
 $ camp init
