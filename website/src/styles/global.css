@@ -20,7 +20,10 @@ html {
 .gatsby-highlight,
 pre,
 code {
-  @apply font-mono  !important;
+  @apply font-mono !important;
+  -webkit-font-smoothing: initial !important;
+  -moz-osx-font-smoothing: initial !important;
+  font-weight: 400 !important;
 }
 
 /*

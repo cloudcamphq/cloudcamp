@@ -10,7 +10,7 @@ export default function Index({}) {
   let installCommand = "npm install cloudcamp";
 
   let code = `
-  <div class="gatsby-highlight" data-language="ts"><pre class="ts language-ts" style="font-size: 16px !important; margin-top: 40px; margin-bottom: 40px; overflow-y: hidden !important; background-color: white !important; padding-left: 0px !important;"><code class="ts language-ts"><span class="token comment">// Launch faster by building</span>
+  <div class="gatsby-highlight" data-language="ts"><pre class="ts language-ts" style="font-size: 16px !important; margin-top: 40px; margin-bottom: 40px; overflow-y: hidden !important; background-color: white !important; padding-left: 0px !important; font-weight: 400 !important; -webkit-font-smoothing: initial !important; -moz-osx-font-smoothing: initial !important;"><code class="ts language-ts"><span class="token comment">// Launch faster by building</span>
 <span class="token comment">// scalable infrastructure</span>
 <span class="token comment">// in few lines of code.</span>
 
