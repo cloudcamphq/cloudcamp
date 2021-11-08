@@ -5,7 +5,7 @@ title: "Installation"
 category: "getting-started"
 ---
 
-Learn how to get CloudCamp up and running for your project.
+Learn how to install CloudCamp on your machine.
 
 # Prerequisites
 
@@ -22,12 +22,6 @@ Install it via `npm`
 
 ```bash
 $ npm install @cloudcamp/cli -g
-```
-
-Or with `yarn`
-
-```bash
-$ yarn global add @cloudcamp/cli
 ```
 
 # AWS Setup
