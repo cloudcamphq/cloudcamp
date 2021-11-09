@@ -1,7 +1,6 @@
 import React from "react";
 import LanguageMenu from "./LanguageMenu";
 import { Store } from "./Store";
-import PillsNav from "./PillsNav";
 import SearchButton from "./SearchButton";
 import Social from "./Social";
 import Search from "./Search";
@@ -32,11 +31,11 @@ export default function SidebarLayout({
   return (
     <Store>
       <Search />
-      <div className="h-screen overflow-y-hidden flex">
+      <div className="h-screen overflow-y-hidden flex justify-center">
         {/* Table of Contents */}
 
-        <div className="flex-1 h-full min-w-max hidden lg:flex flex-col">
-          <div className="h-16  bg-white items-center flex flex-none justify-end flex-shrink-0">
+        <div className="h-full min-w-max hidden lg:flex flex-col">
+          <div className="h-16 bg-white items-center flex flex-none justify-end flex-shrink-0">
             <div className={`${leftBarWidth} ${leftBarPadding}`}>
               <Link to="/">
                 <img
@@ -54,14 +53,18 @@ export default function SidebarLayout({
             <div
               className={`${leftBarWidth} ${leftBarPadding} h-full overflow-auto min-w-0 flex flex-col pt-12 space-y-6 pb-12`}
             >
-              <TableOfContents data={data} location={location} />
+              <TableOfContents
+                data={data}
+                location={location}
+                onThisPage={pageContext.onThisPage}
+              />
             </div>
           </div>
         </div>
 
         {/* Main */}
 
-        <div className="flex h-full flex-grow overflow-y-hidden xl:max-w-4xl flex-col">
+        <div className="flex h-full flex-grow overflow-y-hidden max-w-5xl flex-col">
           <div className="h-16 border-b bg-white items-center flex flex-none">
             <Link to="/">
               <img
@@ -73,7 +76,7 @@ export default function SidebarLayout({
             <SearchButton />
             <LanguageMenu />
 
-            <Social classname="hidden md:flex xl:hidden" />
+            <Social classname="flex" />
           </div>
           <div className="h-full overflow-hidden min-w-0 flex flex-col">
             {children}
@@ -81,7 +84,7 @@ export default function SidebarLayout({
         </div>
 
         {/* On this page */}
-        <div className="flex-1 h-full min-w-max hidden xl:flex flex-col">
+        {/* <div className="flex-1 h-full min-w-max hidden xl:flex flex-col">
           <div className="h-16 bg-white flex items-center flex-shrink-0">
             <Social />
           </div>
@@ -96,6 +99,7 @@ export default function SidebarLayout({
             </div>
           </div>
         </div>
+         */}
       </div>
     </Store>
   );
