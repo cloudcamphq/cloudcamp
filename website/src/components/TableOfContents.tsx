@@ -58,7 +58,7 @@ function TableOfContentsItem(props: {
         to={props.link}
       >
         <div className="flex-1">{props.title}</div>
-        {location.pathname.startsWith(props.link) && (
+        {props.location.pathname.startsWith(props.link) && (
           <ArrowRightIcon
             className="w-4 h-4 p-0.5  bg-indigo-400 text-white rounded-sm hidden group-hover:block"
             onClick={() => props.setShowOnThisPage(true)}
