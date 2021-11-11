@@ -45,7 +45,6 @@ function TableOfContentsItem(props: {
   uniqueKey: string;
   link: string;
   location: any;
-  setShowOnThisPage: any;
 }) {
   return (
     <li key={props.uniqueKey}>
@@ -58,12 +57,6 @@ function TableOfContentsItem(props: {
         to={props.link}
       >
         <div className="flex-1">{props.title}</div>
-        {props.location.pathname.startsWith(props.link) && (
-          <ArrowRightIcon
-            className="w-4 h-4 p-0.5  bg-indigo-400 text-white rounded-sm hidden group-hover:block"
-            onClick={() => props.setShowOnThisPage(true)}
-          />
-        )}
       </Link>
     </li>
   );
@@ -78,28 +71,6 @@ export default function TableOfContents({
   onThisPage: any;
   location: any;
 }) {
-  const [showOnThisPage, setShowOnThisPage] = useState(false);
-
-  console.log(onThisPage);
-
-  if (showOnThisPage) {
-    return (
-      <>
-        <nav>
-          <h1 className="tracking-wide font-semibold text-xs uppercase py-2 px-4 flex items-center">
-            <ArrowLeftIcon
-              className="w-5 h-5 inline-block cursor-pointer"
-              onClick={() => setShowOnThisPage(false)}
-            />{" "}
-            <div className="ml-2">On This Page</div>
-          </h1>
-
-          <OnThisPage onThisPage={onThisPage} />
-        </nav>
-      </>
-    );
-  }
-
   let docNodes = data.allMarkdownRemark.nodes.filter(
     (node) =>
       node.frontmatter && node.frontmatter.slug && node.frontmatter.title
@@ -146,7 +117,6 @@ export default function TableOfContents({
               uniqueKey={node.frontmatter.slug}
               title={node.frontmatter.title}
               location={location}
-              setShowOnThisPage={setShowOnThisPage}
             />
           ))}
         </ul>
@@ -162,7 +132,6 @@ export default function TableOfContents({
               uniqueKey={node.frontmatter.slug}
               title={node.frontmatter.title}
               location={location}
-              setShowOnThisPage={setShowOnThisPage}
             />
           ))}
         </ul>
@@ -178,7 +147,6 @@ export default function TableOfContents({
               uniqueKey={node.name}
               title={node.name}
               location={location}
-              setShowOnThisPage={setShowOnThisPage}
             />
           ))}
         </ul>
@@ -194,7 +162,6 @@ export default function TableOfContents({
               uniqueKey={node.name}
               title={node.name}
               location={location}
-              setShowOnThisPage={setShowOnThisPage}
             />
           ))}
         </ul>
