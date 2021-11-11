@@ -53,7 +53,10 @@ Now let's deploy:
 $ camp deploy
 ```
 
-Follow the on screen instructions and connect your GitHub account (the secret token will be stored in your own AWS account). Once the command has finished, your app will be built and deployed.
+Follow the on screen instructions to connect your GitHub account (the secret token will be stored in your own AWS account).
+
+TODO this needs to explain what is really going on (build pipeline)
+"Once the command has finished, your app will be built and deployed."
 
 You can run `camp status` to watch the progress:
 
@@ -69,8 +72,6 @@ So far, we have:
 - a build pipeline that deploys your app on `git push`.
 
 - a load balanced, scalable web service.
-
-Let's take a moment to look at the source code.
 
 # Infrastructure as Code
 

@@ -26,9 +26,9 @@ $ npm install @cloudcamp/cli -g
 
 # AWS Setup
 
-You need to make sure that your credentials for AWS are set up.
+To deploy to AWS, your credentials must be set up.
 
-If you haven't already, [install AWS
+If you haven't already, [install the AWS
 CLI](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html) and
 set up a default profile with administrator access.
 
