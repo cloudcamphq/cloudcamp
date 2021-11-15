@@ -22,7 +22,7 @@ $ git clone git@github.com:YOUR-USERNAME/tutorial.git && cd tutorial
 
 # Setting up camp
 
-To add CloudCamp to our project, run `camp init`:
+To add CloudCamp to your project, run `camp init`:
 
 <div class="gatsby-highlight" data-language="ts">
   <pre class="ts language-ts"><code class="ts language-ts">$ camp init --dockerfile=Dockerfile --language=typescript</code></pre>
