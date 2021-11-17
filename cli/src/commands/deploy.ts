@@ -29,6 +29,7 @@ import {
   CONTEXT_REPOSITORY_TOKEN_SECRET,
 } from "@cloudcamp/aws-runtime/src/constants";
 import { RepositoryHost } from "@cloudcamp/aws-runtime";
+import { resolveHome } from "../utils";
 
 /**
  * Deploy a CloudCamp app to AWS.
@@ -46,8 +47,9 @@ export default class Deploy extends BaseCommand {
    */
   static flags = {
     help: flags.help({ char: "h" }),
-    profile: flags.string({ char: "p", description: "the AWS profile name" }),
-    yes: flags.boolean({ description: "accept default choices" }),
+    profile: flags.string({ char: "p", description: "The AWS profile name" }),
+    home: flags.string({ description: "The home directory of your app." }),
+    yes: flags.boolean({ description: "Accept default choices" }),
   };
 
   /**
@@ -55,11 +57,14 @@ export default class Deploy extends BaseCommand {
    */
   async run() {
     const { flags } = this.parse(Deploy);
+    let home = resolveHome(flags.home);
 
-    let context = getCdkJsonContext();
+    let context = getCdkJsonContext(home);
     await assumeAWSProfile(flags.profile);
 
-    this.ux.displayBanner();
+    this.ux.log("");
+    this.ux.log("Deploying CloudCamp app.");
+    this.ux.log("");
 
     let credentials = new CredentialsInput(flags.profile);
     let region = new RegionChoice(context[CONTEXT_KEY_REGION]);
@@ -145,7 +150,7 @@ export default class Deploy extends BaseCommand {
     context[CONTEXT_KEY_REGION] = region.value;
     context[CONTEXT_KEY_VPC] = vpcId;
 
-    updateCdkJsonContext(context);
+    updateCdkJsonContext(home, context);
 
     // Run bootstrap if needed
     if (!(await CloudFormation.stackExists("CDKToolkit"))) {
@@ -155,7 +160,7 @@ export default class Deploy extends BaseCommand {
     }
 
     this.ux.start("Synthesizing app");
-    await CDK.synth(flags.profile);
+    await CDK.synth(home, flags.profile);
     this.ux.stop();
 
     // push changes
@@ -165,7 +170,7 @@ export default class Deploy extends BaseCommand {
       this.ux.stop();
     }
 
-    await CDK.deploy(this.ux, flags.profile);
+    await CDK.deploy(this.ux, home, flags.profile);
     this.ux.nice("Deploy succeeded.");
   }
 

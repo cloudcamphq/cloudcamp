@@ -120,9 +120,8 @@ export abstract class Template {
    * translate CDK source.
    */
   protected copyCdkSource(file: string, vars?: any): void {
-    let appName: string = vars.name;
-    let appDir = path.join(CAMP_HOME_DIR, appName, "src");
     vars = vars || {};
+    let srcDir = path.join(vars.home, "src");
 
     let basefile = path.basename(file);
     let withoutExt = basefile.slice(0, path.extname(basefile).length * -1);
@@ -144,7 +143,7 @@ export abstract class Template {
     } else {
       result = data;
     }
-    fs.writeFileSync(path.join(appDir, target), result);
+    fs.writeFileSync(path.join(srcDir, target), result);
   }
 
   /**
@@ -193,19 +192,6 @@ export abstract class Template {
       }
     }
     return source;
-  }
-
-  /**
-   * Copy a resource to CloudCamp home or project root
-   */
-  protected copyResource(fileOrDir: string, targetPath: string): void {
-    let appDir = path.join(CAMP_HOME_DIR, targetPath);
-
-    if (fs.statSync(fileOrDir).isDirectory()) {
-      fsExtra.copySync(fileOrDir, path.join(appDir, path.basename(fileOrDir)));
-    } else {
-      fs.copyFileSync(fileOrDir, path.join(appDir, path.basename(fileOrDir)));
-    }
   }
 
   /**

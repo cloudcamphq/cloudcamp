@@ -5,6 +5,7 @@ import cli from "cli-ux";
 import { Readable } from "stream";
 import { UX } from "../ux";
 import path from "path";
+import { CONTEXT_KEY_HOME } from "@cloudcamp/aws-runtime/src/constants";
 let fsExtra = require("fs-extra");
 
 let cdkBinary = path.join(__dirname, "..", "..", "node_modules", ".bin", "cdk");
@@ -39,8 +40,8 @@ export class CDK {
     });
   }
 
-  static async synth(profile?: string) {
-    let cmd = `${cdkBinary} synth`;
+  static async synth(home: string, profile?: string) {
+    let cmd = `${cdkBinary} synth --context ${CONTEXT_KEY_HOME}=${home}`;
     if (profile) {
       cmd += ` --profile ${profile}`;
     }
@@ -49,6 +50,7 @@ export class CDK {
         cmd,
         {
           windowsHide: true,
+          cwd: home,
         },
         (err, stdout, stderr) => {
           if (err) {
@@ -64,12 +66,17 @@ export class CDK {
     });
   }
 
-  static async runDeployCommand(cmd: string, ux: UX): Promise<void> {
+  static async runDeployCommand(
+    cmd: string,
+    home: string,
+    ux: UX
+  ): Promise<void> {
     return new Promise((resolve, reject) => {
       let child = child_process.exec(
         cmd,
         {
           windowsHide: true,
+          cwd: home,
         },
         (err) => {
           if (err) {
@@ -83,13 +90,13 @@ export class CDK {
     });
   }
 
-  static async deploy(ux: UX, profile?: string) {
-    let cmd = `${cdkBinary} deploy --require-approval never --progress events`;
+  static async deploy(ux: UX, home: string, profile?: string) {
+    let cmd = `${cdkBinary} deploy --require-approval never --progress events --context ${CONTEXT_KEY_HOME}=${home}`;
     if (profile) {
       cmd += ` --profile ${profile}`;
     }
     try {
-      await this.runDeployCommand(cmd, ux);
+      await this.runDeployCommand(cmd, home, ux);
     } catch (e) {
       console.log(e);
       throw new Error("cdk deploy failed.");

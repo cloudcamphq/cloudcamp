@@ -9,6 +9,7 @@ import notifier from "node-notifier";
 import * as path from "path";
 import { cli } from "cli-ux";
 import _ from "lodash";
+import { resolveHome } from "../utils";
 
 interface PipelineStatus {
   stage?: string;
@@ -26,7 +27,8 @@ export default class ShowStatus extends BaseCommand {
 
   static flags = {
     help: flags.help({ char: "h" }),
-    profile: flags.string({ char: "p", description: "the AWS profile name" }),
+    profile: flags.string({ char: "p", description: "The AWS profile name" }),
+    home: flags.string({ description: "The home directory of your app." }),
     wait: flags.boolean({
       char: "w",
       description: "Wait for the next pipeline execution",
@@ -63,7 +65,9 @@ export default class ShowStatus extends BaseCommand {
   private async trace() {
     const { flags } = this.parse(ShowStatus);
     this.setup(flags);
-    let appName = getCdkJsonContext()[CONTEXT_KEY_NAME];
+    let home = resolveHome(flags.home);
+
+    let appName = getCdkJsonContext(home)[CONTEXT_KEY_NAME];
     let status = await CloudFormation.getDeploymentStatus(appName);
     let statusDescr = this.deploymentStatusDescr(status);
 
@@ -140,7 +144,8 @@ export default class ShowStatus extends BaseCommand {
   private async status() {
     const { flags } = this.parse(ShowStatus);
     this.setup(flags);
-    let appName = getCdkJsonContext()[CONTEXT_KEY_NAME];
+    let home = resolveHome(flags.home);
+    let appName = getCdkJsonContext(home)[CONTEXT_KEY_NAME];
 
     this.ux.log("");
     while (true) {

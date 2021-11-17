@@ -1,5 +1,6 @@
 export const CAMP_HOME_DIR: string = "cloudcamp";
 export const TAG_APP_NAME = "cloudcamp:app-name";
+export const CONTEXT_KEY_HOME = "@cloudcamp/home";
 export const CONTEXT_KEY_NAME = "@cloudcamp/name";
 export const CONTEXT_KEY_REPOSITORY = "@cloudcamp/repository";
 export const CONTEXT_KEY_REGION = "@cloudcamp/region";

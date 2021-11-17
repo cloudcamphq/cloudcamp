@@ -159,13 +159,13 @@ class TypescriptLanguage extends Language {
   }
 
   get installCommand() {
-    return "npm i -g typescript && npm install";
+    return "npm i typescript --save-dev && npm install";
   }
 
   get buildCommand() {
     // When debugging, the aws-runtime directory is copied to the
     // build dir. Compile it with tsc.
-    return `[ -d "aws-runtime" ] && cd aws-runtime && tsc || true`;
+    return `[ -d "aws-runtime" ] && cd aws-runtime && npx tsc || true`;
   }
 }
 
