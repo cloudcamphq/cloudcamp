@@ -9,6 +9,11 @@ export enum LanguageCode {
   JAVA = "java",
 }
 
+interface IGenerator {
+  makeDirHome(dirname: string): void;
+  writeFileHome(filename: string, data: string): void;
+}
+
 /**
  * Abstract Language class, serves as a template for subclasses
  * which implement a specific language.
@@ -85,6 +90,12 @@ export abstract class Language {
   constructor(public code: LanguageCode) {}
 
   /**
+   * Generate files for a new app
+   */
+
+  abstract generateFiles(generator: IGenerator): Promise<void>;
+
+  /**
    * A list of patterns for .gitignore, relative to CAMP_HOME_DIR.
    */
   abstract get gitignorePatterns(): string[];
@@ -134,6 +145,30 @@ export abstract class Language {
  * Typescript
  */
 class TypescriptLanguage extends Language {
+  async generateFiles(generator: IGenerator): Promise<void> {
+    generator.writeFileHome(
+      ".gitignore",
+      ["cdk.out", ".DS_Store", "node_modules"].join("\n") + "\n"
+    );
+    generator.writeFileHome(
+      "package.json",
+      JSON.stringify(
+        {
+          dependencies: {
+            "@cloudcamp/aws-runtime":
+              "/Users/markus/Code/cloudcamp/aws-runtime",
+            "ts-node": "10.0.0",
+          },
+          devDependencies: {
+            typescript: "4.4.4",
+          },
+        },
+        null,
+        2
+      )
+    );
+  }
+
   get gitignorePatterns() {
     return ["node_modules"];
   }
@@ -150,6 +185,7 @@ class TypescriptLanguage extends Language {
             "@cloudcamp/aws-runtime":
               "/Users/markus/Code/cloudcamp/aws-runtime",
             "ts-node": "10.0.0",
+            typescript: "4.4.4",
           },
         },
         null,
@@ -173,6 +209,15 @@ class TypescriptLanguage extends Language {
  * TPython
  */
 class PythonLanguage extends Language {
+  async generateFiles(generator: IGenerator): Promise<void> {
+    generator.writeFileHome(
+      ".gitignore",
+      ["cdk.out", ".DS_Store", ".venv", "*.py[cod]", "*$py.class"].join("\n") +
+        "\n"
+    );
+    generator.writeFileHome("requirements.txt", "cloudcamp\n");
+  }
+
   get gitignorePatterns(): string[] {
     return [".venv", "*.py[cod]", "*$py.class"];
   }

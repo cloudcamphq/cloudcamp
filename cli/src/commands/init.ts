@@ -1,17 +1,16 @@
 import _ from "lodash";
 import { flags } from "@oclif/command";
 import { BaseCommand } from "../command";
-import { Template } from "../template";
-import { Project } from "../project";
 import { LanguageCode } from "@cloudcamp/aws-runtime/src/language";
 import { Settings } from "../options/settings";
 import { NameInput } from "../options/name";
 import { LanguageChoice } from "../options/language";
-import { TemplateChoice } from "../options/template";
 import { CAMP_HOME_DIR } from "@cloudcamp/aws-runtime/src/constants";
-import * as fs from "fs";
 import * as path from "path";
-import chalk from "chalk";
+import { resolveNewHome } from "../utils";
+import { Generator } from "../generator";
+import { DockerfileInput } from "../options/docker";
+import { PortInput } from "../options/port";
 /**
  * # Examples
  *
@@ -25,7 +24,7 @@ import chalk from "chalk";
  */
 export default class Init extends BaseCommand {
   static description = `Initialize a new CloudCamp project.
-Creates all files necessary for deploying your app on AWS.`;
+Creates all files necessary for deploying a docker based app on AWS.`;
 
   static flags = {
     help: flags.help({ char: "h", description: "Show CLI help." }),
@@ -35,20 +34,17 @@ Creates all files necessary for deploying your app on AWS.`;
      * This is some more documentation.
      */
     yes: flags.boolean({ description: "Accept the default choices." }),
+    dockerfile: flags.string({ description: "The path to a Dockerfile." }),
+    port: flags.integer({
+      default: 80,
+      description: "The port exposed in the Dockerfile.",
+    }),
   };
 
   async run() {
     const { flags } = this.parse(Init);
 
-    let home = flags.home || CAMP_HOME_DIR;
-
-    if (fs.existsSync(home)) {
-      throw new Error(
-        `Directory exists: ${home}\n   ${chalk.gray(
-          "(use --home to use a different directory)"
-        )}`
-      );
-    }
+    let home = resolveNewHome(flags.home);
 
     // if the user specified a home dir, be smart and use it as app name
     let name = new NameInput(
@@ -57,27 +53,34 @@ Creates all files necessary for deploying your app on AWS.`;
         : undefined
     );
     let language = new LanguageChoice(LanguageCode.TYPESCRIPT);
-    let template = new TemplateChoice(
-      await Template.templatesForInit(
-        process.env.DEBUG !== undefined && process.env.DEBUG !== "0"
-      )
-    );
-
-    let settings = await new Settings(name, language, template).init();
+    let dockerfile = new DockerfileInput(flags.dockerfile);
+    let port = new PortInput(flags.port);
+    let settings = await new Settings(name, language, dockerfile, port).init();
 
     if (!flags.yes) {
       await settings.edit(this.ux);
     }
 
-    let project = new Project();
-
     this.ux.start("Generating project");
-    await project.generate({
-      name: name.value as string,
-      template: template.value as Template,
-      languageCode: language.value as LanguageCode,
-      home: home,
-    });
+    let generator = new Generator(home, name.value, language.value);
+    await generator.generate();
+    if (dockerfile.value === undefined) {
+      generator.copySourceHome(generator.resources("docker", "app.ts"), {
+        port: 80,
+        dockerfile: "../Dockerfile",
+      });
+      generator.writeFileHome(
+        "Dockerfile",
+        "FROM public.ecr.aws/nginx/nginx:latest\n"
+      );
+    } else {
+      generator.copySourceHome(generator.resources("docker", "app.ts"), {
+        port: port.value,
+        dockerfile: path.join("..", "..", dockerfile.value),
+      });
+    }
+
+    await generator.installAndBuild();
     this.ux.stop();
 
     // And we are done.

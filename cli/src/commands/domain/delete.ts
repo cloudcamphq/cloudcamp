@@ -1,7 +1,8 @@
 import { flags } from "@oclif/command";
-import { CertificateManager, Route53 } from "../../aws";
+import { CertificateManager, Route53, setupAWS } from "../../aws";
 import { BaseCommand } from "../../command";
 import { cli } from "cli-ux";
+import { resolveHome } from "../../utils";
 
 /**
  * @order 5
@@ -13,12 +14,14 @@ export default class DeleteDomain extends BaseCommand {
 
   static flags = {
     help: flags.help({ char: "h" }),
-    profile: flags.string({ char: "p", description: "the AWS profile name" }),
+    profile: flags.string({ char: "p", description: "The AWS profile name" }),
+    home: flags.string({ description: "The home directory of your app." }),
   };
 
   async run() {
     const { flags, args } = this.parse(DeleteDomain);
-    this.setup(flags);
+    let home = resolveHome(flags.home);
+    setupAWS(home, flags.profile);
     // TODO check if the record exists
 
     let records = await Route53.listRecords(args.domain);

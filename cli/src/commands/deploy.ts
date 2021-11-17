@@ -1,7 +1,7 @@
 import _ from "lodash";
 import { flags } from "@oclif/command";
 import { BaseCommand } from "../command";
-import { getCdkJsonContext, updateCdkJsonContext } from "../project";
+import { getCdkJsonContext, updateCdkJsonContext } from "../utils";
 import {
   assumeAWSProfile,
   setAWSRegion,
@@ -61,10 +61,6 @@ export default class Deploy extends BaseCommand {
 
     let context = getCdkJsonContext(home);
     await assumeAWSProfile(flags.profile);
-
-    this.ux.log("");
-    this.ux.log("Deploying CloudCamp app.");
-    this.ux.log("");
 
     let credentials = new CredentialsInput(flags.profile);
     let region = new RegionChoice(context[CONTEXT_KEY_REGION]);

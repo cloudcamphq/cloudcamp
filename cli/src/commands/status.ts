@@ -1,8 +1,8 @@
 import { flags } from "@oclif/command";
 import { CONTEXT_KEY_NAME } from "@cloudcamp/aws-runtime/src/constants";
-import { CloudFormation } from "../aws";
+import { CloudFormation, setupAWS } from "../aws";
 import { BaseCommand } from "../command";
-import { getCdkJsonContext } from "../project";
+import { getCdkJsonContext } from "../utils";
 import chalk from "chalk";
 import { CodePipeline } from "../aws/codepipeline";
 import notifier from "node-notifier";
@@ -64,8 +64,8 @@ export default class ShowStatus extends BaseCommand {
 
   private async trace() {
     const { flags } = this.parse(ShowStatus);
-    this.setup(flags);
     let home = resolveHome(flags.home);
+    setupAWS(home, flags.profile);
 
     let appName = getCdkJsonContext(home)[CONTEXT_KEY_NAME];
     let status = await CloudFormation.getDeploymentStatus(appName);
@@ -143,8 +143,8 @@ export default class ShowStatus extends BaseCommand {
 
   private async status() {
     const { flags } = this.parse(ShowStatus);
-    this.setup(flags);
     let home = resolveHome(flags.home);
+    setupAWS(home, flags.profile);
     let appName = getCdkJsonContext(home)[CONTEXT_KEY_NAME];
 
     this.ux.log("");
@@ -164,7 +164,7 @@ export default class ShowStatus extends BaseCommand {
       this.ux.log("Deployment Status: \t", deploymentStatusDescr);
 
       if (!flags.wait && !flags.forever) {
-        this.ux.log("Build Status: \t", descr);
+        this.ux.log("Build Status: \t\t", descr);
       } else {
         let prevPipelineStatus = status;
         let prevPipelineStatusDescr = descr;

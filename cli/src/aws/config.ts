@@ -1,7 +1,7 @@
 import { fromIni } from "@aws-sdk/credential-provider-ini";
 import { CONTEXT_KEY_REGION } from "@cloudcamp/aws-runtime/src/constants";
 import { AwsRegion } from "@cloudcamp/aws-runtime/src/types";
-import { getCdkJsonContext } from "../project";
+import { getCdkJsonContext } from "../utils";
 
 export const AWSClientConfig: any = {};
 
@@ -27,10 +27,10 @@ export function setAWSRegion(region: AwsRegion) {
 /**
  * Generic setup function for commands
  */
-export function setupAWS(profile?: string) {
+export function setupAWS(home: string, profile?: string) {
   assumeAWSProfile(profile);
 
-  let context = getCdkJsonContext();
+  let context = getCdkJsonContext(home);
   if (!context[CONTEXT_KEY_REGION]) {
     throw new Error("No region found in cdk.json.");
   }
