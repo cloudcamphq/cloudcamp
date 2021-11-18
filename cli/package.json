@@ -96,6 +96,10 @@
     "plugins": [
       "@oclif/plugin-help",
       "@oclif/plugin-not-found"
-    ]
+    ],
+    "topics": {
+      "cert": {"description": "Manage SSL certificates."},
+      "domain": {"description": "Manage domains."}
+    }
   }
 }

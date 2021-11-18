@@ -32,7 +32,7 @@ export function resolveHome(homeFlag?: string): string {
 
   throw new Error(
     `Could not find home directory.\n   ${chalk.gray(
-      "(use --home specify the home directory)"
+      "(Did you run `camp init`?)"
     )}`
   );
 }

@@ -78,11 +78,9 @@ export default class Deploy extends BaseCommand {
       remote,
       branch
     ).init();
+
     this.ux.log(
-      "Confirm deployment settings for " + context[CONTEXT_KEY_NAME] + ":"
-    );
-    this.ux.log(
-      "(CloudCamp will make changes and push to your git repository)"
+      "Note: CloudCamp will update configuration files and push to your git repository."
     );
     this.ux.log("");
     if (!flags.yes) {

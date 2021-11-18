@@ -1,3 +1,5 @@
+import { version } from "./utils";
+
 /**
  * Language codes supported by CDK.
  */
@@ -96,21 +98,11 @@ export abstract class Language {
   abstract generateFiles(generator: IGenerator): Promise<void>;
 
   /**
-   * A list of patterns for .gitignore, relative to CAMP_HOME_DIR.
-   */
-  abstract get gitignorePatterns(): string[];
-
-  /**
    * The command CDK uses to synthesize.
    *
    * Note: This command is run in the project directory.
    */
   abstract get cdkAppCommand(): string;
-
-  /**
-   * Any additional files needed by the implementation, relative to CAMP_HOME_DIR.
-   */
-  abstract get additionalFiles(): { [key: string]: string };
 
   /**
    * Command to install dependencies
@@ -155,8 +147,7 @@ class TypescriptLanguage extends Language {
       JSON.stringify(
         {
           dependencies: {
-            "@cloudcamp/aws-runtime":
-              "/Users/markus/Code/cloudcamp/aws-runtime",
+            "@cloudcamp/aws-runtime": version(),
             "ts-node": "10.0.0",
           },
           devDependencies: {
@@ -169,29 +160,8 @@ class TypescriptLanguage extends Language {
     );
   }
 
-  get gitignorePatterns() {
-    return ["node_modules"];
-  }
-
   get cdkAppCommand() {
     return "npx ts-node --prefer-ts-exts src/app.ts";
-  }
-
-  get additionalFiles() {
-    return {
-      "package.json": JSON.stringify(
-        {
-          dependencies: {
-            "@cloudcamp/aws-runtime":
-              "/Users/markus/Code/cloudcamp/aws-runtime",
-            "ts-node": "10.0.0",
-            typescript: "4.4.4",
-          },
-        },
-        null,
-        2
-      ),
-    };
   }
 
   get installCommand() {
@@ -218,18 +188,8 @@ class PythonLanguage extends Language {
     generator.writeFileHome("requirements.txt", "cloudcamp\n");
   }
 
-  get gitignorePatterns(): string[] {
-    return [".venv", "*.py[cod]", "*$py.class"];
-  }
-
   get cdkAppCommand() {
     return "python3 src/camp.py";
-  }
-
-  get additionalFiles(): { [key: string]: string } {
-    return {
-      "requirements.txt": "cloudcamp",
-    };
   }
 
   get installCommand(): string {

@@ -147,13 +147,25 @@ export default class ShowStatus extends BaseCommand {
     setupAWS(home, flags.profile);
     let appName = getCdkJsonContext(home)[CONTEXT_KEY_NAME];
 
+    let form = (label: string, data: string) => {
+      let numSpaces =
+        Math.max(
+          "Deployment Status".length,
+          "Build Status".length,
+          "Git commit URL".length
+        ) +
+        2 -
+        label.length;
+      return label + ":" + " ".repeat(numSpaces) + data;
+    };
+
     this.ux.log("");
     while (true) {
       let deploymentStatus = await CloudFormation.getDeploymentStatus(appName);
       let deploymentStatusDescr = this.deploymentStatusDescr(deploymentStatus);
 
       if (deploymentStatus === undefined) {
-        this.ux.log("Deployment Status: \t", deploymentStatusDescr);
+        this.ux.log(form("Deployment Status", deploymentStatusDescr));
         return;
       }
 
@@ -161,17 +173,21 @@ export default class ShowStatus extends BaseCommand {
       let status = result.status;
       let descr = result.descr;
 
-      this.ux.log("Deployment Status: \t", deploymentStatusDescr);
+      if (result.latestCommitUrl) {
+        this.ux.log(form("Git commit URL", chalk.blue(result.latestCommitUrl)));
+      }
+
+      this.ux.log(form("Deployment Status", deploymentStatusDescr));
 
       if (!flags.wait && !flags.forever) {
-        this.ux.log("Build Status: \t\t", descr);
+        this.ux.log(form("Build Status", descr));
       } else {
         let prevPipelineStatus = status;
         let prevPipelineStatusDescr = descr;
         if (status != "InProgress") {
           descr = "⧗ Waiting";
         }
-        this.ux.start("Build Status: \t " + descr);
+        this.ux.start(form("Build Status", descr));
         while (true) {
           await new Promise((resolve, _reject) => setTimeout(resolve, 5000));
           let pipelineStatus = await this.getPipelineStatus(appName);
@@ -179,7 +195,7 @@ export default class ShowStatus extends BaseCommand {
           descr = pipelineStatus.descr;
 
           if (prevPipelineStatusDescr != descr) {
-            this.ux.update("Build Status: \t " + descr);
+            this.ux.update(form("Build Status", descr));
           }
           prevPipelineStatusDescr = descr;
 
@@ -191,9 +207,6 @@ export default class ShowStatus extends BaseCommand {
           }
           prevPipelineStatus = status;
         }
-      }
-      if (result.latestCommitUrl) {
-        this.ux.log("Git commit URL: \t", chalk.blue(result.latestCommitUrl));
       }
 
       if ((flags.wait || flags.forever) && flags.notify) {

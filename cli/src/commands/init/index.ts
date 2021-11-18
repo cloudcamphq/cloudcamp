@@ -1,16 +1,16 @@
 import _ from "lodash";
 import { flags } from "@oclif/command";
-import { BaseCommand } from "../command";
+import { BaseCommand } from "../../command";
 import { Language, LanguageCode } from "@cloudcamp/aws-runtime/src/language";
-import { Settings } from "../options/settings";
-import { NameInput } from "../options/name";
-import { LanguageChoice } from "../options/language";
+import { Settings } from "../../options/settings";
+import { NameInput } from "../../options/name";
+import { LanguageChoice } from "../../options/language";
 import { CAMP_HOME_DIR } from "@cloudcamp/aws-runtime/src/constants";
 import * as path from "path";
-import { resolveNewHome } from "../utils";
-import { Generator } from "../generator";
-import { DockerfileInput } from "../options/docker";
-import { PortInput } from "../options/port";
+import { resolveNewHome } from "../../utils";
+import { Generator } from "../../generator";
+import { DockerfileInput } from "../../options/docker";
+import { PortInput } from "../../options/port";
 /**
  * # Examples
  *
@@ -23,7 +23,7 @@ import { PortInput } from "../options/port";
  * @order 1
  */
 export default class Init extends BaseCommand {
-  static description = `Initialize a new CloudCamp project.
+  static description = `Initialize a new CloudCamp project based on Docker.
 Creates all files necessary for deploying a docker based app on AWS.`;
 
   static flags = {
