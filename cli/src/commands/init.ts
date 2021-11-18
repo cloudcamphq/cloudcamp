@@ -30,16 +30,16 @@ Creates all files necessary for deploying a docker based app on AWS.`;
     help: flags.help({ char: "h", description: "Show CLI help." }),
     name: flags.string({ char: "n", description: "The name of your app." }),
     home: flags.string({ description: "The app home directory." }),
+    /**
+     * This is some more documentation.
+     */
+    yes: flags.boolean({ description: "Accept the default choices." }),
     language: flags.string({
       char: "l",
       description: "The programming language to use.",
       options: Language.LANGUAGE_CODES,
       default: LanguageCode.TYPESCRIPT,
     }),
-    /**
-     * This is some more documentation.
-     */
-    yes: flags.boolean({ description: "Accept the default choices." }),
     dockerfile: flags.string({ description: "The path to a Dockerfile." }),
     port: flags.integer({
       default: 80,

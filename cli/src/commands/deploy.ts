@@ -30,6 +30,7 @@ import {
 } from "@cloudcamp/aws-runtime/src/constants";
 import { RepositoryHost } from "@cloudcamp/aws-runtime";
 import { resolveHome } from "../utils";
+import { AwsRegion } from "@cloudcamp/aws-runtime/src/types";
 
 /**
  * Deploy a CloudCamp app to AWS.
@@ -50,6 +51,11 @@ export default class Deploy extends BaseCommand {
     profile: flags.string({ char: "p", description: "The AWS profile name" }),
     home: flags.string({ description: "The home directory of your app." }),
     yes: flags.boolean({ description: "Accept default choices" }),
+    region: flags.string({
+      char: "r",
+      description: "The AWS region to deploy to.",
+      options: Object.values(AwsRegion),
+    }),
   };
 
   /**
@@ -63,7 +69,7 @@ export default class Deploy extends BaseCommand {
     await assumeAWSProfile(flags.profile);
 
     let credentials = new CredentialsInput(flags.profile);
-    let region = new RegionChoice(context[CONTEXT_KEY_REGION]);
+    let region = new RegionChoice(flags.region || context[CONTEXT_KEY_REGION]);
     let remote = new GitRemoteChoice(context[CONTEXT_KEY_REPOSITORY]);
     let branch = new BranchInput();
     let settings = await new Settings(

@@ -29,7 +29,7 @@ export class BranchInput extends Input<string> {
   async edit(ux: UX): Promise<void> {
     ux.log(
       chalk.cyan("❯"),
-      "To use another branch as main, change the branch in git."
+      "To use another branch, switch to the branch in git (i.e. run `git checkout <branchname>`)."
     );
     ux.log();
     await pressAnyKey();
