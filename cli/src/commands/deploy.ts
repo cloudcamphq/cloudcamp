@@ -183,11 +183,7 @@ export default class Deploy extends BaseCommand {
       keep = true;
     } else if (secretExists) {
       this.log("");
-      this.log(
-        ` ${chalk.red(
-          "›"
-        )} There already is a GitHub token associated with this app.`
-      );
+      this.log(` ${chalk.green("›")} Existing GitHub token found.`);
       this.log("");
 
       keep = await this.ux.confirm({

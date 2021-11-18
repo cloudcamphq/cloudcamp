@@ -1,7 +1,7 @@
 import _ from "lodash";
 import { flags } from "@oclif/command";
 import { BaseCommand } from "../../command";
-import { LanguageCode } from "@cloudcamp/aws-runtime/src/language";
+import { Language, LanguageCode } from "@cloudcamp/aws-runtime/src/language";
 import { Settings } from "../../options/settings";
 import { NameInput } from "../../options/name";
 import { LanguageChoice } from "../../options/language";
@@ -18,6 +18,12 @@ This copies the whole aws-runtime folder in its current state.`;
     help: flags.help({ char: "h", description: "Show CLI help." }),
     name: flags.string({ char: "n", description: "The name of your app." }),
     home: flags.string({ description: "The output directory of the app." }),
+    language: flags.string({
+      char: "l",
+      description: "The programming language to use.",
+      options: Language.LANGUAGE_CODES,
+      default: LanguageCode.TYPESCRIPT,
+    }),
     yes: flags.boolean({ description: "Accept the default choices." }),
   };
 
@@ -32,7 +38,7 @@ This copies the whole aws-runtime folder in its current state.`;
         ? path.basename(home)
         : undefined
     );
-    let language = new LanguageChoice(LanguageCode.TYPESCRIPT);
+    let language = new LanguageChoice(flags.language as LanguageCode);
     let settings = await new Settings(name, language).init();
 
     if (!flags.yes) {

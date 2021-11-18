@@ -1,7 +1,7 @@
 import _ from "lodash";
 import { flags } from "@oclif/command";
 import { BaseCommand } from "../command";
-import { LanguageCode } from "@cloudcamp/aws-runtime/src/language";
+import { Language, LanguageCode } from "@cloudcamp/aws-runtime/src/language";
 import { Settings } from "../options/settings";
 import { NameInput } from "../options/name";
 import { LanguageChoice } from "../options/language";
@@ -29,7 +29,13 @@ Creates all files necessary for deploying a docker based app on AWS.`;
   static flags = {
     help: flags.help({ char: "h", description: "Show CLI help." }),
     name: flags.string({ char: "n", description: "The name of your app." }),
-    home: flags.string({ description: "The output directory of the app." }),
+    home: flags.string({ description: "The app home directory." }),
+    language: flags.string({
+      char: "l",
+      description: "The programming language to use.",
+      options: Language.LANGUAGE_CODES,
+      default: LanguageCode.TYPESCRIPT,
+    }),
     /**
      * This is some more documentation.
      */
@@ -48,11 +54,10 @@ Creates all files necessary for deploying a docker based app on AWS.`;
 
     // if the user specified a home dir, be smart and use it as app name
     let name = new NameInput(
-      flags.name || (home && home != CAMP_HOME_DIR)
-        ? path.basename(home)
-        : undefined
+      flags.name ||
+        (home && home != CAMP_HOME_DIR ? path.basename(home) : undefined)
     );
-    let language = new LanguageChoice(LanguageCode.TYPESCRIPT);
+    let language = new LanguageChoice(flags.language as LanguageCode);
     let dockerfile = new DockerfileInput(flags.dockerfile);
     let port = new PortInput(flags.port);
     let settings = await new Settings(name, language, dockerfile, port).init();
