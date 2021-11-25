@@ -17,10 +17,6 @@ export class SourceTranslator {
     this.rosetta = RosettaTranslator.instance;
   }
 
-  hello() {
-    console.log("hi");
-  }
-
   public translate(source: string, languageCode: LanguageCode): string {
     switch (languageCode) {
       case LanguageCode.TYPESCRIPT:
