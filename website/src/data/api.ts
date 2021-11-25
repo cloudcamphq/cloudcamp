@@ -213,9 +213,6 @@ export async function createPages(createPage: any, graphql: any) {
   `);
 
   let nodes = sortedNodes(data.allApiDocs.nodes);
-  // for (let node of nodes) {
-  //   console.log("NODE", node.name, );
-  // }
   let links = makeLinks(nodes);
 
   nodes.forEach((node) => {
