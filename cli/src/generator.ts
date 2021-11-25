@@ -2,8 +2,10 @@ import * as fs from "fs";
 import * as path from "path";
 import { Language, LanguageCode } from "@cloudcamp/aws-runtime/src/language";
 import {
+  CloudCampProvider,
   CONTEXT_KEY_CLOUDCAMP_VERSION,
   CONTEXT_KEY_NAME,
+  CONTEXT_KEY_PROVIDER,
 } from "@cloudcamp/aws-runtime/src/constants";
 import { exec } from "child_process";
 import _ from "lodash";
@@ -139,6 +141,7 @@ export class Generator {
             "@aws-cdk/core:newStyleStackSynthesis": true,
             [CONTEXT_KEY_NAME]: this.name,
             [CONTEXT_KEY_CLOUDCAMP_VERSION]: version(),
+            [CONTEXT_KEY_PROVIDER]: CloudCampProvider.AwsCdk,
           },
         },
         null,
