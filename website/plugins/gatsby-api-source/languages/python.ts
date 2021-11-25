@@ -1,11 +1,5 @@
 import { Language } from "./language";
-import {
-  JsiiDefinition,
-  JsiiMethod,
-  JsiiParameter,
-  JsiiProperty,
-  JsiiType,
-} from "../api-source";
+import * as jsiispec from "@jsii/spec";
 let _ = require("lodash");
 
 export class Python extends Language {
@@ -28,12 +22,12 @@ export class Python extends Language {
     );
   }
 
-  translateType(type: JsiiType): string {
+  translateType(type: jsiispec.Type): string {
     if (type == undefined) {
       return "None";
     }
-    if (type.primitive) {
-      switch (type.primitive) {
+    if ((type as any).primitive) {
+      switch ((type as any).primitive) {
         case "void":
           return "None";
         case "number":
@@ -43,7 +37,7 @@ export class Python extends Language {
         case "boolean":
           return "bool";
         default:
-          return type.primitive;
+          return (type as any).primitive;
       }
     } else if (type.fqn) {
       if (!type.fqn.startsWith("@cloudcamp")) {
@@ -67,9 +61,9 @@ export class Python extends Language {
 
   propsTableHeader(
     className: string,
-    method: JsiiMethod,
-    param: JsiiParameter,
-    type: JsiiDefinition
+    method: jsiispec.Method,
+    param: jsiispec.Parameter,
+    type: jsiispec.Type
   ): string {
     let id = _.kebabCase(type.name);
     return `
@@ -79,21 +73,21 @@ export class Python extends Language {
     `;
   }
 
-  methodSignature(className: string, method: JsiiMethod): string {
+  methodSignature(className: string, method: jsiispec.Method): string {
     let paramsList = [];
-    let meths = method.initializer
+    let meths = (method as any).initializer
       ? `new ${className}`
       : _.snakeCase(method.name);
-    let rets = method.initializer
+    let rets = (method as any).initializer
       ? ""
-      : " -> " + this.translateType(method.returns?.type);
+      : " -> " + this.translateType((method as any).returns?.type);
 
     for (let param of method.parameters || []) {
       let argName = this.translateParameterName(param.name);
-      let typeName = this.translateType(param.type);
+      let typeName = this.translateType(param.type as any);
       if (
-        this.project.types[param.type.fqn] &&
-        this.project.types[param.type.fqn].kind == "interface"
+        this.assembly.types[(param.type as any).fqn] &&
+        this.assembly.types[(param.type as any).fqn].kind == "interface"
       ) {
         paramsList.push(`**kwargs: ${typeName}`);
       } else {
@@ -103,18 +97,21 @@ export class Python extends Language {
     return `${meths}(${paramsList.join(", ")})${rets}`;
   }
 
-  propertySignature(className: string, property: JsiiProperty): string {
+  propertySignature(className: string, property: jsiispec.Property): string {
     return `${property.static ? "static " : ""}${_.snakeCase(
       property.name
-    )}: ${this.translateType(property.type)}`;
+    )}: ${this.translateType(property.type as any)}`;
   }
 
-  simpleMethodSignature(className: string, method: JsiiMethod): string {
-    let meths = method.initializer ? `constructor` : method.name;
+  simpleMethodSignature(className: string, method: jsiispec.Method): string {
+    let meths = (method as any).initializer ? `constructor` : method.name;
     return `${meths}`;
   }
 
-  simplePropertySignature(className: string, property: JsiiProperty): string {
+  simplePropertySignature(
+    className: string,
+    property: jsiispec.Property
+  ): string {
     return property.name;
   }
 }

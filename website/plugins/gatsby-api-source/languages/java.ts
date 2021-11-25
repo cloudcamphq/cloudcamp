@@ -1,83 +1,9 @@
 import { Language } from "./language";
-import {
-  JsiiDefinition,
-  JsiiMethod,
-  JsiiParameter,
-  JsiiProperty,
-  JsiiType,
-} from "../api-source";
+import * as jsiispec from "@jsii/spec";
+
 let _ = require("lodash");
 
 export class Java extends Language {
-  translate(source: string): string {
-    let translation = super.translate(source);
-
-    // rosetta gives us type 'Object' fix this with a regex
-    let fixedSource = translation.replace(
-      /Object\s*(.*?)\s*=\s*new\s+(.*?)\(/g,
-      "$2 $1 = new $2("
-    );
-
-    // fix type annotations on method calls
-    fixedSource = fixedSource.replace(
-      /Object\s+(.*?)\s*=\s*(.*?)\.(.*?)\(/g,
-      (match, $1, $2, $3) => {
-        let method: JsiiMethod | undefined;
-
-        for (let klass of Object.values(this.project.types)) {
-          for (let meth of klass.methods || []) {
-            if (meth.name == $3) {
-              method = meth;
-              break;
-            }
-          }
-          if (method) {
-            break;
-          }
-        }
-
-        if (!method) {
-          return match;
-        }
-
-        let returnType: string;
-        if (method.returns?.type.fqn) {
-          returnType = method.returns.type.fqn.split(".")[1];
-        } else {
-          return match;
-        }
-
-        return `${returnType} ${$1} = ${$2}.${$3}(`;
-      }
-    );
-
-    // fix setters
-    fixedSource = fixedSource.replace(
-      /(.*?)\.get(.*?)\(\)\s+=\s+(.*?);/g,
-      (match, $1, $2, $3) => {
-        return `${$1}.set${$2}(${$3});`;
-      }
-    );
-
-    // fix builders
-    fixedSource = fixedSource.replace(
-      /new\s+([a-zA-Z0-9]*?)\(\)((\s*\.[a-zA-Z0-9]*?\(.*?\))*)/gms,
-      (match, $1, $2) => {
-        let fqn = `@cloudcamp/aws-runtime.${$1}`;
-        if (
-          this.project.types[fqn] &&
-          this.project.types[fqn].kind == "interface"
-        ) {
-          return `new ${$1}.Builder()${$2}.build()`;
-        } else {
-          return match;
-        }
-      }
-    );
-
-    return fixedSource;
-  }
-
   usage(className: string) {
     return `import cloudcamp.aws.runtime.${className};`;
   }
@@ -95,9 +21,9 @@ export class Java extends Language {
 
   propsTableHeader(
     className: string,
-    method: JsiiMethod,
-    param: JsiiParameter,
-    type: JsiiDefinition
+    method: jsiispec.Method,
+    param: jsiispec.Parameter,
+    type: jsiispec.Type
   ): string {
     let id = _.kebabCase(type.name);
     return `
@@ -109,9 +35,9 @@ export class Java extends Language {
 
   propsTable(
     className: string,
-    method: JsiiMethod,
-    param: JsiiParameter,
-    type: JsiiDefinition
+    method: jsiispec.Method,
+    param: jsiispec.Parameter,
+    type: jsiispec.ClassType | jsiispec.InterfaceType
   ): string {
     let tbody = type.properties
       .map(
@@ -119,7 +45,7 @@ export class Java extends Language {
       <tr class="${ix % 2 == 0 ? "bg-gray-50" : ""}">
         <td class="px-6 py-2 border font-mono text-sm whitespace-nowrap">${
           prop.name
-        } (${this.translateType(prop.type)} ${prop.name})</td>
+        } (${this.translateType(prop.type as any)} ${prop.name})</td>
         <td class="px-6 py-2 border">
          ${prop.docs?.summary || ""}
         </td>
@@ -152,35 +78,35 @@ export class Java extends Language {
       `;
   }
 
-  methodSignature(className: string, method: JsiiMethod): string {
+  methodSignature(className: string, method: jsiispec.Method): string {
     let argsList = [];
 
-    let meths = method.initializer ? `new ${className}` : method.name;
-    let rets = method.initializer
+    let meths = (method as any).initializer ? `new ${className}` : method.name;
+    let rets = (method as any).initializer
       ? ""
-      : this.translateType(method.returns?.type) + " ";
+      : this.translateType(method.returns?.type as any) + " ";
 
     for (let param of method.parameters || []) {
       let paramName = param.name;
-      let typeName = this.translateType(param.type);
+      let typeName = this.translateType(param.type as any);
 
       argsList.push(`${typeName} ${paramName}`);
     }
     return `${rets}${meths}(${argsList.join(", ")})`;
   }
 
-  translateType(type: JsiiType): string {
+  translateType(type: jsiispec.Type): string {
     if (type == undefined) {
       return "void";
     }
-    if (type.primitive) {
-      switch (type.primitive) {
+    if ((type as any).primitive) {
+      switch ((type as any).primitive) {
         case "number":
           return "int";
         case "string":
           return "String";
         default:
-          return type.primitive;
+          return (type as any).primitive;
       }
     } else if (type.fqn) {
       if (!type.fqn.startsWith("@cloudcamp")) {
@@ -198,18 +124,21 @@ export class Java extends Language {
     return "";
   }
 
-  propertySignature(className: string, property: JsiiProperty): string {
+  propertySignature(className: string, property: jsiispec.Property): string {
     return `${property.static ? "static " : ""}${this.translateType(
-      property.type
+      property.type as any
     )} get${_.upperFirst(property.name)}()`;
   }
 
-  simpleMethodSignature(className: string, method: JsiiMethod): string {
-    let meths = method.initializer ? `constructor` : method.name;
+  simpleMethodSignature(className: string, method: jsiispec.Method): string {
+    let meths = (method as any).initializer ? `constructor` : method.name;
     return `${meths}`;
   }
 
-  simplePropertySignature(className: string, property: JsiiProperty): string {
+  simplePropertySignature(
+    className: string,
+    property: jsiispec.Property
+  ): string {
     return `get${_.upperFirst(property.name)}`;
   }
 }

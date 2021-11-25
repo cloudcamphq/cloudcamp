@@ -1,17 +1,14 @@
-import {
-  JsiiDefinition,
-  JsiiMethod,
-  JsiiProperty,
-} from "../../plugins/gatsby-api-source/api-source";
-
+import * as jsiispec from "@jsii/spec";
 let _ = require("lodash");
 let path = require("path");
 
 export function sortedPropsAndMethods(
-  type: JsiiDefinition
-): (JsiiMethod | JsiiProperty)[] {
+  type: jsiispec.ClassType
+): (jsiispec.Method | jsiispec.Property)[] {
   let propsAndMethods = [
-    ...(type.initializer ? [type.initializer] : []),
+    ...(type.initializer
+      ? ([type.initializer] as jsiispec.Method[])
+      : ([] as jsiispec.Method[])),
     ...(type.properties || []),
     ...(type.methods || []),
   ];
@@ -21,7 +18,7 @@ export function sortedPropsAndMethods(
   return propsAndMethods;
 }
 
-function extractOnThisPage(type: JsiiDefinition) {
+function extractOnThisPage(type: jsiispec.ClassType) {
   let propsAndMethods = sortedPropsAndMethods(type);
 
   let onThisPage = [];
@@ -48,7 +45,7 @@ function extractOnThisPage(type: JsiiDefinition) {
         children: currentTopic,
       });
     }
-    let title = item.docs.simpleSignature;
+    let title = item.docs.custom.simpleSignature;
     if (item["parameters"] === undefined) {
       currentTopic.push({
         type: "P",
@@ -67,11 +64,11 @@ function extractOnThisPage(type: JsiiDefinition) {
   return onThisPage;
 }
 
-function makeSlug(node: JsiiDefinition) {
+function makeSlug(node: jsiispec.ClassType) {
   return _.kebabCase(node.name);
 }
 
-export function sortedNodes(nodes: JsiiDefinition[]) {
+export function sortedNodes(nodes: jsiispec.ClassType[]) {
   nodes = nodes.filter(
     (node) =>
       !(node.docs && node.docs.custom && node.docs.custom.ignore) &&
@@ -84,7 +81,7 @@ export function sortedNodes(nodes: JsiiDefinition[]) {
   return nodes;
 }
 
-function makeLinks(nodes: JsiiDefinition[]) {
+function makeLinks(nodes: jsiispec.ClassType[]) {
   let links = {};
   for (var i = 0; i < nodes.length; i++) {
     let node = nodes[i];
@@ -114,11 +111,11 @@ export async function createPages(createPage: any, graphql: any) {
             custom {
               ignore
               order
+              usage
             }
             remarks
             stability
             summary
-            usage
           }
           fqn
           initializer {
@@ -126,10 +123,10 @@ export async function createPages(createPage: any, graphql: any) {
               custom {
                 remarks
                 topic
+                signature
+                simpleSignature
               }
               summary
-              signature
-              simpleSignature
             }
             locationInModule {
               filename
@@ -154,10 +151,10 @@ export async function createPages(createPage: any, graphql: any) {
                 remarks
                 topic
                 ignore
+                signature
+                simpleSignature
               }
               remarks
-              signature
-              simpleSignature
               stability
               summary
             }
@@ -179,10 +176,10 @@ export async function createPages(createPage: any, graphql: any) {
                 remarks
                 topic
                 ignore
+                signature
+                simpleSignature
               }
               remarks
-              signature
-              simpleSignature
               stability
               summary
             }

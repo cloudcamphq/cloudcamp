@@ -9,9 +9,7 @@ import { exec } from "child_process";
 import _ from "lodash";
 import { version } from "./utils";
 import * as __vars__ from "./vars";
-import { Rosetta, TypeScriptSnippet } from "jsii-rosetta";
-import { Runtime } from "@cloudcamp/aws-runtime/src/runtime";
-import ts from "typescript";
+import { SourceTranslator } from "./assembly";
 let fsExtra = require("fs-extra");
 
 /**
@@ -76,20 +74,9 @@ export class Generator {
       withoutExt + Language.extensionForLanguageCode(this.languageCode);
     let data = fs.readFileSync(filename).toString();
     data = this.substituteVars(data, vars);
-    let result: string;
 
-    if (
-      this.languageCode != LanguageCode.JAVASCRIPT &&
-      this.languageCode != LanguageCode.TYPESCRIPT
-    ) {
-      result = this.translateRosetta(data, this.languageCode);
-    } else if (this.languageCode == LanguageCode.JAVASCRIPT) {
-      result = ts.transpileModule(data, {
-        compilerOptions: { module: ts.ModuleKind.CommonJS },
-      }).outputText;
-    } else {
-      result = data;
-    }
+    let trans = new SourceTranslator();
+    let result = trans.translate(data, this.languageCode);
     fs.writeFileSync(path.join(srcDir, target), result);
   }
 
@@ -165,31 +152,6 @@ export class Generator {
   public async installAndBuild() {
     await this.runAppDir(this.home, this.language.installCommand);
     await this.runAppDir(this.home, this.language.buildCommand);
-  }
-
-  /**
-   * Translate source code via jsii rosetta
-   */
-  private translateRosetta(source: string, languageCode: LanguageCode) {
-    let rosetta = new Rosetta({
-      liveConversion: true,
-      targetLanguages: [this.languageCode as any],
-    });
-    let assembly = JSON.parse(
-      fs.readFileSync(Runtime.jsiiAssemblyFile()).toString()
-    );
-    rosetta.addAssembly(assembly, Runtime.jsiiAssemblyDir());
-    const code: TypeScriptSnippet = {
-      visibleSource: source,
-      where: "sample",
-    };
-    let result = rosetta.translateSnippet(code, languageCode as any);
-    if (result?.source) {
-      return !result.source.endsWith("\n")
-        ? result.source + "\n"
-        : result.source;
-    }
-    throw new Error("Could not translate source code:\n" + source);
   }
 
   private substituteVars(source: string, vars: any): string {

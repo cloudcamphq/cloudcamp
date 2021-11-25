@@ -2,37 +2,44 @@ let path = require("path");
 let fs = require("fs");
 let _ = require("lodash");
 let crypto = require("crypto");
+import * as jsiispec from "@jsii/spec";
 
-import {
-  JsiiApi,
-  JsiiDefinition,
-  JsiiMethod,
-  JsiiParameter,
-  JsiiProperty,
-  JsiiType,
-} from "../api-source";
-import { Rosetta } from "jsii-rosetta";
+import { SourceTranslator } from "../../../../cli/src/assembly";
 
 export abstract class Language {
   static LANGUAGE_CODES = ["ts", "javascript", "python", "csharp", "java"];
 
-  constructor(public languageCode: string, protected project: JsiiApi) {}
+  constructor(
+    public languageCode: string,
+    protected assembly: jsiispec.Assembly,
+    protected translator: SourceTranslator
+  ) {}
 
   translate(source: string): string {
-    return RosettaTranslation.instance.translate(this.languageCode, source);
+    let languageCode = this.languageCode;
+    if (this.languageCode == "ts") {
+      languageCode = "typescript";
+    }
+    return this.translator.translate(source, languageCode as any);
   }
 
   abstract usage(className: string): string;
 
-  abstract methodSignature(className: string, method: JsiiMethod): string;
+  abstract methodSignature(className: string, method: jsiispec.Method): string;
 
-  abstract propertySignature(className: string, property: JsiiProperty): string;
+  abstract propertySignature(
+    className: string,
+    property: jsiispec.Property
+  ): string;
 
-  abstract simpleMethodSignature(className: string, method: JsiiMethod): string;
+  abstract simpleMethodSignature(
+    className: string,
+    method: jsiispec.Method
+  ): string;
 
   abstract simplePropertySignature(
     className: string,
-    property: JsiiProperty
+    property: jsiispec.Property
   ): string;
 
   translateParameterName(paramName: string): string {
@@ -40,12 +47,12 @@ export abstract class Language {
   }
 
   // typescript/javascript implementation
-  translateType(type: JsiiType): string {
+  translateType(type?: jsiispec.Type): string {
     if (type == undefined) {
       return "void";
     }
-    if (type.primitive) {
-      return type.primitive;
+    if ((type as any).primitive) {
+      return (type as any).primitive;
     } else if (type.fqn) {
       if (!type.fqn.startsWith("@cloudcamp")) {
         return this.cdkDocsLink(type.fqn);
@@ -65,8 +72,8 @@ export abstract class Language {
   internalLink(fqn: string): string {
     let typeName = fqn.split(".")[1];
     if (
-      this.project.types[fqn] &&
-      this.project.types[fqn].kind == "interface"
+      this.assembly.types[fqn] &&
+      this.assembly.types[fqn].kind == "interface"
     ) {
       return `<a href="#${_.kebabCase(
         typeName
@@ -92,9 +99,9 @@ export abstract class Language {
 
   propsTableHeader(
     className: string,
-    method: JsiiMethod,
-    param: JsiiParameter,
-    type: JsiiDefinition
+    method: jsiispec.Method,
+    param: jsiispec.Parameter,
+    type: jsiispec.Type
   ): string {
     let id = _.kebabCase(type.name);
     return `
@@ -106,11 +113,11 @@ export abstract class Language {
 
   propsTable(
     className: string,
-    method: JsiiMethod,
-    param: JsiiParameter,
-    type: JsiiDefinition
+    method: jsiispec.Method,
+    param: jsiispec.Parameter,
+    type: jsiispec.ClassType | jsiispec.InterfaceType
   ): string {
-    let props: JsiiProperty[] = _.clone(type.properties);
+    let props: jsiispec.Property[] = _.clone(type.properties);
 
     props = props.sort((a, b) =>
       a.locationInModule.line > b.locationInModule.line ? 1 : -1
@@ -124,7 +131,7 @@ export abstract class Language {
           prop.name
         )}</td>
         <td class="px-6 py-2 border font-mono text-sm whitespace-nowrap">${this.translateType(
-          prop.type
+          (prop as any).type
         )}</td>
         <td class="px-6 py-2 border">
          ${prop.docs?.summary || ""}
@@ -150,76 +157,4 @@ export abstract class Language {
       </table>
       `;
   }
-}
-
-class RosettaTranslation {
-  private static JSII_ASSEMBLY_DIR = path.join(
-    __dirname,
-    "..",
-    "..",
-    "..",
-    "..",
-    "aws-runtime"
-  );
-  private static JSII_ASSEMBLY_FILE = path.join(
-    this.JSII_ASSEMBLY_DIR,
-    ".jsii"
-  );
-
-  private static INSTANCE: RosettaTranslation;
-  private rosetta: Rosetta;
-  private cache: Map<string, string>;
-
-  private constructor() {
-    this.cache = new Map();
-    this.rosetta = new Rosetta({
-      liveConversion: true,
-      targetLanguages: Language.LANGUAGE_CODES.filter(
-        (l) => l != "ts" && l != "javascript"
-      ) as any,
-      loose: false,
-      includeCompilerDiagnostics: true,
-    });
-    let assembly = JSON.parse(
-      fs.readFileSync(RosettaTranslation.JSII_ASSEMBLY_FILE).toString()
-    );
-    this.rosetta.addAssembly(assembly, RosettaTranslation.JSII_ASSEMBLY_DIR);
-  }
-
-  public static get instance(): RosettaTranslation {
-    if (!RosettaTranslation.INSTANCE) {
-      RosettaTranslation.INSTANCE = new RosettaTranslation();
-    }
-    return RosettaTranslation.INSTANCE;
-  }
-
-  public translate(language: string, source: string): string {
-    const hash = crypto
-      .createHash("md5")
-      .update(language)
-      .update(source)
-      .digest("hex");
-
-    if (this.cache.has(hash)) {
-      return this.cache.get(hash);
-    }
-
-    const code = {
-      visibleSource: source,
-      where: "sample",
-    };
-    let result = this.rosetta.translateSnippet(code, language as any);
-    if (result?.source) {
-      let translation = !result.source.endsWith("\n")
-        ? result.source + "\n"
-        : result.source;
-      this.cache.set(hash, translation);
-      return translation;
-    }
-    throw new Error("Could not translate source code:\n" + source);
-  }
-}
-
-export function manuallyHideCode(source: string) {
-  return source.replace(new RegExp("void 0;(.*?)void 'show';", "gms"), "");
 }

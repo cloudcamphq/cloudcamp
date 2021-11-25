@@ -2,23 +2,20 @@ import { graphql, Link } from "gatsby";
 import React, { useContext } from "react";
 import SidebarLayout from "../components/SidebarLayout";
 import HtmlWithCode from "../components/Code";
-import {
-  JsiiDefinition,
-  JsiiMethod,
-  JsiiProperty,
-  JsiiParameter,
-} from "../../plugins/gatsby-api-source/api-source";
 import _ from "lodash";
 import Header from "../components/Header";
 import Main from "../components/Main";
 import Footer from "../components/Footer";
 import { Context } from "../components/Store";
+import * as jsiispec from "@jsii/spec";
 
 function sortedPropsAndMethods(
-  type: JsiiDefinition
-): (JsiiMethod | JsiiProperty)[] {
+  type: jsiispec.ClassType
+): (jsiispec.Method | jsiispec.Property)[] {
   let propsAndMethods = [
-    ...(type.initializer ? [type.initializer] : []),
+    ...(type.initializer
+      ? ([type.initializer] as jsiispec.Method[])
+      : ([] as jsiispec.Method[])),
     ...(type.properties || []),
     ...(type.methods || []),
   ];
@@ -33,7 +30,7 @@ export default function Api({
   pageContext,
 }: {
   data: {
-    apiDocs: JsiiDefinition;
+    apiDocs: jsiispec.ClassType;
   };
   pageContext: any;
 }) {
@@ -55,7 +52,7 @@ export default function Api({
 
 Api.Layout = SidebarLayout;
 
-function ApiType(props: { type: JsiiDefinition }) {
+function ApiType(props: { type: jsiispec.ClassType }) {
   let propsAndMethods = sortedPropsAndMethods(props.type);
 
   return (
@@ -77,7 +74,7 @@ function ApiType(props: { type: JsiiDefinition }) {
       <div className="space-y-6">
         <H2Link title="Usage">Usage</H2Link>
       </div>
-      <HtmlWithCode html={props.type.docs.usage} />
+      <HtmlWithCode html={props.type.docs.custom.usage} />
 
       {props.type.docs.summary && (
         <div className="space-y-6">
@@ -92,13 +89,13 @@ function ApiType(props: { type: JsiiDefinition }) {
           <ApiProperty
             key={props.type.name + "-" + item.name}
             klass={props.type.name}
-            property={item as JsiiProperty}
+            property={item as jsiispec.Property}
           />
         ) : (
           <ApiMethod
             key={props.type.name + "-" + item.name}
             className={props.type.name}
-            meth={item as JsiiMethod}
+            meth={item as jsiispec.Method}
           />
         )
       )}
@@ -124,7 +121,7 @@ function H2Link(props: { title: string; children: any }) {
   );
 }
 
-function ApiProperty(props: { klass: string; property: JsiiProperty }) {
+function ApiProperty(props: { klass: string; property: jsiispec.Property }) {
   if (props.property.docs.custom.ignore) {
     return null;
   }
@@ -153,7 +150,7 @@ function ApiProperty(props: { klass: string; property: JsiiProperty }) {
             </span>
             <HtmlWithCode
               className="inline text-purple-900 font-bold"
-              html={props.property.docs.signature}
+              html={props.property.docs.custom.signature}
             />
           </a>
         </h3>
@@ -174,7 +171,7 @@ function ApiProperty(props: { klass: string; property: JsiiProperty }) {
   );
 }
 
-function ApiMethod(props: { className: string; meth: JsiiMethod }) {
+function ApiMethod(props: { className: string; meth: jsiispec.Method }) {
   if (props.meth.docs.custom.ignore) {
     return null;
   }
@@ -225,7 +222,7 @@ function ApiMethod(props: { className: string; meth: JsiiMethod }) {
             </span>
             <HtmlWithCode
               className="inline text-purple-900 font-bold"
-              html={props.meth.docs.signature}
+              html={props.meth.docs.custom.signature}
             />
           </a>
         </h3>
@@ -241,11 +238,13 @@ function ApiMethod(props: { className: string; meth: JsiiMethod }) {
           ))}
         </ul>
       )}
-      {props.meth.docs?.propsTable && (
+      {props.meth.docs?.custom.propsTable && (
         <>
           <div
             className="space-y-6"
-            dangerouslySetInnerHTML={{ __html: props.meth.docs?.propsTable }}
+            dangerouslySetInnerHTML={{
+              __html: props.meth.docs?.custom.propsTable,
+            }}
           />
         </>
       )}
@@ -256,7 +255,7 @@ function ApiMethod(props: { className: string; meth: JsiiMethod }) {
   );
 }
 
-function ApiArgument(props: { param: JsiiParameter }) {
+function ApiArgument(props: { param: jsiispec.Parameter }) {
   // @ts-ignore
   const [context] = useContext(Context);
   let language = context ? context.language : "ts";
@@ -310,11 +309,11 @@ export const query = graphql`
       docs {
         custom {
           ignore
+          usage
         }
         remarks
         stability
         summary
-        usage
       }
       fqn
       initializer {
@@ -322,12 +321,12 @@ export const query = graphql`
           custom {
             remarks
             topic
+            signature
+            simpleSignature
+            propsTable
           }
           remarks
           summary
-          signature
-          simpleSignature
-          propsTable
         }
         locationInModule {
           filename
@@ -352,10 +351,10 @@ export const query = graphql`
             remarks
             topic
             ignore
+            signature
+            simpleSignature
           }
           remarks
-          signature
-          simpleSignature
           stability
           summary
         }
@@ -377,13 +376,13 @@ export const query = graphql`
             remarks
             topic
             ignore
+            signature
+            simpleSignature
+            propsTable
           }
           remarks
-          signature
-          simpleSignature
           stability
           summary
-          propsTable
         }
         locationInModule {
           filename

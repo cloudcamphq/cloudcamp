@@ -40,61 +40,63 @@ export default function Command({
     });
   }
   return (
-    <div className="leading-7">
+    <>
       <Header
         title={data.commandDocs.name + " command"}
         canonical={"/docs/" + _.kebabCase(data.commandDocs.name)}
       />
       <Main>
-        <h1 className="font-display text-4xl font-bold flex items-center">
-          camp {data.commandDocs.name}
-        </h1>
-        <p className="border-b pb-5 border-gray-200">
-          {data.commandDocs.summary}
-        </p>
-        <div className="space-y-6">
-          <H2Link title="Usage">Usage</H2Link>
-        </div>
-        <HtmlWithCode html={usage} />
-        <div className="space-y-6">
-          <H2Link title="Arguments">Arguments</H2Link>
-        </div>
-        {data.commandDocs.flags.length === 0 && (
-          <p>This command takes no arguments</p>
-        )}
-
-        {data.commandDocs.flags.length !== 0 && (
+        <div className="space-y-6 leading-7">
+          <h1 className="font-display text-4xl font-bold flex items-center">
+            camp {data.commandDocs.name}
+          </h1>
+          <p className="border-b pb-5 border-gray-200">
+            {data.commandDocs.summary}
+          </p>
           <div className="space-y-6">
-            {data.commandDocs.flags.map((flag) => (
-              <div key={flag.name} className="space-y-6">
-                <h2 id={_.kebabCase(flag.name)}>
-                  <a href={"#" + _.kebabCase(flag.name)}>
-                    <div className="flex">
-                      {flag.char && (
-                        <div className="bg-purple-100 rounded-md p-0.5 px-1 border border-purple-200 text-sm font-mono text-purple-900 whitespace-nowrap mr-3">
-                          {"-" + flag.char + ", "}
-                        </div>
-                      )}
-                      <div className="bg-purple-100 rounded-md p-0.5 px-1 border border-purple-200 text-sm font-mono text-purple-900 whitespace-nowrap">
-                        --{flag.name}
-                        {flag.type == "string" && "=" + flag.name}
-                      </div>
-                    </div>
-                  </a>
-                </h2>
-
-                {flag.description && <div>{flag.description}</div>}
-                {flag.overview && (
-                  <HtmlWithCode html={flag.overview} className="space-y-6" />
-                )}
-              </div>
-            ))}
+            <H2Link title="Usage">Usage</H2Link>
           </div>
-        )}
-        {html && <HtmlWithCode html={html} className="space-y-6" />}
+          <HtmlWithCode html={usage} />
+          <div className="space-y-6">
+            <H2Link title="Arguments">Arguments</H2Link>
+          </div>
+          {data.commandDocs.flags.length === 0 && (
+            <p>This command takes no arguments</p>
+          )}
+
+          {data.commandDocs.flags.length !== 0 && (
+            <div className="space-y-6">
+              {data.commandDocs.flags.map((flag) => (
+                <div key={flag.name} className="space-y-6">
+                  <h2 id={_.kebabCase(flag.name)}>
+                    <a href={"#" + _.kebabCase(flag.name)}>
+                      <div className="flex">
+                        {flag.char && (
+                          <div className="bg-purple-100 rounded-md p-0.5 px-1 border border-purple-200 text-sm font-mono text-purple-900 whitespace-nowrap mr-3">
+                            {"-" + flag.char + ", "}
+                          </div>
+                        )}
+                        <div className="bg-purple-100 rounded-md p-0.5 px-1 border border-purple-200 text-sm font-mono text-purple-900 whitespace-nowrap">
+                          --{flag.name}
+                          {flag.type == "string" && "=" + flag.name}
+                        </div>
+                      </div>
+                    </a>
+                  </h2>
+
+                  {flag.description && <div>{flag.description}</div>}
+                  {flag.overview && (
+                    <HtmlWithCode html={flag.overview} className="space-y-6" />
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+          {html && <HtmlWithCode html={html} className="space-y-6" />}
+        </div>
         <Footer links={pageContext.links} />
       </Main>
-    </div>
+    </>
   );
 }
 

@@ -85,9 +85,11 @@ export default class CommandSource {
     )[0] as any;
 
     let flags = [];
+    let flagsDefinitionProperties = flagsDefinition
+      ? (flagsDefinition.initializer as any).properties
+      : [];
 
-    for (let flagDefinition of (flagsDefinition.initializer as any)
-      .properties) {
+    for (let flagDefinition of flagsDefinitionProperties) {
       let flag = {};
       flag["name"] = flagDefinition.name.escapedText;
       flag["type"] = flagDefinition.initializer.expression.name.escapedText;

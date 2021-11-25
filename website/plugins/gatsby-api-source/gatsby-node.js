@@ -62,10 +62,10 @@ function apiDocs(node, actions, createNodeId, createContentDigest) {
   const { createNode } = actions;
   let project = JSON.parse(fs.readFileSync(node.absolutePath).toString());
   let apiSource = new ApiSource(project);
-  apiSource.generateApi();
+  apiSource.transform();
 
   let sortedTypes = _.sortBy(
-    Object.values(apiSource.api.types),
+    Object.values(apiSource.result.types),
     (item) => item.name
   );
 
