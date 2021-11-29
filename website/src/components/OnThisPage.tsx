@@ -89,7 +89,7 @@ export default function OnThisPage({ onThisPage }: { onThisPage: any }) {
               {item.children.length != 0 && (
                 <ul>
                   {item.children.map((child: any) => {
-                    if (child.type === "F") {
+                    if (!child.type) {
                       return (
                         <li className="relative" key={child.id}>
                           <Link
@@ -101,7 +101,7 @@ export default function OnThisPage({ onThisPage }: { onThisPage: any }) {
                                 : "text-gray-700 hover:bg-gray-100")
                             }
                           >
-                            <div className="py-2 pr-4 pl-7 font-mono whitespace-nowrap text-sm text-purple-900">
+                            <div className="py-2 pr-4 pl-7 whitespace-nowrap text-sm">
                               {child.title}
                             </div>
                           </Link>
@@ -138,12 +138,12 @@ export default function OnThisPage({ onThisPage }: { onThisPage: any }) {
                           className={
                             "text-sm rounded-md block " +
                             (activeId == child.id
-                              ? "text-indigo-800 font-medium"
+                              ? "text-indigo-800 font-semibold"
                               : "text-gray-700 hover:bg-gray-100")
                           }
                         >
                           <div
-                            className="py-2 pr-4 pl-11 font-mono whitespace-nowrap text-sm text-purple-900"
+                            className="py-2 pr-4 pl-11 font-mono whitespace-nowrap text-sm text-indigo-800"
                             dangerouslySetInnerHTML={{
                               __html: child.title,
                             }}

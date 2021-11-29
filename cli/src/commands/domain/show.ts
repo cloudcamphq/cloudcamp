@@ -5,7 +5,8 @@ import { cli } from "cli-ux";
 import chalk from "chalk";
 
 /**
- * @order 7
+ * @order 4
+ * @suborder 4
  */
 export default class ShowDomain extends BaseCommand {
   static description = `Show nameservers and certificate.`;

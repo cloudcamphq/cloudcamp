@@ -21,6 +21,7 @@ import { PortInput } from "../../options/port";
  * ```
  *
  * @order 1
+ * @suborder 1
  */
 export default class Init extends BaseCommand {
   static description = `Initialize a new CloudCamp project based on Docker.

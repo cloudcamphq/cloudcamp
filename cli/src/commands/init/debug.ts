@@ -9,7 +9,11 @@ import { CAMP_HOME_DIR } from "@cloudcamp/aws-runtime/src/constants";
 import * as path from "path";
 import { resolveNewHome } from "../../utils";
 import { Generator } from "../../generator";
-
+/**
+ * @order 1
+ * @suborder 1
+ * @ignore
+ */
 export default class InitDebug extends BaseCommand {
   static description = `Initialize a new CloudCamp project for debugging.
 This copies the whole aws-runtime folder in its current state.`;

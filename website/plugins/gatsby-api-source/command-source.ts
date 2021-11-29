@@ -23,8 +23,11 @@ interface FlagDefinition {
 
 export interface CommandDefinition {
   name: string;
+  group: string;
   summary: string;
   order?: string;
+  suborder?: string;
+  ignore: boolean;
   description?: string;
   flags: FlagDefinition[];
 }
@@ -46,9 +49,11 @@ export default class CommandSource {
   private parseFile(node: TsType.SourceFile, absolutePath: string) {
     let parts = absolutePath.split(path.sep);
     let name: string = path.basename(absolutePath, ".ts");
+    let group: string = name;
 
     if (parts[parts.length - 2] !== "commands") {
       name = parts[parts.length - 2] + ":" + name;
+      group = parts[parts.length - 2];
     }
 
     let klass: TsType.ClassDeclaration;
@@ -119,13 +124,23 @@ export default class CommandSource {
 
     let description = "";
     let order = undefined;
+    let suborder = undefined;
+    let ignore = false;
     if ((klass as any).jsDoc && (klass as any).jsDoc.length) {
       let jsdoc = (klass as any).jsDoc[0];
       if (jsdoc.comment) {
         description = jsdoc.comment;
       }
       if (jsdoc.tags && jsdoc.tags.length) {
-        order = jsdoc.tags[0].comment;
+        for (let tag of jsdoc.tags) {
+          if (tag.tagName.escapedText == "order") {
+            order = tag.comment;
+          } else if (tag.tagName.escapedText == "suborder") {
+            suborder = tag.comment;
+          } else if (tag.tagName.escapedText == "ignore") {
+            ignore = true;
+          }
+        }
       }
     }
 
@@ -139,6 +154,9 @@ export default class CommandSource {
       name: name,
       summary: summary,
       order: order,
+      suborder: suborder,
+      group: group,
+      ignore: ignore,
       description: description,
       flags: flags,
     };

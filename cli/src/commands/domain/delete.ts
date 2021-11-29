@@ -4,7 +4,8 @@ import { BaseCommand } from "../../command";
 import { cli } from "cli-ux";
 
 /**
- * @order 5
+ * @order 4
+ * @suborder 2
  */
 export default class DeleteDomain extends BaseCommand {
   static description = `Delete a domain.`;

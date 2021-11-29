@@ -3,7 +3,8 @@ import { assumeAWSProfile, CertificateManager } from "../../aws";
 import { BaseCommand } from "../../command";
 
 /**
- * @order 8
+ * @order 5
+ * @suborder 1
  */
 export default class CreateCert extends BaseCommand {
   static description = `Create a new SSL certificate.`;

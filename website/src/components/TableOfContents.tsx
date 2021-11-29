@@ -1,9 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link, graphql } from "gatsby";
 
 import _ from "lodash";
-import OnThisPage from "./OnThisPage";
-import { ArrowRightIcon, ArrowLeftIcon } from "@heroicons/react/outline";
 
 interface ApiNode {
   name: string;
@@ -14,6 +12,7 @@ interface ApiNode {
 
 interface CommandNode {
   name: string;
+  group: string;
   order?: string;
   numericOrder?: number;
 }
@@ -87,7 +86,17 @@ export default function TableOfContents({
     (node) => node.frontmatter.category == "operations-guide"
   );
 
-  let commandNodes: CommandNode[] = data.allCommandDocs.nodes;
+  let commandNodes: CommandNode[] = Object.values(
+    Object.values(_.groupBy(data.allCommandDocs.nodes, (n) => n.group)).map(
+      (n) => ({
+        name: n[0].group,
+        group: n[0].group,
+        order: n[0].order,
+        numericOrder: n[0].numericOrder,
+      })
+    )
+  );
+
   commandNodes = _.sortBy(commandNodes, (node) => node.name);
   commandNodes = _.sortBy(commandNodes, (node) =>
     node.order ? parseInt(node.order) : 1000
@@ -113,6 +122,7 @@ export default function TableOfContents({
         <ul>
           {gettingStarted.map((node) => (
             <TableOfContentsItem
+              key={node.frontmatter.slug}
               link={`/docs/${node.frontmatter.slug}`}
               uniqueKey={node.frontmatter.slug}
               title={node.frontmatter.title}
@@ -128,6 +138,7 @@ export default function TableOfContents({
         <ul>
           {operationsGuide.map((node) => (
             <TableOfContentsItem
+              key={node.frontmatter.slug}
               link={`/docs/${node.frontmatter.slug}`}
               uniqueKey={node.frontmatter.slug}
               title={node.frontmatter.title}
@@ -143,6 +154,7 @@ export default function TableOfContents({
         <ul>
           {apiNodes.map((node) => (
             <TableOfContentsItem
+              key={node.name}
               link={`/docs/api/${_.kebabCase(node.name)}`}
               uniqueKey={node.name}
               title={node.name}
@@ -158,6 +170,7 @@ export default function TableOfContents({
         <ul>
           {commandNodes.map((node) => (
             <TableOfContentsItem
+              key={node.name}
               link={`/docs/command/${_.kebabCase(node.name)}`}
               uniqueKey={node.name}
               title={node.name}
@@ -198,5 +211,6 @@ export const tocCommandDocsFields = graphql`
   fragment tocCommandDocsFields on CommandDocs {
     name
     order
+    group
   }
 `;

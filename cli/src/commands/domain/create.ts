@@ -5,6 +5,7 @@ import { cli } from "cli-ux";
 
 /**
  * @order 4
+ * @suborder 1
  */
 export default class CreateDomain extends BaseCommand {
   static description = `Create a domain.`;
@@ -13,7 +14,10 @@ export default class CreateDomain extends BaseCommand {
 
   static flags = {
     help: flags.help({ char: "h" }),
-    profile: flags.string({ char: "p", description: "The AWS profile name." }),
+    profile: flags.string({
+      char: "p",
+      description: "The name of the AWS profile.",
+    }),
   };
 
   async run() {

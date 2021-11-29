@@ -5,14 +5,18 @@ import { cli } from "cli-ux";
 import chalk from "chalk";
 
 /**
- * @order 6
+ * @order 4
+ * @suborder 3
  */
 export default class ListDomain extends BaseCommand {
   static description = `List domains.`;
 
   static flags = {
     help: flags.help({ char: "h" }),
-    profile: flags.string({ char: "p", description: "The AWS profile name." }),
+    profile: flags.string({
+      char: "p",
+      description: "The name of the AWS profile.",
+    }),
   };
 
   async run() {
