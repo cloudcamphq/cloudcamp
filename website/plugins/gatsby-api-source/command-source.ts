@@ -21,6 +21,11 @@ interface FlagDefinition {
   overview?: string;
 }
 
+interface ArgDefinition {
+  name: string;
+  description?: string;
+}
+
 export interface CommandDefinition {
   name: string;
   group: string;
@@ -30,6 +35,7 @@ export interface CommandDefinition {
   ignore: boolean;
   description?: string;
   flags: FlagDefinition[];
+  args: ArgDefinition[];
 }
 
 export default class CommandSource {
@@ -84,6 +90,30 @@ export default class CommandSource {
     )[0];
 
     let summary = descriptionDefinition.initializer.text;
+
+    let argsDefinition: TsType.VariableDeclaration = klass.members.filter(
+      (member) => member.name && (member.name as any).escapedText === "args"
+    ) as any;
+    if (argsDefinition) {
+      argsDefinition = argsDefinition[0];
+    }
+
+    let args = [];
+    if (argsDefinition) {
+      let argsDefinitionElements =
+        (argsDefinition.initializer as any).elements || [];
+      let arg = {};
+      for (let argDefinition of argsDefinitionElements) {
+        for (let prop of argDefinition.properties) {
+          if (prop.name.escapedText == "name") {
+            arg["name"] = prop.initializer.text;
+          } else if (prop.name.escapedText == "description") {
+            arg["description"] = prop.initializer.text;
+          }
+        }
+      }
+      args.push(arg);
+    }
 
     let flagsDefinition: TsType.VariableDeclaration = klass.members.filter(
       (member) => member.name && (member.name as any).escapedText === "flags"
@@ -159,6 +189,7 @@ export default class CommandSource {
       ignore: ignore,
       description: description,
       flags: flags,
+      args: args,
     };
   }
 }

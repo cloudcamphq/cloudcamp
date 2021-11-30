@@ -47,6 +47,7 @@ Command.Layout = SidebarLayout;
 
 function CommandItem(props: { command: CommandDefinition }) {
   let command = props.command;
+  console.log(command);
   let name = command.name;
   if (name.includes(":") && name.split(":")[1] == "index") {
     name = name.split(":")[0];
@@ -54,7 +55,9 @@ function CommandItem(props: { command: CommandDefinition }) {
   let id = _.kebabCase(name);
   let usage = `
     <div class="gatsby-highlight" data-language="bash">
-      <pre class="language-bash"><code class="language-bash">$ <span class="token function">camp</span> ${command.name}</code></pre>
+      <pre class="language-bash"><code class="language-bash">$ <span class="token function">camp</span> ${name}${
+    command.args && " " + command.args.map((a) => a.name).join(" ")
+  }</code></pre>
     </div>
   `;
   let html = command.description;
@@ -96,10 +99,37 @@ function CommandItem(props: { command: CommandDefinition }) {
           Arguments
         </H2Link>
       </div>
-      {command.flags.length === 0 && <p>This command takes no arguments</p>}
+      {command.flags.length === 0 && command.args.length === 0 && (
+        <p>This command takes no arguments</p>
+      )}
 
-      {command.flags.length !== 0 && (
+      {command.args.length !== 0 && (
         <div className="space-y-6">
+          {command.args.map((arg) => (
+            <div key={arg.name} className="space-y-6">
+              <h2 id={id + "-" + _.kebabCase(arg.name)}>
+                <a href={"#" + id + "-" + _.kebabCase(arg.name)}>
+                  <div className="flex items-center mb-1">
+                    <div
+                      className="rounded-md text-sm font-mono font-semibold whitespace-nowrap mr-3"
+                      style={{
+                        color: "rgb(214, 50, 0)",
+                      }}
+                    >
+                      {arg.name}
+                    </div>
+                  </div>
+                </a>
+                {arg.description && <div className="">{arg.description}</div>}
+                {/* {flag.overview && (
+                    <HtmlWithCode
+                      html={flag.overview}
+                      className="space-y-6 mt-1 "
+                    />
+                  )} */}
+              </h2>
+            </div>
+          ))}
           {command.flags
             .filter((f) => f.name != "help")
             .map((flag) => (
@@ -184,6 +214,10 @@ export const query = graphql`
         ignore
         summary
         description
+        args {
+          name
+          description
+        }
         flags {
           char
           default

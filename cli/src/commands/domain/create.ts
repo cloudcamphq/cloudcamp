@@ -10,7 +10,12 @@ import { cli } from "cli-ux";
 export default class CreateDomain extends BaseCommand {
   static description = `Create a domain.`;
 
-  static args = [{ name: "domain" }];
+  static args = [
+    {
+      name: "domain",
+      description: "The domain name to create NS entries for.",
+    },
+  ];
 
   static flags = {
     help: flags.help({ char: "h" }),
