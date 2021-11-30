@@ -31,7 +31,7 @@ export class CSharp extends Language {
     );
   }
 
-  translateType(type: jsiispec.Type): string {
+  translateType(methodName: string, type: jsiispec.Type): string {
     if (type == undefined) {
       return "void";
     }
@@ -50,7 +50,18 @@ export class CSharp extends Language {
       if (!type.fqn.startsWith("@cloudcamp")) {
         return this.cdkDocsLink(type.fqn);
       } else {
-        return this.internalLink(type.fqn);
+        return this.internalLink(methodName, type.fqn);
+      }
+    } else if (
+      (type as any).collection &&
+      (type as any).collection.kind == "array" &&
+      (type as any).collection.elementtype?.fqn
+    ) {
+      let fqn = (type as any).collection.elementtype.fqn;
+      if (!fqn.startsWith("@cloudcamp")) {
+        return this.cdkDocsLink(fqn) + "[]";
+      } else {
+        return this.internalLink(methodName, fqn) + "[]";
       }
     } else if (
       _.isEqual(type, {
@@ -58,6 +69,12 @@ export class CSharp extends Language {
       })
     ) {
       return "Dictionary&lt;string, string&gt;";
+    } else if (
+      _.isEqual(type, {
+        collection: { elementtype: { primitive: "string" }, kind: "array" },
+      })
+    ) {
+      return "string[]";
     }
     return "";
   }
@@ -70,14 +87,14 @@ export class CSharp extends Language {
       : _.upperFirst(method.name);
     let rets = (method as any).initializer
       ? ""
-      : this.translateType(method.returns?.type as any) + " ";
+      : this.translateType(method.name, method.returns?.type as any) + " ";
 
     for (let param of method.parameters || []) {
       let paramName = param.name;
       if (param.optional) {
         paramName += "?";
       }
-      let typeName = this.translateType(param.type as any);
+      let typeName = this.translateType(method.name, param.type as any);
 
       argsList.push(`${paramName}: ${typeName}`);
     }
@@ -86,6 +103,7 @@ export class CSharp extends Language {
 
   propertySignature(className: string, property: jsiispec.Property): string {
     return `${property.static ? "static " : ""}${this.translateType(
+      property.name,
       property.type as any
     )} ${_.upperFirst(property.name)}`;
   }

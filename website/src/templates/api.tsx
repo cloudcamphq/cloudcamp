@@ -202,7 +202,7 @@ function ApiMethod(props: { className: string; meth: jsiispec.Method }) {
           html={props.meth.docs.custom.remarks}
         />
       )}
-      <div className="font-mono flex items-center">
+      <div className="font-mono flex items-center whitespace-nowrap overflow-x-auto">
         <h3 id={_.kebabCase(props.meth.name ? props.meth.name : "constructor")}>
           <a
             href={`#${_.kebabCase(
@@ -241,7 +241,7 @@ function ApiMethod(props: { className: string; meth: jsiispec.Method }) {
       {props.meth.docs?.custom.propsTable && (
         <>
           <div
-            className="space-y-6"
+            className="space-y-6 leading-7 overflow-x-auto"
             dangerouslySetInnerHTML={{
               __html: props.meth.docs?.custom.propsTable,
             }}
@@ -263,19 +263,31 @@ function ApiArgument(props: { param: jsiispec.Parameter }) {
   return (
     <li>
       <span>
-        <span className="font-mono text-sm bg-purple-100 text-purple-900 border border-purple-200 p-0.5 pl-1 pr-1 rounded-md mr-3">
+        <span
+          className="font-mono font-semibold text-sm whitespace-nowrap mr-3"
+          style={{
+            color: "rgb(214, 50, 0)",
+          }}
+        >
           {props.param.name == "props" && language == "python"
             ? "**kwargs"
             : props.param.name}
         </span>
       </span>
-      <HtmlWithCode
-        className="space-y-6 inline"
-        html={props.param.docs.summary}
-      />
+      {props.param.docs.summary && (
+        <HtmlWithCode
+          className="space-y-6 inline"
+          html={props.param.docs.summary}
+        />
+      )}
       {props.param.optional &&
         !_.lowerCase(props.param.docs.summary).includes("optional") && (
-          <span className="ml-1 font-mono text-purple-900 text-xs">
+          <span
+            className="ml-1 font-mono text-xs"
+            style={{
+              color: "rgb(214, 50, 0)",
+            }}
+          >
             * Optional
           </span>
         )}

@@ -47,7 +47,7 @@ export abstract class Language {
   }
 
   // typescript/javascript implementation
-  translateType(type?: jsiispec.Type): string {
+  translateType(methodName: string, type?: jsiispec.Type): string {
     if (type == undefined) {
       return "void";
     }
@@ -57,7 +57,18 @@ export abstract class Language {
       if (!type.fqn.startsWith("@cloudcamp")) {
         return this.cdkDocsLink(type.fqn);
       } else {
-        return this.internalLink(type.fqn);
+        return this.internalLink(methodName, type.fqn);
+      }
+    } else if (
+      (type as any).collection &&
+      (type as any).collection.kind == "array" &&
+      (type as any).collection.elementtype?.fqn
+    ) {
+      let fqn = (type as any).collection.elementtype.fqn;
+      if (!fqn.startsWith("@cloudcamp")) {
+        return this.cdkDocsLink(fqn) + "[]";
+      } else {
+        return this.internalLink(methodName, fqn) + "[]";
       }
     } else if (
       _.isEqual(type, {
@@ -65,19 +76,27 @@ export abstract class Language {
       })
     ) {
       return "[key: string]: string";
+    } else if (
+      _.isEqual(type, {
+        collection: { elementtype: { primitive: "string" }, kind: "array" },
+      })
+    ) {
+      return "string[]";
+    } else {
+      console.log("unknown", type);
     }
     return "";
   }
 
-  internalLink(fqn: string): string {
+  internalLink(methodName: string, fqn: string): string {
     let typeName = fqn.split(".")[1];
     if (
       this.assembly.types[fqn] &&
       this.assembly.types[fqn].kind == "interface"
     ) {
-      return `<a href="#${_.kebabCase(
-        typeName
-      )}" class="signature-type">${typeName}</a>`;
+      return `<a href="#${
+        _.kebabCase(methodName) + "-" + _.kebabCase(typeName)
+      }" class="signature-type">${typeName}</a>`;
     } else {
       return `<a href="/docs/api/${_.kebabCase(
         typeName
@@ -103,10 +122,10 @@ export abstract class Language {
     param: jsiispec.Parameter,
     type: jsiispec.Type
   ): string {
-    let id = _.kebabCase(type.name);
+    let id = _.kebabCase(method.name) + "-" + _.kebabCase(type.name);
     return `
-    <h4 class="text-xl ml-6 font-bold mb-6 font-display">
-      <a href="#${id}">${type.name}</a>
+    <h4 class="text-xl ml-6 font-bold mt-6 mb-6 font-display">
+      <a href="#${id}" id="${id}">${type.name}</a>
     </h4>
     `;
   }
@@ -131,6 +150,7 @@ export abstract class Language {
           prop.name
         )}</td>
         <td class="px-6 py-2 border font-mono text-sm whitespace-nowrap">${this.translateType(
+          method.name,
           (prop as any).type
         )}</td>
         <td class="px-6 py-2 border">

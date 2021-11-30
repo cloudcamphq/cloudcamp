@@ -11,14 +11,14 @@ export class TypeScript extends Language {
     let meths = (method as any).initializer ? `new ${className}` : method.name!;
     let rets = (method as any).initializer
       ? ""
-      : ": " + this.translateType(method.returns?.type as any);
+      : ": " + this.translateType(method.name, method.returns?.type as any);
 
     for (let param of method.parameters || []) {
       let paramName = param.name;
       if (param.optional) {
         paramName += "?";
       }
-      let typeName = this.translateType(param.type as any);
+      let typeName = this.translateType(method.name, param.type as any);
       argsList.push(`${paramName}: ${typeName}`);
     }
     return `${meths}(${argsList.join(", ")})${rets}`;
@@ -27,7 +27,7 @@ export class TypeScript extends Language {
   propertySignature(className: string, property: jsiispec.Property): string {
     return `${property.static ? "static " : ""}${
       property.name
-    }: ${this.translateType(property.type as any)}`;
+    }: ${this.translateType(property.name, property.type as any)}`;
   }
 
   simpleMethodSignature(className: string, method: jsiispec.Method): string {

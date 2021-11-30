@@ -22,7 +22,7 @@ export class Python extends Language {
     );
   }
 
-  translateType(type: jsiispec.Type): string {
+  translateType(methodName: string, type: jsiispec.Type): string {
     if (type == undefined) {
       return "None";
     }
@@ -43,7 +43,18 @@ export class Python extends Language {
       if (!type.fqn.startsWith("@cloudcamp")) {
         return this.cdkDocsLink(type.fqn);
       } else {
-        return this.internalLink(type.fqn);
+        return this.internalLink(methodName, type.fqn);
+      }
+    } else if (
+      (type as any).collection &&
+      (type as any).collection.kind == "array" &&
+      (type as any).collection.elementtype?.fqn
+    ) {
+      let fqn = (type as any).collection.elementtype.fqn;
+      if (!fqn.startsWith("@cloudcamp")) {
+        return "list[" + this.cdkDocsLink(fqn) + "]";
+      } else {
+        return "list[" + this.internalLink(methodName, fqn) + "]";
       }
     } else if (
       _.isEqual(type, {
@@ -51,6 +62,12 @@ export class Python extends Language {
       })
     ) {
       return "Dict[str, str]";
+    } else if (
+      _.isEqual(type, {
+        collection: { elementtype: { primitive: "string" }, kind: "array" },
+      })
+    ) {
+      return "list[str]";
     }
     return "";
   }
@@ -65,10 +82,10 @@ export class Python extends Language {
     param: jsiispec.Parameter,
     type: jsiispec.Type
   ): string {
-    let id = _.kebabCase(type.name);
+    let id = _.kebabCase(method.name) + "-" + _.kebabCase(type.name);
     return `
-    <h4 class="text-xl ml-6 font-bold mb-6 font-display">
-      <a href="#${id}">**kwargs</a>
+    <h4 class="text-xl ml-6 font-bold mt-6 mb-6 font-display">
+      <a href="#${id}" id="${id}">**kwargs</a>
     </h4>
     `;
   }
@@ -80,11 +97,11 @@ export class Python extends Language {
       : _.snakeCase(method.name);
     let rets = (method as any).initializer
       ? ""
-      : " -> " + this.translateType((method as any).returns?.type);
+      : " -> " + this.translateType(method.name, (method as any).returns?.type);
 
     for (let param of method.parameters || []) {
       let argName = this.translateParameterName(param.name);
-      let typeName = this.translateType(param.type as any);
+      let typeName = this.translateType(method.name, param.type as any);
       if (
         this.assembly.types[(param.type as any).fqn] &&
         this.assembly.types[(param.type as any).fqn].kind == "interface"
@@ -100,7 +117,7 @@ export class Python extends Language {
   propertySignature(className: string, property: jsiispec.Property): string {
     return `${property.static ? "static " : ""}${_.snakeCase(
       property.name
-    )}: ${this.translateType(property.type as any)}`;
+    )}: ${this.translateType(property.name, property.type as any)}`;
   }
 
   simpleMethodSignature(className: string, method: jsiispec.Method): string {

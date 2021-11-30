@@ -15,71 +15,6 @@ import {
   Java,
 } from "./languages";
 
-// export interface JsiiApi {
-//   types: {
-//     [key: string]: JsiiDefinition;
-//   };
-// }
-
-// export interface JsiiDefinition {
-//   name: string;
-//   base?: string;
-//   datatype?: true;
-//   kind: string;
-//   fqn: string;
-//   docs?: JsiiDoc;
-//   initializer?: JsiiMethod;
-//   methods?: JsiiMethod[];
-//   properties?: JsiiProperty[];
-// }
-
-// export interface JsiiDoc {
-//   stability?: string;
-//   summary?: string;
-//   remarks?: string;
-//   custom?: {
-//     topic?: string;
-//     remarks?: string;
-//     ignore?: "true";
-//     order?: string;
-//   };
-//   usage?: string;
-//   signature?: string;
-//   simpleSignature?: string;
-//   propsTable?: string;
-// }
-
-// export interface JsiiMethod {
-//   locationInModule: { line: number };
-//   name?: string;
-//   docs?: JsiiDoc;
-//   parameters?: JsiiParameter[];
-//   returns?: { type: JsiiType };
-//   static?: true;
-//   initializer?: true;
-// }
-
-// export interface JsiiProperty {
-//   name?: string;
-//   docs: JsiiDoc;
-//   immutable?: boolean;
-//   locationInModule: { line: number };
-//   type?: JsiiType;
-//   static?: true;
-// }
-
-// export interface JsiiParameter {
-//   name: string;
-//   optional?: true;
-//   docs?: JsiiDoc;
-//   type: JsiiType;
-// }
-
-// export interface JsiiType {
-//   fqn?: string;
-//   primitive?: string;
-// }
-
 loadLanguages(Language.LANGUAGE_CODES);
 
 export default class ApiSource {
@@ -165,6 +100,23 @@ export default class ApiSource {
     };
   }
 
+  private generatePropsAllLanguages(
+    className: string,
+    method: jsiispec.Method,
+    param: jsiispec.Parameter,
+    type: jsiispec.ClassType | jsiispec.InterfaceType
+  ): string {
+    let result = [
+      ...this.languages.map(
+        (lang) =>
+          `<span data-language="${lang.languageCode}">` +
+          lang.propsTable(className, method, param, type as any) +
+          "</span>"
+      ),
+    ].join("");
+    return result;
+  }
+
   generatePropsTable(
     className: string,
     method: jsiispec.Method
@@ -177,14 +129,56 @@ export default class ApiSource {
         return undefined;
       }
       if (type.kind == "interface") {
-        return [
-          ...this.languages.map(
-            (lang) =>
-              `<span data-language="${lang.languageCode}">` +
-              lang.propsTable(className, method, lastParam, type as any) +
-              "</span>"
-          ),
-        ].join("");
+        let result = this.generatePropsAllLanguages(
+          className,
+          method,
+          lastParam,
+          type as any
+        );
+
+        let types = {};
+        let typeNames = [];
+        let props: jsiispec.Property[] = _.clone(type.properties);
+
+        props = props.sort((a, b) =>
+          a.locationInModule.line > b.locationInModule.line ? 1 : -1
+        );
+
+        for (let prop of props || []) {
+          let type = this.assembly.types[(prop.type as any).fqn];
+          if (type && type.kind == "interface") {
+            if (!typeNames.includes(type.fqn)) {
+              types[type.fqn] = type;
+              typeNames.push(type.fqn);
+            }
+          } else if (
+            (prop.type as any)?.collection?.kind == "array" &&
+            (prop.type as any)?.collection?.elementtype?.fqn
+          ) {
+            let type =
+              this.assembly.types[
+                (prop.type as any)?.collection?.elementtype?.fqn
+              ];
+            if (type && type.kind == "interface") {
+              if (!typeNames.includes(type.fqn)) {
+                types[type.fqn] = type;
+                typeNames.push(type.fqn);
+              }
+            }
+          }
+        }
+
+        for (let typeName of typeNames) {
+          let type = types[typeName];
+          result += this.generatePropsAllLanguages(
+            className,
+            method,
+            lastParam,
+            type as any
+          );
+        }
+
+        return result;
       }
     }
     return undefined;

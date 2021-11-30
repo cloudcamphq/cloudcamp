@@ -1644,14 +1644,14 @@
   "schema": "jsii/0.10.0",
   "targets": {
     "dotnet": {
-      "iconUrl": "https://raw.githubusercontent.com/cloudcamphq/cloudcamp/master/nuget-icon.png",
+      "iconUrl": "https://raw.githubusercontent.com/cloudcamphq/cloudcamp/main/assets/img/nuget-icon.png",
       "namespace": "Cloudcamp.Aws.Runtime",
       "packageId": "Cloudcamp.Aws.Runtime"
     },
     "java": {
       "maven": {
-        "artifactId": "runtime",
-        "groupId": "cloudcamp.aws"
+        "artifactId": "aws-runtime",
+        "groupId": "com.cloudcamphq"
       },
       "package": "cloudcamp.aws.runtime"
     },
@@ -1890,7 +1890,7 @@
             },
             {
               "docs": {
-                "remarks": "If not specifed, cloudcamp will\ncreate and return an empty stage.",
+                "remarks": "If not specifed, CloudCamp will\ncreate and return an empty stage.",
                 "summary": "An optional stage object."
               },
               "name": "stage",
@@ -1940,7 +1940,7 @@
         {
           "docs": {
             "custom": {
-              "remarks": "Stages are responsible for building your stacks. By default,\ncloudcamp creates a stage for each stack and gives it the same name. You\ncan customize this behaviour by adding your own stages.",
+              "remarks": "Stages are responsible for building your stacks. By default,\nCloudCamp creates a stage for each stack and gives it the same name. You\ncan customize this behaviour by adding your own stages.",
               "topic": "Stages"
             },
             "remarks": "Stages can be obtained by their name to modify their attributes. A common\nuse case is to require manual approval to deploy to the production stage:\n\n```ts\nconst stage = app.getStage(\"production\");\nstage.needsManualApproval = true;\n```",
@@ -2022,7 +2022,7 @@
         {
           "docs": {
             "custom": {
-              "remarks": "To deploy resources to the cloud, they are added to a ``Stack``.\nCloudcamp comes with three default stacks:",
+              "remarks": "To deploy resources to the cloud, they are added to a ``Stack``.\nCloudCamp comes with three default stacks:",
               "topic": "Stacks"
             },
             "stability": "experimental",
@@ -2920,7 +2920,7 @@
       "kind": "interface",
       "locationInModule": {
         "filename": "src/webserver.ts",
-        "line": 118
+        "line": 154
       },
       "name": "MetricScalingProps",
       "properties": [
@@ -2932,7 +2932,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webserver.ts",
-            "line": 120
+            "line": 156
           },
           "name": "max",
           "type": {
@@ -2947,7 +2947,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webserver.ts",
-            "line": 119
+            "line": 155
           },
           "name": "min",
           "type": {
@@ -2962,7 +2962,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webserver.ts",
-            "line": 121
+            "line": 157
           },
           "name": "cpu",
           "optional": true,
@@ -2978,7 +2978,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webserver.ts",
-            "line": 122
+            "line": 158
           },
           "name": "memory",
           "optional": true,
@@ -2994,7 +2994,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webserver.ts",
-            "line": 123
+            "line": 159
           },
           "name": "requestCount",
           "optional": true,
@@ -3543,9 +3543,6 @@
         "stability": "experimental"
       },
       "fqn": "@cloudcamp/aws-runtime.ScalingSchedule",
-      "interfaces": [
-        "@aws-cdk/aws-applicationautoscaling.CronOptions"
-      ],
       "kind": "interface",
       "locationInModule": {
         "filename": "src/webserver.ts",
@@ -3567,6 +3564,114 @@
           "type": {
             "primitive": "string"
           }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "default": "- Every day of the month",
+            "stability": "experimental",
+            "summary": "The day of the month to run this rule at."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/webserver.ts",
+            "line": 127
+          },
+          "name": "day",
+          "optional": true,
+          "type": {
+            "primitive": "string"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "default": "- Every hour",
+            "stability": "experimental",
+            "summary": "The hour to run this rule at."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/webserver.ts",
+            "line": 121
+          },
+          "name": "hour",
+          "optional": true,
+          "type": {
+            "primitive": "string"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "default": "- Every minute",
+            "stability": "experimental",
+            "summary": "The minute to run this rule at."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/webserver.ts",
+            "line": 115
+          },
+          "name": "minute",
+          "optional": true,
+          "type": {
+            "primitive": "string"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "default": "- Every month",
+            "stability": "experimental",
+            "summary": "The month to run this rule at."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/webserver.ts",
+            "line": 133
+          },
+          "name": "month",
+          "optional": true,
+          "type": {
+            "primitive": "string"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "default": "- Any day of the week",
+            "stability": "experimental",
+            "summary": "The day of the week to run this rule at."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/webserver.ts",
+            "line": 145
+          },
+          "name": "weekDay",
+          "optional": true,
+          "type": {
+            "primitive": "string"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "default": "- Every year",
+            "stability": "experimental",
+            "summary": "The year to run this rule at."
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/webserver.ts",
+            "line": 139
+          },
+          "name": "year",
+          "optional": true,
+          "type": {
+            "primitive": "string"
+          }
         }
       ]
     },
@@ -3580,7 +3685,7 @@
       "kind": "interface",
       "locationInModule": {
         "filename": "src/webserver.ts",
-        "line": 112
+        "line": 148
       },
       "name": "ScheduleScalingProps",
       "properties": [
@@ -3592,7 +3697,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webserver.ts",
-            "line": 114
+            "line": 150
           },
           "name": "max",
           "type": {
@@ -3607,7 +3712,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webserver.ts",
-            "line": 113
+            "line": 149
           },
           "name": "min",
           "type": {
@@ -3622,7 +3727,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webserver.ts",
-            "line": 115
+            "line": 151
           },
           "name": "schedule",
           "type": {
@@ -3897,7 +4002,7 @@
         },
         "locationInModule": {
           "filename": "src/webserver.ts",
-          "line": 180
+          "line": 216
         },
         "parameters": [
           {
@@ -3932,7 +4037,7 @@
       "kind": "class",
       "locationInModule": {
         "filename": "src/webserver.ts",
-        "line": 146
+        "line": 182
       },
       "methods": [
         {
@@ -3941,7 +4046,7 @@
           },
           "locationInModule": {
             "filename": "src/webserver.ts",
-            "line": 294
+            "line": 330
           },
           "name": "addAlarms",
           "parameters": [
@@ -3960,7 +4065,7 @@
           },
           "locationInModule": {
             "filename": "src/webserver.ts",
-            "line": 269
+            "line": 305
           },
           "name": "scaleOnMetric",
           "parameters": [
@@ -3978,7 +4083,7 @@
           },
           "locationInModule": {
             "filename": "src/webserver.ts",
-            "line": 257
+            "line": 293
           },
           "name": "scaleOnSchedule",
           "parameters": [
@@ -3999,7 +4104,7 @@
           },
           "locationInModule": {
             "filename": "src/webserver.ts",
-            "line": 255
+            "line": 291
           },
           "name": "fargateService",
           "type": {
@@ -4386,6 +4491,6 @@
       ]
     }
   },
-  "version": "0.0.1-alpha.0",
-  "fingerprint": "5pUz6ncvj54ZOvYTNw3ITy8ZVEA24cdHqPPAPGRZ0xo="
+  "version": "0.0.1-alpha.8",
+  "fingerprint": "ramsvZN2+CHe9d8d8/J+UyoGa2AktpvB2OvBsMBrgo0="
 }

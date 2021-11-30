@@ -25,10 +25,10 @@ export class Java extends Language {
     param: jsiispec.Parameter,
     type: jsiispec.Type
   ): string {
-    let id = _.kebabCase(type.name);
+    let id = _.kebabCase(method.name) + "-" + _.kebabCase(type.name);
     return `
-    <h4 class="text-xl ml-6 font-bold mb-6 font-display">
-      <a href="#${id}">new ${type.name}.Builder()</a>
+    <h4 class="text-xl ml-6 font-bold mt-6 mb-6 font-display">
+      <a href="#${id}" id="${id}">new ${type.name}.Builder()</a>
     </h4>
     `;
   }
@@ -45,7 +45,9 @@ export class Java extends Language {
       <tr class="${ix % 2 == 0 ? "bg-gray-50" : ""}">
         <td class="px-6 py-2 border font-mono text-sm whitespace-nowrap">${
           prop.name
-        } (${this.translateType(prop.type as any)} ${prop.name})</td>
+        } (${this.translateType(method.name, prop.type as any)} ${
+          prop.name
+        })</td>
         <td class="px-6 py-2 border">
          ${prop.docs?.summary || ""}
         </td>
@@ -84,18 +86,18 @@ export class Java extends Language {
     let meths = (method as any).initializer ? `new ${className}` : method.name;
     let rets = (method as any).initializer
       ? ""
-      : this.translateType(method.returns?.type as any) + " ";
+      : this.translateType(method.name, method.returns?.type as any) + " ";
 
     for (let param of method.parameters || []) {
       let paramName = param.name;
-      let typeName = this.translateType(param.type as any);
+      let typeName = this.translateType(method.name, param.type as any);
 
       argsList.push(`${typeName} ${paramName}`);
     }
     return `${rets}${meths}(${argsList.join(", ")})`;
   }
 
-  translateType(type: jsiispec.Type): string {
+  translateType(methodName: string, type: jsiispec.Type): string {
     if (type == undefined) {
       return "void";
     }
@@ -112,7 +114,18 @@ export class Java extends Language {
       if (!type.fqn.startsWith("@cloudcamp")) {
         return this.cdkDocsLink(type.fqn);
       } else {
-        return this.internalLink(type.fqn);
+        return this.internalLink(methodName, type.fqn);
+      }
+    } else if (
+      (type as any).collection &&
+      (type as any).collection.kind == "array" &&
+      (type as any).collection.elementtype?.fqn
+    ) {
+      let fqn = (type as any).collection.elementtype.fqn;
+      if (!fqn.startsWith("@cloudcamp")) {
+        return this.cdkDocsLink(fqn) + "[]";
+      } else {
+        return this.internalLink(methodName, fqn) + "[]";
       }
     } else if (
       _.isEqual(type, {
@@ -120,12 +133,19 @@ export class Java extends Language {
       })
     ) {
       return "Map&lt;String, String&gt;";
+    } else if (
+      _.isEqual(type, {
+        collection: { elementtype: { primitive: "string" }, kind: "array" },
+      })
+    ) {
+      return "String[]";
     }
     return "";
   }
 
   propertySignature(className: string, property: jsiispec.Property): string {
     return `${property.static ? "static " : ""}${this.translateType(
+      property.name,
       property.type as any
     )} get${_.upperFirst(property.name)}()`;
   }
