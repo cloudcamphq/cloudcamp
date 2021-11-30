@@ -143,8 +143,14 @@ export abstract class Language {
     );
 
     let tbody = props
-      .map(
-        (prop, ix) => `
+      .map((prop, ix) => {
+        let defaultValue = "";
+        if (prop.optional !== true) {
+          defaultValue = `<span style="color: rgb(214, 50, 0)">required</span>`;
+        } else if (prop.docs?.default) {
+          defaultValue = prop.docs?.default;
+        }
+        return `
       <tr class="${ix % 2 == 1 ? "bg-gray-50" : ""}">
         <td class="px-6 py-2 border">${this.translateParameterName(
           prop.name
@@ -153,12 +159,13 @@ export abstract class Language {
           method.name,
           (prop as any).type
         )}</td>
+        <td class="px-6 py-2 border font-mono text-sm whitespace-nowrap">${defaultValue}</td>
         <td class="px-6 py-2 border">
          ${prop.docs?.summary || ""}
         </td>
       </tr>
-    `
-      )
+    `;
+      })
       .join("\n");
     let header = this.propsTableHeader(className, method, param, type);
     return `
@@ -166,8 +173,9 @@ export abstract class Language {
       <table class="w-full border">
         <thead>
           <tr class="bg-gray-50">
-            <td class="border px-6 font-medium w-1/4">Name</td>
-            <td class="border px-6 font-medium w-1/4">Type</td>
+            <td class="border px-6 font-medium w-1/6">Name</td>
+            <td class="border px-6 font-medium w-1/6">Type</td>
+            <td class="border px-6 font-medium w-1/6">Default</td>
             <td class="border px-6 font-medium w-1/2">Description</td>
           </tr>
         </thead>
