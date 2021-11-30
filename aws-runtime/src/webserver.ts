@@ -200,8 +200,8 @@ export class WebServer extends cdk.Construct {
    * });
    * ```
    *
-   * See `{@link "command/domain-create" | domain:create}` and
-   * `{@link "command/cert-create" | cert:create}` for more information on
+   * See `{@link "command/domain/#domain-create" | domain:create}` and
+   * `{@link "command/cert/#cert-create" | cert:create}` for more information on
    * setting up domains/SSL.
    *
    * @remarks During initialization you can configure: Custom domains, SSL,

@@ -3996,7 +3996,7 @@
             "remarks": "During initialization you can configure: Custom domains, SSL,\nmachine configuration, health checks and the default number of instances.",
             "topic": "Initialization"
           },
-          "remarks": "*Examples:*\n\nTo use your own domain and serve traffic via SSL, use the `domain`\nand `ssl` properties:\n```ts\nvoid 0;\nimport { App, WebServer } from \"@cloudcamp/aws-runtime\";\nlet app = new App();\nvoid 'show';\n\nnew WebServer(app.production, \"prod\", {\n   dockerfile: \"../Dockerfile\",\n   domain: \"example.com\",\n   ssl: true\n});\n```\n\nSee `{@link \"command/domain-create\" | domain:create}` and\n`{@link \"command/cert-create\" | cert:create}` for more information on\nsetting up domains/SSL.",
+          "remarks": "*Examples:*\n\nTo use your own domain and serve traffic via SSL, use the `domain`\nand `ssl` properties:\n```ts\nvoid 0;\nimport { App, WebServer } from \"@cloudcamp/aws-runtime\";\nlet app = new App();\nvoid 'show';\n\nnew WebServer(app.production, \"prod\", {\n   dockerfile: \"../Dockerfile\",\n   domain: \"example.com\",\n   ssl: true\n});\n```\n\nSee `{@link \"command/domain/#domain-create\" | domain:create}` and\n`{@link \"command/cert/#cert-create\" | cert:create}` for more information on\nsetting up domains/SSL.",
           "stability": "experimental",
           "summary": "Initialize a new web server."
         },
@@ -4492,5 +4492,5 @@
     }
   },
   "version": "0.0.1-alpha.8",
-  "fingerprint": "ramsvZN2+CHe9d8d8/J+UyoGa2AktpvB2OvBsMBrgo0="
+  "fingerprint": "2JFKQSwSLrZxJz7ixoN+6HSSFlc1w9e80Q1DbFAJP/Y="
 }
