@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, graphql } from "gatsby";
-
+import { Disclosure, Menu, Transition } from "@headlessui/react";
 import _ from "lodash";
 
 interface ApiNode {
@@ -61,7 +61,7 @@ function TableOfContentsItem(props: {
   );
 }
 
-export default function TableOfContents({
+function prepareData({
   data,
   onThisPage,
   location,
@@ -69,7 +69,7 @@ export default function TableOfContents({
   data: Toc;
   onThisPage: any;
   location: any;
-}) {
+}): [MarkdownNode[], MarkdownNode[], ApiNode[], CommandNode[]] {
   let docNodes = data.allMarkdownRemark.nodes.filter(
     (node) =>
       node.frontmatter && node.frontmatter.slug && node.frontmatter.title
@@ -112,6 +112,147 @@ export default function TableOfContents({
   apiNodes = _.sortBy(apiNodes, (node) =>
     node.docs?.custom?.order ? parseInt(node.docs.custom.order) : 1000
   );
+
+  return [gettingStarted, operationsGuide, apiNodes, commandNodes];
+}
+
+const navigation = [
+  { name: "Dashboard", href: "#", current: true },
+  { name: "Team", href: "#", current: false },
+  { name: "Projects", href: "#", current: false },
+  { name: "Calendar", href: "#", current: false },
+];
+
+function MobileTableOfContentsItem(props: {
+  title: string;
+  // can't use the name 'key' because it is used internally by React.
+  uniqueKey: string;
+  link: string;
+  location: any;
+}) {
+  return (
+    <Disclosure.Button
+      key={props.uniqueKey}
+      as="a"
+      href={props.link}
+      className={classNames(
+        props.location.pathname.startsWith(props.link)
+          ? "bg-indigo-50 text-indigo-800"
+          : "text-gray-700 hover:bg-gray-100",
+        "flex h-10 pl-8 pr-4 py-2 text-base font-medium"
+      )}
+    >
+      {props.title}
+    </Disclosure.Button>
+  );
+}
+
+function classNames(...classes) {
+  return classes.filter(Boolean).join(" ");
+}
+
+export function MobileTableOfContents({
+  data,
+  onThisPage,
+  location,
+}: {
+  data: Toc;
+  onThisPage: any;
+  location: any;
+}) {
+  let [gettingStarted, operationsGuide, apiNodes, commandNodes] = prepareData({
+    data,
+    onThisPage,
+    location,
+  });
+  return (
+    <Disclosure.Panel className="lg:hidden h-full overflow-y-auto border-b">
+      <div className="pb-3">
+        <div
+          key="getting-started"
+          className="pl-3 pr-4 py-2 text-xs h-10 flex items-center font-medium uppercase"
+        >
+          Getting Started
+        </div>
+        {gettingStarted.map((node) => (
+          <MobileTableOfContentsItem
+            key={node.frontmatter.slug}
+            link={`/docs/${node.frontmatter.slug}`}
+            uniqueKey={node.frontmatter.slug}
+            title={node.frontmatter.title}
+            location={location}
+          />
+        ))}
+      </div>
+      <div className="pb-3">
+        <div
+          key="using-cloudcamp"
+          className="pl-3 pr-4 py-2 text-xs h-10 flex items-center font-medium uppercase"
+        >
+          Using CloudCamp
+        </div>
+        {operationsGuide.map((node) => (
+          <MobileTableOfContentsItem
+            key={node.frontmatter.slug}
+            link={`/docs/${node.frontmatter.slug}`}
+            uniqueKey={node.frontmatter.slug}
+            title={node.frontmatter.title}
+            location={location}
+          />
+        ))}
+      </div>
+      <div className="pb-3">
+        <div
+          key="api-reference"
+          className="pl-3 pr-4 py-2 text-xs h-10 flex items-center font-medium uppercase"
+        >
+          API Reference
+        </div>
+        {apiNodes.map((node) => (
+          <MobileTableOfContentsItem
+            key={node.name}
+            link={`/docs/api/${_.kebabCase(node.name)}`}
+            uniqueKey={node.name}
+            title={node.name}
+            location={location}
+          />
+        ))}
+      </div>
+      <div className="pb-3">
+        <div
+          key="command-reference"
+          className="pl-3 pr-4 py-2 text-xs h-10 flex items-center font-medium uppercase"
+        >
+          Command Reference
+        </div>
+        {commandNodes.map((node) => (
+          <MobileTableOfContentsItem
+            key={node.name}
+            link={`/docs/command/${_.kebabCase(node.name)}`}
+            uniqueKey={node.name}
+            title={node.name}
+            location={location}
+          />
+        ))}
+      </div>
+    </Disclosure.Panel>
+  );
+}
+
+export function TableOfContents({
+  data,
+  onThisPage,
+  location,
+}: {
+  data: Toc;
+  onThisPage: any;
+  location: any;
+}) {
+  let [gettingStarted, operationsGuide, apiNodes, commandNodes] = prepareData({
+    data,
+    onThisPage,
+    location,
+  });
 
   return (
     <>

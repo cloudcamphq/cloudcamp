@@ -8,11 +8,13 @@ import Search from "./Search";
 import logoText from "../images/logo-text.svg";
 // @ts-ignore
 import logo from "../images/logo.svg";
-import TableOfContents from "./TableOfContents";
+import { TableOfContents, MobileTableOfContents } from "./TableOfContents";
 import { Link } from "gatsby";
 import OnThisPage from "./OnThisPage";
-import { MenuIcon } from "@heroicons/react/solid";
+import { MenuIcon, XIcon } from "@heroicons/react/solid";
 import Cookies from "js-cookie";
+import { Disclosure, Menu, Transition } from "@headlessui/react";
+import Main from "./Main";
 
 function getShowOnThisPage(): boolean {
   const isBrowser = typeof window !== "undefined";
@@ -22,6 +24,17 @@ function getShowOnThisPage(): boolean {
   }
   return false;
 }
+
+function classNames(...classes) {
+  return classes.filter(Boolean).join(" ");
+}
+
+const navigation = [
+  { name: "Dashboard", href: "#", current: true },
+  { name: "Team", href: "#", current: false },
+  { name: "Projects", href: "#", current: false },
+  { name: "Calendar", href: "#", current: false },
+];
 
 export default function SidebarLayout({
   children,
@@ -76,25 +89,46 @@ export default function SidebarLayout({
         </div>
 
         {/* Main */}
-
-        <div className="flex h-full flex-grow overflow-y-hidden max-w-5xl flex-col">
-          <div className="h-16 border-b bg-white items-center flex flex-none">
-            <Link to="/">
-              <img
-                className="block lg:hidden h-8 w-auto flex-shrink-0 ml-6"
-                src={logo}
-                alt="CloudCamp"
+        <Disclosure
+          as="nav"
+          className="flex h-full flex-grow overflow-y-hidden max-w-5xl flex-col relative"
+        >
+          {({ open }) => (
+            <>
+              <div className="h-16 border-b bg-white items-center flex flex-none">
+                <Link to="/">
+                  <img
+                    className="block lg:hidden h-8 w-auto flex-shrink-0 ml-6"
+                    src={logo}
+                    alt="CloudCamp"
+                  />
+                </Link>
+                <SearchButton />
+                <LanguageMenu />
+                <Social classname="flex" />
+                <div className="flex items-center lg:hidden mr-2">
+                  {/* Mobile menu button */}
+                  <Disclosure.Button className="bg-white inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    <span className="sr-only">Open main menu</span>
+                    {open ? (
+                      <XIcon className="block h-6 w-6" aria-hidden="true" />
+                    ) : (
+                      <MenuIcon className="block h-6 w-6" aria-hidden="true" />
+                    )}
+                  </Disclosure.Button>
+                </div>
+              </div>
+              <MobileTableOfContents
+                data={data}
+                location={location}
+                onThisPage={pageContext.onThisPage}
               />
-            </Link>
-            <SearchButton />
-            <LanguageMenu />
-
-            <Social classname="flex" />
-          </div>
-          <div className="h-full overflow-hidden min-w-0 flex flex-col">
-            {children}
-          </div>
-        </div>
+              <div className="h-full overflow-hidden min-w-0 flex flex-col">
+                {children}
+              </div>
+            </>
+          )}
+        </Disclosure>
 
         {/* On this page */}
         <div className="h-full min-w-max hidden xl:flex flex-col">
