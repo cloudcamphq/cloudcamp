@@ -319,7 +319,7 @@ export default class ApiSource {
       )
       .replaceAll(
         /{@link\s*([a-zA-Z0-9\#]*?)\s*\|\s*(.*?)}/g,
-        (match, $1, $2) => `<a href="/docs/api/${$1}">${$2}</a>`
+        (match, $1, $2) => `<a href="/docs/api/${_.kebabCase($1)}">${$2}</a>`
       )
       .replaceAll(
         /{@link\s*([a-zA-Z0-9]*?)\.(.*?)\s*\|\s*(.*?)}/g,
