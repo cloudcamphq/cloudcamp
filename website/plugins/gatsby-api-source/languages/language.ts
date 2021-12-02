@@ -3,7 +3,6 @@ let fs = require("fs");
 let _ = require("lodash");
 let crypto = require("crypto");
 import * as jsiispec from "@jsii/spec";
-
 import { SourceTranslator } from "../../../../cli/src/assembly";
 
 export abstract class Language {
