@@ -25,10 +25,12 @@ This software is used to build/release CloudCamp for various programming languag
 To prerelease, run:
 
 ```bash
-$ git checkout main
-$ yarn release --prerelease alpha
 $ git checkout release
 $ git merge main
+$ yarn release --prerelease alpha
+$ git push
+$ git checkout main
+$ git merge release
 $ git push
 ```
 
