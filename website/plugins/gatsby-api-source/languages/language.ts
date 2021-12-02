@@ -170,7 +170,7 @@ export abstract class Language {
     let header = this.propsTableHeader(className, method, param, type);
     return `
       ${header}
-      <table class="w-full border">
+      <table class="w-full border overflow-x-auto block">
         <thead>
           <tr class="bg-gray-50">
             <td class="border px-6 font-medium w-1/6">Name</td>

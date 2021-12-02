@@ -241,7 +241,7 @@ function ApiMethod(props: { className: string; meth: jsiispec.Method }) {
       {props.meth.docs?.custom.propsTable && (
         <>
           <div
-            className="space-y-6 leading-7 overflow-x-auto"
+            className="space-y-6 leading-7"
             dangerouslySetInnerHTML={{
               __html: props.meth.docs?.custom.propsTable,
             }}

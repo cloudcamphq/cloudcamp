@@ -46,7 +46,7 @@ $ git push
 
 This is a list of all SSM keys used internally by CloudCamp.
 
-<table>
+<table class="overflow-x-auto w-full block">
 <thead>
 <tr>
   <td class="p-2 border font-semibold bg-gray-50">Key</td>
