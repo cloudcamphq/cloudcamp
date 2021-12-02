@@ -1,9 +1,10 @@
 import { flags } from "@oclif/command";
-import { CertificateManager } from "../../aws";
+import { assumeAWSProfile, CertificateManager } from "../../aws";
 import { BaseCommand } from "../../command";
 
 /**
- * @order 8
+ * @order 5
+ * @suborder 1
  */
 export default class CreateCert extends BaseCommand {
   static description = `Create a new SSL certificate.`;
@@ -22,7 +23,8 @@ export default class CreateCert extends BaseCommand {
 
   async run() {
     const { flags, args } = this.parse(CreateCert);
-    this.setup(flags);
+    assumeAWSProfile(flags.profile);
+
     if (!(await CertificateManager.hasCert(args.domain))) {
       this.ux.start("Creating new certificate");
       await CertificateManager.request(args.domain);

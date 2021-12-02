@@ -16,10 +16,7 @@ export class STS {
           new GetCallerIdentityCommand({})
         )
       ).Account;
-    } catch (_err) {
-      console.log(AWSClientConfig);
-      console.log(_err);
-    }
+    } catch (_err) {}
     if (!account) {
       throw new Error(
         "Authentication failed. Please check your AWS credentials and try again."

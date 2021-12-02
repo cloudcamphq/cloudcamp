@@ -5,188 +5,124 @@ title: "Tutorial"
 category: "getting-started"
 ---
 
-This tutorial will show you how to build and deploy an application with
-cloudcamp.
-
-Once you have learned the basics, you will be able to set up any cloud
-application way faster than by hand or using configuration files. You will learn
-how to automate all aspects of your app in surprisingly few lines of code -
-while still having the full flexibility of AWS at your fingertips.
-
-Make sure that [cloudcamp is
+This tutorial will walk you through build and deploying an application with
+CloudCamp. Make sure that [CloudCamp is
 installed](/docs/installation/#installing-cloudcamp) and your [AWS account is
 configured](/docs/installation/#aws-setup).
 
-<div class="p-5 bg-gray-50 text-sm px-10 border-l-4 border-blue-500 relative">
-<div class="text-white bg-blue-500 w-5 h-5 text-center font-bold absolute" style="left:-4px; top:0px;">i</div>
-The resources you create in this tutorial are covered by the AWS free
-tier. When you are done, you can tear down all resources with <a
-href="#cleaning-up">a single command</a>, leaving your AWS account in a
-clean state.
-</div>
+# Clone the tutorial repo
 
-# The source repository
-
-To learn the basics of cloudcamp, we will deploy a simple web application. Fork
-the <a href="https://github.com/cloudcamphq/tutorial" target="_blank">tutorial
-repository on GitHub</a>, then clone it:
+The easiest way to get started is to fork <a
+href="https://github.com/cloudcamphq/tutorial" target="_blank"> the tutorial
+repository</a> and then clone it:
 
 ```bash
-$ git clone git@github.com:YOUR-USERNAME/tutorial.git
+$ git clone git@github.com:YOUR-USERNAME/tutorial.git && cd tutorial
 ```
 
-Next, change directory and checkout the branch for your language:
+# Setting up camp
+
+To add CloudCamp to your project, run `camp init`:
 
 <div class="gatsby-highlight" data-language="ts">
-  <pre class="ts language-ts"><code class="ts language-ts">$ cd tutorial
-$ git checkout typescript</code></pre>
+  <pre class="ts language-ts"><code class="ts language-ts">$ camp init --dockerfile=Dockerfile --language=typescript</code></pre>
 </div>
 <div class="gatsby-highlight" data-language="javascript">
-  <pre class="javascript language-javascript"><code class="javascript language-javascript">$ cd tutorial
-$ git checkout javascript</code></pre>
+  <pre class="javascript language-javascript"><code class="javascript language-javascript">$ camp init --dockerfile=Dockerfile --language=javascript</code></pre>
 </div>
 <div class="gatsby-highlight" data-language="python">
-  <pre class="python language-python"><code class="python language-python">$ cd tutorial
-$ git checkout python</code></pre>
+  <pre class="python language-python"><code class="python language-python">$ camp init --dockerfile=Dockerfile --language=python</code></pre>
 </div>
 <div class="gatsby-highlight" data-language="csharp">
-  <pre class="csharp language-csharp"><code class="csharp language-csharp">$ cd tutorial
-$ git checkout csharp</code></pre>
+  <pre class="csharp language-csharp"><code class="csharp language-csharp">$ camp init --dockerfile=Dockerfile --language=csharp</code></pre>
 </div>
 <div class="gatsby-highlight" data-language="java">
-  <pre class="java language-java"><code class="java language-java">$ cd tutorial
-$ git checkout java</code></pre>
+  <pre class="java language-java"><code class="java language-java">$ camp init --dockerfile=Dockerfile --language=java</code></pre>
 </div>
 
-# Creating an app
+Note that passing a Dockerfile is optional - doing so will simply add a small
+piece of code that builds and runs a web service based on its contents.
 
-Cloudcamp organizes your deployments into "apps" - lightweight
-infrastructure-as-code programs that live in your project alongside the rest of
-your application code.
-
-Run `camp init` to create one:
-
-```bash
-$ camp init
-```
-
-Set the language to <code class="language-text"
-data-language="ts">TypeScript</code><code class="language-text"
-data-language="javascript">JavaScript</code><code class="language-text"
-data-language="python">Python</code><code class="language-text"
-data-language="java">Java</code><code class="language-text"
-data-language="csharp">C#</code> and select `Continue`.
-
-You now have a new directory called `cloudcamp` in the root of the project that
-contains your new app at `cloudcamp/tutorial`.
-
-Let's change directory:
-
-```bash
-$ cd cloudcamp/tutorial
-```
+You now have a new directory called `cloudcamp` which contains all the files needed to deploy your app.
 
 # Deploying to AWS
 
-Now can run deploy:
+Now let's deploy:
 
 ```bash
 $ camp deploy
 ```
 
-Select `Continue` and follow the on screen instructions. This will connect your
-GitHub account and store the access token in your AWS account, so that pushing
-to your repository can update your application.
+Follow the on screen instructions to connect your GitHub account (the secret token will be stored in your own AWS account).
 
-When the deploy command has completed, the build process will start.
+TODO this needs to explain what is really going on (build pipeline)
+"Once the command has finished, your app will be built and deployed."
 
-Run `camp status` to watch the progress:
+You can run `camp status` to watch the progress:
 
 ```bash
 $ camp status --wait --notify
-
-Deployment Status:   ✔ Deployed
-Build Status:        ✔ Succeeded...
-Git commit URL:      https://github.com/mme/tutorial/commit/b38a08f9e5c897d96d1c3bb2ec7d97c8e1afb05a
-
-Outputs:
-
-Stack              ID            Type          Value
-────────────────── ───────────── ───────────── ──────────────────────────────────────────────────────────────────────
-TutorialProduction productionweb WebServer URL http://Cloud-tutor-1WOJ5XGFE5KAP-751011628.us-east-1.elb.amazonaws.com
 ```
 
-Once finished, status will print the the URL of our web server. Copy and paste the
-URL in your browser to verify everything is working:
+Once finished, status will print the the URL of our web server. You can copy and paste the
+URL in your browser to verify everything is working.
 
-![Browser screenshot](./img/tutorial-screen-1.png)
+So far, we have:
 
-🎉 **Congratulations!** In a few minutes, you created:
+- a build pipeline that deploys your app on `git push`.
 
-- a build pipeline that deploys your app on a single `git push`.
-
-- a load balanced, containerized web server capable of scaling to a large number of machines.
-
-Let's take a look at what we just created.
+- a load balanced, scalable web service.
 
 # Infrastructure as Code
 
-Cloudcamp is based on _Amazon Cloud Development Kit (CDK), a declarative way of
-building infrastructure_. This means that instead of imperatively creating and
-updating resources, we define a model of what our infrastructure should look
-like. CDK then takes care of making the necessary changes to accomplish our
-desired state.
+CloudCamp is based on _Amazon Cloud Development Kit (CDK)_, a declarative way of
+building infrastructure. Instead of imperatively creating and updating
+resources, we declare the state of what our infrastructure should look like. CDK
+then takes care of making the necessary changes to accomplish our desired state.
 
 Open up <code class="language-text" data-language="ts">src/camp.ts</code><code class="language-text" data-language="javascript">src/camp.js</code><code class="language-text" data-language="python">src/camp.py</code><code class="language-text" data-language="java">src/Camp.java</code><code class="language-text" data-language="csharp">src/Camp.cs</code> in your camp's directory and take a look.
 
 ```ts
 import { App, WebServer } from "@cloudcamp/aws-runtime";
 
-let app = new App();
+const app = new App();
 
-new WebServer(app.production, "web", {
+const web = new WebServer(app.production, "web", {
   dockerfile: "../../Dockerfile",
   port: 3000,
 });
 ```
 
-In the beginning of every program, we instantiate the class `App` which stands
+In the beginning we instantiate the class `App` which stands
 for an instance of our application running in the cloud.
 
-Next, we create a new `WebServer`, by passing in the parent stack
-`app.production` and an identifier `"web"`. Finally, we pass a Dockerfile and a
+Next, we create a new `WebServer`, by passing in the stack it belongs to
+(`app.production`) and a unique identifier (`"web"`). Additionally, we pass a Dockerfile and a
 port so our web server knows what to run.
 
-<div class="p-5 bg-gray-50 text-sm px-10 border-l-4 border-blue-500 relative">
-<div class="text-white bg-blue-500 w-5 h-5 text-center font-bold absolute" style="left:-4px; top:0px;">i</div>
-<code class="language-text">App</code> organizes our resources into groups called <code class="language-text">Stacks</code> that get built and
-deployed together. Here we make use of a default stack called <code class="language-text">app.production</code>.
-<br/><br/>
-By providing a parent and an identifier when creating a resource, CDK can keep track of our infrastructure and knows when to create new resources or update existing ones.
-</div>
+# Making Changes
 
-# Adding a database
+TODO add a database and monitoring at the same time
 
-To add a PostgreSQL database, make the following changes to this source code:
+To add a PostgreSQL database, change the code to look like this:
 
 ```ts
 import { App, WebServer, Database } from "@cloudcamp/aws-runtime";
-let app = new App();
 
-// ⬇ 1) add a postgres database to the production stack
-let productionDb = new Database(app.production, "db", {
+const app = new App();
+
+const db = new Database(app.production, "db", {
   engine: "postgres",
 });
 
-new WebServer(app.production, "web", {
+const web = new WebServer(app.production, "web", {
   dockerfile: "../../Dockerfile",
   port: 3000,
-  // ⬇ 2) add the database url to the environment variables of our webserver
-  environment: { DATABASE_URL: productionDb.databaseUrl },
+  environment: { DATABASE_URL: db.databaseUrl },
 });
 ```
 
-Here we create a database and add it to the production stack.
+We create a database and add it to the production stack.
 Then we let the web server know about the database by adding the environment
 variable `DATABASE_URL`.
 
@@ -197,10 +133,8 @@ $ git add -A && git commit -m "add database" && git push
 $ camp status --wait --notify
 ```
 
-When refreshing our app in the browser we can see that it is now connected to
+When refreshing our app in the browser it should now be connected to
 the database.
-
-![Browser screenshot](./img/tutorial-screen-2.png)
 
 # Setting up monitoring
 
@@ -209,25 +143,23 @@ users encounter a server error. To simulate an error, visit the `/error` path on
 your webserver. Now wouldn't it be nice if we got a notification whenever there
 is an error? The `WebServer` class provides an API for exactly that.
 
-Here's how to update your code to add error notifications:
+Update your code to add error notifications:
 
 ```ts
 import { App, WebServer, Database } from "@cloudcamp/aws-runtime";
 
-let app = new App();
+const app = new App();
 
-let productionDb = new Database(app.production, "db", {
+const db = new Database(app.production, "db", {
   engine: "postgres",
 });
 
-// ⬇ assign our WebServer to a variable
-let productionWeb = new WebServer(app.production, "web", {
+const web = new WebServer(app.production, "web", {
   dockerfile: "../../Dockerfile",
   port: 3000,
-  environment: { DATABASE_URL: productionDb.databaseUrl },
+  environment: { DATABASE_URL: db.databaseUrl },
 });
 
-// ⬇ set up email notifications when there is an application error
 productionWeb.addAlarms({
   email: ["youremail@example.com"],
 });
@@ -322,7 +254,7 @@ To delete all resources we created during this tutorial, run `destroy` in your c
 $ camp destroy
 ```
 
-Cloudcamp will list and upon confirmation destroy all the resources you created.
+CloudCamp will list and upon confirmation destroy all the resources you created.
 
 If you added a custom domain, use this command to delete the DNS zone:
 

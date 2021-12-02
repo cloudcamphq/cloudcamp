@@ -85,10 +85,10 @@ export class NameInput extends Input<string> {
   }
 
   private validateProjectName(name: string) {
-    if (!/^[a-zA-Z0-9]+$/.test(name)) {
-      return "Name must contain alphanumeric characters only.";
-    } else if (name.length < 1) {
+    if (name.length < 1) {
       return "Name must not be empty.";
+    } else if (!/^[a-zA-Z0-9]+$/.test(name)) {
+      return "Name must contain alphanumeric characters only.";
     } else if (name[0] >= "0" && name[0] <= "9") {
       return "Name must not start with a number.";
     } else if (name == "global") {

@@ -2,73 +2,89 @@ import { CommandDefinition } from "../../plugins/gatsby-api-source/command-sourc
 let _ = require("lodash");
 let path = require("path");
 
-function makeSlug(node: CommandDefinition) {
-  return _.kebabCase(node.name);
+function makeSlug(groupName: string) {
+  return _.kebabCase(groupName);
 }
 
 function sortedNodes(nodes: CommandDefinition[]) {
   nodes = _.sortBy(nodes, (node) => node.name);
-  nodes = _.sortBy(nodes, (node) => (node.order ? parseInt(node.order) : 1000));
+  nodes = _.sortBy(nodes, (node) =>
+    node.suborder ? parseInt(node.suborder) : 1000
+  );
+  nodes = _.filter(nodes, (node) => !node.ignore);
   return nodes;
 }
 
-function makeLinks(nodes: CommandDefinition[]) {
+function groupedNodes(nodes: CommandDefinition[]): CommandDefinition[][] {
+  let grouped: CommandDefinition[][] = Object.values(
+    _.groupBy(nodes, (n) => n.group)
+  );
+  grouped = _.sortBy(grouped, (n) =>
+    n[0].order ? parseInt(n[0].order) : 1000
+  );
+  grouped = grouped.map((n) => sortedNodes(n));
+  return grouped;
+}
+
+function makeLinks(nodes: CommandDefinition[][]) {
   let links = {};
   for (var i = 0; i < nodes.length; i++) {
-    let node = nodes[i];
+    let group = nodes[i];
     let prev = undefined;
     let next = undefined;
     if (i != 0) {
-      let prevNode = nodes[i - 1];
+      let prevGroup = nodes[i - 1];
       prev = {
-        link: `/docs/command/${makeSlug(prevNode)}`,
-        title: prevNode.name,
+        link: `/docs/command/${makeSlug(prevGroup[0].group)}`,
+        title: prevGroup[0].group,
       };
     }
     if (i + 1 < nodes.length) {
-      let nextNode = nodes[i + 1];
+      let nextGroup = nodes[i + 1];
       next = {
-        link: `/docs/command/${makeSlug(nextNode)}`,
-        title: nextNode.name,
+        link: `/docs/command/${makeSlug(nextGroup[0].group)}`,
+        title: nextGroup[0].group,
       };
     }
-    links[makeSlug(node)] = { prev: prev, next: next };
+    links[makeSlug(group[0].group)] = { prev: prev, next: next };
   }
   return links;
 }
 
-function extractOnThisPage(node: CommandDefinition) {
+function extractOnThisPage(group: CommandDefinition[]) {
   let onThisPage = [];
 
-  onThisPage.push({
-    title: "Usage",
-    id: "usage",
-    children: [],
-  });
+  for (let node of group) {
+    let children = [];
+    let name = node.name;
 
-  let children = [];
-  if (node.flags) {
-    children = node.flags.map((flag) => ({
-      type: "F",
-      title: `--${flag.name}`,
-      id: _.kebabCase(flag.name),
-    }));
-  }
+    if (name.includes(":") && name.split(":")[1] == "index") {
+      name = name.split(":")[0];
+    }
+    let id = name.replace(/:/g, "-");
+    onThisPage.push({ title: name, id: id, children: children });
 
-  onThisPage.push({
-    title: "Arguments",
-    id: "arguments",
-    children: children,
-  });
-
-  var re = /<h1(.*?)>(.*?)<\/h1>/g;
-  var m: any;
-  while ((m = re.exec(node.description))) {
-    onThisPage.push({
-      title: m[2],
-      id: _.kebabCase(m[2]),
+    children.push({
+      title: "Usage",
+      id: `${id}-usage`,
       children: [],
     });
+
+    children.push({
+      title: "Arguments",
+      id: `${id}-arguments`,
+      children: [],
+    });
+
+    var re = /<h1(.*?)>(.*?)<\/h1>/g;
+    var m: any;
+    while ((m = re.exec(node.description))) {
+      children.push({
+        title: m[2],
+        id: id + "-" + _.kebabCase(m[2]),
+        children: [],
+      });
+    }
   }
   return onThisPage;
 }
@@ -80,6 +96,9 @@ export async function createPages(createPage, graphql) {
         nodes {
           name
           order
+          suborder
+          ignore
+          group
           summary
           description
           flags {
@@ -96,17 +115,21 @@ export async function createPages(createPage, graphql) {
     }
   `);
 
-  let nodes = sortedNodes(data.allCommandDocs.nodes);
-  let links = makeLinks(nodes);
+  let groups = groupedNodes(data.allCommandDocs.nodes);
+  let links = makeLinks(groups);
 
-  nodes.forEach((node) => {
-    let onThisPage = extractOnThisPage(node);
-    let slug = makeSlug(node);
+  groups.forEach((group) => {
+    let onThisPage = extractOnThisPage(group);
+    let slug = makeSlug(group[0].group);
 
     createPage({
       path: `/docs/command/${slug}`,
       component: path.resolve("./src/templates/command.tsx"),
-      context: { name: node.name, onThisPage: onThisPage, links: links[slug] },
+      context: {
+        name: group[0].group,
+        onThisPage: onThisPage,
+        links: links[slug],
+      },
     });
   });
 }

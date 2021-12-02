@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, graphql } from "gatsby";
-
+import { Disclosure, Menu, Transition } from "@headlessui/react";
 import _ from "lodash";
 
 interface ApiNode {
@@ -12,6 +12,7 @@ interface ApiNode {
 
 interface CommandNode {
   name: string;
+  group: string;
   order?: string;
   numericOrder?: number;
 }
@@ -37,13 +38,38 @@ interface Toc {
   };
 }
 
-export default function TableOfContents({
+function TableOfContentsItem(props: {
+  title: string;
+  // can't use the name 'key' because it is used internally by React.
+  uniqueKey: string;
+  link: string;
+  location: any;
+}) {
+  return (
+    <li key={props.uniqueKey}>
+      <Link
+        className={
+          props.location.pathname.startsWith(props.link)
+            ? "flex items-center group py-2 px-4 text-sm rounded-md bg-indigo-50 text-indigo-800 font-medium"
+            : "flex items-center group py-2 px-4 text-sm rounded-md text-gray-700 hover:bg-gray-100"
+        }
+        to={props.link}
+      >
+        <div className="flex-1">{props.title}</div>
+      </Link>
+    </li>
+  );
+}
+
+function prepareData({
   data,
+  onThisPage,
   location,
 }: {
   data: Toc;
+  onThisPage: any;
   location: any;
-}) {
+}): [MarkdownNode[], MarkdownNode[], ApiNode[], CommandNode[]] {
   let docNodes = data.allMarkdownRemark.nodes.filter(
     (node) =>
       node.frontmatter && node.frontmatter.slug && node.frontmatter.title
@@ -60,7 +86,17 @@ export default function TableOfContents({
     (node) => node.frontmatter.category == "operations-guide"
   );
 
-  let commandNodes: CommandNode[] = data.allCommandDocs.nodes;
+  let commandNodes: CommandNode[] = Object.values(
+    Object.values(_.groupBy(data.allCommandDocs.nodes, (n) => n.group)).map(
+      (n) => ({
+        name: n[0].group,
+        group: n[0].group,
+        order: n[0].order,
+        numericOrder: n[0].numericOrder,
+      })
+    )
+  );
+
   commandNodes = _.sortBy(commandNodes, (node) => node.name);
   commandNodes = _.sortBy(commandNodes, (node) =>
     node.order ? parseInt(node.order) : 1000
@@ -77,6 +113,147 @@ export default function TableOfContents({
     node.docs?.custom?.order ? parseInt(node.docs.custom.order) : 1000
   );
 
+  return [gettingStarted, operationsGuide, apiNodes, commandNodes];
+}
+
+const navigation = [
+  { name: "Dashboard", href: "#", current: true },
+  { name: "Team", href: "#", current: false },
+  { name: "Projects", href: "#", current: false },
+  { name: "Calendar", href: "#", current: false },
+];
+
+function MobileTableOfContentsItem(props: {
+  title: string;
+  // can't use the name 'key' because it is used internally by React.
+  uniqueKey: string;
+  link: string;
+  location: any;
+}) {
+  return (
+    <Disclosure.Button
+      key={props.uniqueKey}
+      as="a"
+      href={props.link}
+      className={classNames(
+        props.location.pathname.startsWith(props.link)
+          ? "bg-indigo-50 text-indigo-800"
+          : "text-gray-700 hover:bg-gray-100",
+        "flex h-10 pl-8 pr-4 py-2 text-base font-medium"
+      )}
+    >
+      {props.title}
+    </Disclosure.Button>
+  );
+}
+
+function classNames(...classes) {
+  return classes.filter(Boolean).join(" ");
+}
+
+export function MobileTableOfContents({
+  data,
+  onThisPage,
+  location,
+}: {
+  data: Toc;
+  onThisPage: any;
+  location: any;
+}) {
+  let [gettingStarted, operationsGuide, apiNodes, commandNodes] = prepareData({
+    data,
+    onThisPage,
+    location,
+  });
+  return (
+    <Disclosure.Panel className="lg:hidden h-full overflow-y-auto border-b">
+      <div className="pb-3">
+        <div
+          key="getting-started"
+          className="pl-3 pr-4 py-2 text-xs h-10 flex items-center font-medium uppercase"
+        >
+          Getting Started
+        </div>
+        {gettingStarted.map((node) => (
+          <MobileTableOfContentsItem
+            key={node.frontmatter.slug}
+            link={`/docs/${node.frontmatter.slug}`}
+            uniqueKey={node.frontmatter.slug}
+            title={node.frontmatter.title}
+            location={location}
+          />
+        ))}
+      </div>
+      <div className="pb-3">
+        <div
+          key="using-cloudcamp"
+          className="pl-3 pr-4 py-2 text-xs h-10 flex items-center font-medium uppercase"
+        >
+          Using CloudCamp
+        </div>
+        {operationsGuide.map((node) => (
+          <MobileTableOfContentsItem
+            key={node.frontmatter.slug}
+            link={`/docs/${node.frontmatter.slug}`}
+            uniqueKey={node.frontmatter.slug}
+            title={node.frontmatter.title}
+            location={location}
+          />
+        ))}
+      </div>
+      <div className="pb-3">
+        <div
+          key="api-reference"
+          className="pl-3 pr-4 py-2 text-xs h-10 flex items-center font-medium uppercase"
+        >
+          API Reference
+        </div>
+        {apiNodes.map((node) => (
+          <MobileTableOfContentsItem
+            key={node.name}
+            link={`/docs/api/${_.kebabCase(node.name)}`}
+            uniqueKey={node.name}
+            title={node.name}
+            location={location}
+          />
+        ))}
+      </div>
+      <div className="pb-3">
+        <div
+          key="command-reference"
+          className="pl-3 pr-4 py-2 text-xs h-10 flex items-center font-medium uppercase"
+        >
+          Command Reference
+        </div>
+        {commandNodes.map((node) => (
+          <MobileTableOfContentsItem
+            key={node.name}
+            link={`/docs/command/${_.kebabCase(node.name)}`}
+            uniqueKey={node.name}
+            title={node.name}
+            location={location}
+          />
+        ))}
+      </div>
+    </Disclosure.Panel>
+  );
+}
+
+export function TableOfContents({
+  data,
+  onThisPage,
+  location,
+}: {
+  data: Toc;
+  onThisPage: any;
+  location: any;
+}) {
+  let [gettingStarted, operationsGuide, apiNodes, commandNodes] = prepareData({
+    data,
+    onThisPage,
+    location,
+  });
+
   return (
     <>
       <nav>
@@ -84,47 +261,31 @@ export default function TableOfContents({
           Getting Started
         </h1>
         <ul>
-          {gettingStarted.map((node) => {
-            let className: string;
-            let link = `/docs/${node.frontmatter.slug}`;
-            if (location.pathname.startsWith(link)) {
-              className =
-                "text-sm rounded-md bg-indigo-50 text-indigo-800 font-medium";
-            } else {
-              className = "text-sm rounded-md text-gray-700 hover:bg-gray-100";
-            }
-            return (
-              <li className={className} key={node.frontmatter.slug}>
-                <Link className="block py-2 px-4" to={link}>
-                  {node.frontmatter.title}
-                </Link>
-              </li>
-            );
-          })}
+          {gettingStarted.map((node) => (
+            <TableOfContentsItem
+              key={node.frontmatter.slug}
+              link={`/docs/${node.frontmatter.slug}`}
+              uniqueKey={node.frontmatter.slug}
+              title={node.frontmatter.title}
+              location={location}
+            />
+          ))}
         </ul>
       </nav>
       <nav>
         <h1 className="tracking-wide font-semibold text-xs uppercase py-2 px-4">
-          Using cloudcamp
+          Using CloudCamp
         </h1>
         <ul>
-          {operationsGuide.map((node) => {
-            let className: string;
-            let link = `/docs/${node.frontmatter.slug}`;
-            if (location.pathname.startsWith(link)) {
-              className =
-                "text-sm rounded-md bg-indigo-50 text-indigo-800 font-medium";
-            } else {
-              className = "text-sm rounded-md text-gray-700 hover:bg-gray-100";
-            }
-            return (
-              <li className={className} key={node.frontmatter.slug}>
-                <Link className="block py-2 px-4" to={link}>
-                  {node.frontmatter.title}
-                </Link>
-              </li>
-            );
-          })}
+          {operationsGuide.map((node) => (
+            <TableOfContentsItem
+              key={node.frontmatter.slug}
+              link={`/docs/${node.frontmatter.slug}`}
+              uniqueKey={node.frontmatter.slug}
+              title={node.frontmatter.title}
+              location={location}
+            />
+          ))}
         </ul>
       </nav>
       <nav>
@@ -132,23 +293,15 @@ export default function TableOfContents({
           API Reference
         </h1>
         <ul>
-          {apiNodes.map((node) => {
-            let className: string;
-            let link = `/docs/api/${_.kebabCase(node.name)}`;
-            if (location.pathname.startsWith(link)) {
-              className =
-                "text-sm rounded-md bg-indigo-50 text-indigo-800 font-medium";
-            } else {
-              className = "text-sm rounded-md text-gray-700 hover:bg-gray-100";
-            }
-            return (
-              <li className={className} key={node.name}>
-                <Link className="block py-2 px-4" to={link}>
-                  {node.name}
-                </Link>
-              </li>
-            );
-          })}
+          {apiNodes.map((node) => (
+            <TableOfContentsItem
+              key={node.name}
+              link={`/docs/api/${_.kebabCase(node.name)}`}
+              uniqueKey={node.name}
+              title={node.name}
+              location={location}
+            />
+          ))}
         </ul>
       </nav>
       <nav>
@@ -156,23 +309,15 @@ export default function TableOfContents({
           Command Reference
         </h1>
         <ul>
-          {commandNodes.map((node) => {
-            let className: string;
-            let link = `/docs/command/${_.kebabCase(node.name)}`;
-            if (location.pathname.startsWith(link)) {
-              className =
-                "text-sm rounded-md bg-indigo-50 text-indigo-800 font-medium";
-            } else {
-              className = "text-sm rounded-md text-gray-700 hover:bg-gray-100";
-            }
-            return (
-              <li className={className} key={node.name}>
-                <Link className="block py-2 px-4" to={link}>
-                  {node.name}
-                </Link>
-              </li>
-            );
-          })}
+          {commandNodes.map((node) => (
+            <TableOfContentsItem
+              key={node.name}
+              link={`/docs/command/${_.kebabCase(node.name)}`}
+              uniqueKey={node.name}
+              title={node.name}
+              location={location}
+            />
+          ))}
         </ul>
       </nav>
     </>
@@ -207,5 +352,6 @@ export const tocCommandDocsFields = graphql`
   fragment tocCommandDocsFields on CommandDocs {
     name
     order
+    group
   }
 `;

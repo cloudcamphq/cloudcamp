@@ -1,3 +1,5 @@
+import { version } from "./utils";
+
 /**
  * Language codes supported by CDK.
  */
@@ -7,6 +9,11 @@ export enum LanguageCode {
   PYTHON = "python",
   CSHARP = "csharp",
   JAVA = "java",
+}
+
+interface IGenerator {
+  makeDirHome(dirname: string): void;
+  writeFileHome(filename: string, data: string): void;
 }
 
 /**
@@ -85,9 +92,10 @@ export abstract class Language {
   constructor(public code: LanguageCode) {}
 
   /**
-   * A list of patterns for .gitignore, relative to CAMP_HOME_DIR.
+   * Generate files for a new app
    */
-  abstract get gitignorePatterns(): string[];
+
+  abstract generateFiles(generator: IGenerator): Promise<void>;
 
   /**
    * The command CDK uses to synthesize.
@@ -95,11 +103,6 @@ export abstract class Language {
    * Note: This command is run in the project directory.
    */
   abstract get cdkAppCommand(): string;
-
-  /**
-   * Any additional files needed by the implementation, relative to CAMP_HOME_DIR.
-   */
-  abstract get additionalFiles(): { [key: string]: string };
 
   /**
    * Command to install dependencies
@@ -134,38 +137,41 @@ export abstract class Language {
  * Typescript
  */
 class TypescriptLanguage extends Language {
-  get gitignorePatterns() {
-    return ["node_modules"];
+  async generateFiles(generator: IGenerator): Promise<void> {
+    generator.writeFileHome(
+      ".gitignore",
+      ["cdk.out", ".DS_Store", "node_modules"].join("\n") + "\n"
+    );
+    generator.writeFileHome(
+      "package.json",
+      JSON.stringify(
+        {
+          dependencies: {
+            "@cloudcamp/aws-runtime": version(),
+            "ts-node": "10.0.0",
+          },
+          devDependencies: {
+            typescript: "4.4.4",
+          },
+        },
+        null,
+        2
+      )
+    );
   }
 
   get cdkAppCommand() {
     return "npx ts-node --prefer-ts-exts src/app.ts";
   }
 
-  get additionalFiles() {
-    return {
-      "package.json": JSON.stringify(
-        {
-          dependencies: {
-            "@cloudcamp/aws-runtime":
-              "/Users/markus/Code/cloudcamp/aws-runtime",
-            "ts-node": "10.0.0",
-          },
-        },
-        null,
-        2
-      ),
-    };
-  }
-
   get installCommand() {
-    return "npm i -g typescript && npm install";
+    return "npm i typescript --save-dev && npm install";
   }
 
   get buildCommand() {
     // When debugging, the aws-runtime directory is copied to the
     // build dir. Compile it with tsc.
-    return `[ -d "aws-runtime" ] && cd aws-runtime && tsc || true`;
+    return `[ -d "aws-runtime" ] && cd aws-runtime && npx tsc || true`;
   }
 }
 
@@ -173,18 +179,17 @@ class TypescriptLanguage extends Language {
  * TPython
  */
 class PythonLanguage extends Language {
-  get gitignorePatterns(): string[] {
-    return [".venv", "*.py[cod]", "*$py.class"];
+  async generateFiles(generator: IGenerator): Promise<void> {
+    generator.writeFileHome(
+      ".gitignore",
+      ["cdk.out", ".DS_Store", ".venv", "*.py[cod]", "*$py.class"].join("\n") +
+        "\n"
+    );
+    generator.writeFileHome("requirements.txt", "cloudcamp\n");
   }
 
   get cdkAppCommand() {
     return "python3 src/camp.py";
-  }
-
-  get additionalFiles(): { [key: string]: string } {
-    return {
-      "requirements.txt": "cloudcamp",
-    };
   }
 
   get installCommand(): string {

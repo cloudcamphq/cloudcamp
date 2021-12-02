@@ -1,14 +1,15 @@
 import { flags } from "@oclif/command";
 import { CONTEXT_KEY_NAME } from "@cloudcamp/aws-runtime/src/constants";
-import { CloudFormation } from "../aws";
+import { CloudFormation, setupAWS } from "../aws";
 import { BaseCommand } from "../command";
-import { getCdkJsonContext } from "../project";
+import { getCdkJsonContext } from "../utils";
 import chalk from "chalk";
 import { CodePipeline } from "../aws/codepipeline";
 import notifier from "node-notifier";
 import * as path from "path";
 import { cli } from "cli-ux";
 import _ from "lodash";
+import { resolveHome } from "../utils";
 
 interface PipelineStatus {
   stage?: string;
@@ -26,7 +27,8 @@ export default class ShowStatus extends BaseCommand {
 
   static flags = {
     help: flags.help({ char: "h" }),
-    profile: flags.string({ char: "p", description: "the AWS profile name" }),
+    profile: flags.string({ char: "p", description: "The AWS profile name" }),
+    home: flags.string({ description: "The home directory of your app." }),
     wait: flags.boolean({
       char: "w",
       description: "Wait for the next pipeline execution",
@@ -62,8 +64,10 @@ export default class ShowStatus extends BaseCommand {
 
   private async trace() {
     const { flags } = this.parse(ShowStatus);
-    this.setup(flags);
-    let appName = getCdkJsonContext()[CONTEXT_KEY_NAME];
+    let home = resolveHome(flags.home);
+    setupAWS(home, flags.profile);
+
+    let appName = getCdkJsonContext(home)[CONTEXT_KEY_NAME];
     let status = await CloudFormation.getDeploymentStatus(appName);
     let statusDescr = this.deploymentStatusDescr(status);
 
@@ -139,8 +143,21 @@ export default class ShowStatus extends BaseCommand {
 
   private async status() {
     const { flags } = this.parse(ShowStatus);
-    this.setup(flags);
-    let appName = getCdkJsonContext()[CONTEXT_KEY_NAME];
+    let home = resolveHome(flags.home);
+    setupAWS(home, flags.profile);
+    let appName = getCdkJsonContext(home)[CONTEXT_KEY_NAME];
+
+    let form = (label: string, data: string) => {
+      let numSpaces =
+        Math.max(
+          "Deployment Status".length,
+          "Build Status".length,
+          "Git commit URL".length
+        ) +
+        2 -
+        label.length;
+      return label + ":" + " ".repeat(numSpaces) + data;
+    };
 
     this.ux.log("");
     while (true) {
@@ -148,7 +165,7 @@ export default class ShowStatus extends BaseCommand {
       let deploymentStatusDescr = this.deploymentStatusDescr(deploymentStatus);
 
       if (deploymentStatus === undefined) {
-        this.ux.log("Deployment Status: \t", deploymentStatusDescr);
+        this.ux.log(form("Deployment Status", deploymentStatusDescr));
         return;
       }
 
@@ -156,17 +173,21 @@ export default class ShowStatus extends BaseCommand {
       let status = result.status;
       let descr = result.descr;
 
-      this.ux.log("Deployment Status: \t", deploymentStatusDescr);
+      if (result.latestCommitUrl) {
+        this.ux.log(form("Git commit URL", chalk.blue(result.latestCommitUrl)));
+      }
+
+      this.ux.log(form("Deployment Status", deploymentStatusDescr));
 
       if (!flags.wait && !flags.forever) {
-        this.ux.log("Build Status: \t", descr);
+        this.ux.log(form("Build Status", descr));
       } else {
         let prevPipelineStatus = status;
         let prevPipelineStatusDescr = descr;
         if (status != "InProgress") {
           descr = "⧗ Waiting";
         }
-        this.ux.start("Build Status: \t " + descr);
+        this.ux.start(form("Build Status", descr));
         while (true) {
           await new Promise((resolve, _reject) => setTimeout(resolve, 5000));
           let pipelineStatus = await this.getPipelineStatus(appName);
@@ -174,7 +195,7 @@ export default class ShowStatus extends BaseCommand {
           descr = pipelineStatus.descr;
 
           if (prevPipelineStatusDescr != descr) {
-            this.ux.update("Build Status: \t " + descr);
+            this.ux.update(form("Build Status", descr));
           }
           prevPipelineStatusDescr = descr;
 
@@ -186,9 +207,6 @@ export default class ShowStatus extends BaseCommand {
           }
           prevPipelineStatus = status;
         }
-      }
-      if (result.latestCommitUrl) {
-        this.ux.log("Git commit URL: \t", chalk.blue(result.latestCommitUrl));
       }
 
       if ((flags.wait || flags.forever) && flags.notify) {

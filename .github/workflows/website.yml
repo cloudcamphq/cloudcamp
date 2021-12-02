@@ -2,11 +2,10 @@ name: "Publish Website"
 on:
   push:
     branches:
-      - release
+      - website
 jobs:
   publish:
     runs-on: ubuntu-latest
-    if: ${{ contains(github.event.head_commit.message, 'chore(release):') ||  contains(github.event.head_commit.message, 'docs:')}}
     env:
       WEBSITE_DIR: ./website
       PLUGIN_DIR: ./website/plugins/gatsby-api-source/
@@ -37,6 +36,9 @@ jobs:
         working-directory: ${{env.PLUGIN_DIR}}
       - name: Build Website
         run: gatsby build
+        working-directory: ${{env.WEBSITE_DIR}}
+      - name: Add CNAME file
+        run: echo "cloudcamphq.com" > public/CNAME
         working-directory: ${{env.WEBSITE_DIR}}
       - name: Publish to GitHub Pages
         run: gh-pages --dist public --branch main --repo https://${{ env.GH_TOKEN }}@github.com/cloudcamphq/cloudcamphq.github.io.git

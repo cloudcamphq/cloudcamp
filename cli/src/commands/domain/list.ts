@@ -1,23 +1,27 @@
 import { flags } from "@oclif/command";
-import { Route53 } from "../../aws";
+import { assumeAWSProfile, Route53 } from "../../aws";
 import { BaseCommand } from "../../command";
 import { cli } from "cli-ux";
 import chalk from "chalk";
 
 /**
- * @order 6
+ * @order 4
+ * @suborder 3
  */
 export default class ListDomain extends BaseCommand {
   static description = `List domains.`;
 
   static flags = {
     help: flags.help({ char: "h" }),
-    profile: flags.string({ char: "p", description: "the AWS profile name" }),
+    profile: flags.string({
+      char: "p",
+      description: "The name of the AWS profile.",
+    }),
   };
 
   async run() {
     const { flags } = this.parse(ListDomain);
-    this.setup(flags);
+    assumeAWSProfile(flags.profile);
 
     let domains = await Route53.list();
     if (domains.length == 0) {

@@ -1,6 +1,6 @@
 {
   "name": "@cloudcamp/aws-runtime",
-  "description": "CloudCamp - Launch faster by automating your infrastructure.",
+  "description": "CloudCamp - Launch faster by building scalable infrastructure in few lines of code.",
   "main": "lib/index.js",
   "scripts": {
     "build": "jsii -v && cp .jsii ../website/content/api/api.json",
@@ -41,8 +41,8 @@
       "java": {
         "package": "cloudcamp.aws.runtime",
         "maven": {
-          "groupId": "cloudcamp.aws",
-          "artifactId": "runtime"
+          "groupId": "com.cloudcamphq",
+          "artifactId": "aws-runtime"
         }
       },
       "python": {
@@ -52,7 +52,7 @@
       "dotnet": {
         "namespace": "Cloudcamp.Aws.Runtime",
         "packageId": "Cloudcamp.Aws.Runtime",
-        "iconUrl": "https://raw.githubusercontent.com/cloudcamphq/cloudcamp/master/nuget-icon.png"
+        "iconUrl": "https://raw.githubusercontent.com/cloudcamphq/cloudcamp/main/assets/img/nuget-icon.png"
       }
     },
     "metadata": {
@@ -158,5 +158,5 @@
   "bundledDependencies": [
     "lodash"
   ],
-  "version": "0.0.1-alpha.8"
+  "version": "0.0.1-alpha.9"
 }

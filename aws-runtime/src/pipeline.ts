@@ -6,9 +6,9 @@ import * as _ from "lodash";
 import * as fs from "fs";
 import * as path from "path";
 import { RepositoryHost } from "./types";
-import { CAMP_HOME_DIR } from "./constants";
 import { Language } from "./language";
 import { App } from "./app";
+import { CONTEXT_KEY_HOME } from "./constants";
 
 export interface PipelineStackProps extends cdk.StackProps {
   readonly appName: string;
@@ -41,6 +41,8 @@ export class PipelineStack extends cdk.Stack {
     let { installCommand, buildCommand, synthCommand } =
       this.getPipelineCommands();
 
+    let home = this.getHome();
+
     this.pipeline = new pipelines.CdkPipeline(this, "cdk-pipeline", {
       cloudAssemblyArtifact: cloudAssemblyArtifact,
       pipelineName: pipelineName,
@@ -58,10 +60,23 @@ export class PipelineStack extends cdk.Stack {
         installCommands: installCommand ? [installCommand] : undefined,
         buildCommands: buildCommand ? [buildCommand] : undefined,
         synthCommand: synthCommand,
-        subdirectory: path.join(CAMP_HOME_DIR, App.instance.configuration.name),
+        subdirectory: home,
       }),
       crossAccountKeys: false,
     });
+  }
+
+  private getHome(): string {
+    // when running locally, home is passed in via a context variable
+    if (this.node.tryGetContext(CONTEXT_KEY_HOME) !== undefined) {
+      return this.node.tryGetContext(CONTEXT_KEY_HOME);
+    }
+
+    // otherwise, we depend on CODEBUILD_SRC_DIR to find home
+    if (process.env.CODEBUILD_SRC_DIR == undefined) {
+      throw new Error("Could not determine app home.");
+    }
+    return process.cwd().slice(process.env.CODEBUILD_SRC_DIR.length + 1);
   }
 
   private getSourceAction(
@@ -111,7 +126,7 @@ export class PipelineStack extends cdk.Stack {
     if (buildCommand) {
       buildCommand = `(${buildCommand})`;
     }
-    let synthCommand = `pwd && ls && cdk synth`;
+    let synthCommand = `pwd && ls && ls -al .. && env && cdk synth`;
 
     return {
       installCommand: installCommand,

@@ -179,13 +179,6 @@ export class UX {
   }
 
   /**
-   * Display banner/logo
-   */
-  displayBanner() {
-    this.log(BANNER);
-  }
-
-  /**
    * There is a weird bug when you select options very fast.
    */
   workaroundListenersBugIDontWantToInvestigate() {
@@ -193,11 +186,3 @@ export class UX {
     require("events").EventEmitter.defaultMaxListeners = 100;
   }
 }
-let BANNER = `
-   ____ _                 _  ____
-  / ___| | ___  _   _  __| |/ ___|__ _ _ __ ___  _ __
- | |   | |/ _ \\| | | |/ _\` | |   / _\` | '_ \` _ \\| '_ \\
- | |___| | (_) | |_| | (_| | |__| (_| | | | | | | |_) |
-  \\____|_|\\___/ \\__,_|\\__,_|\\____\\__,_|_| |_| |_| .__/
-                                                |_|
-`;

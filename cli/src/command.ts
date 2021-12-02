@@ -1,10 +1,6 @@
 import { Command } from "@oclif/command";
 import { UX } from "./ux";
 import chalk from "chalk";
-import { setupAWS } from "./aws";
-import * as path from "path";
-import { getCdkJsonContext } from "./project";
-import { CONTEXT_KEY_NAME } from "@cloudcamp/aws-runtime/src/constants";
 
 /**
  * The base class used for all commands
@@ -16,22 +12,6 @@ export abstract class BaseCommand extends Command {
     super(argv, config);
 
     this.ux = new UX(this);
-  }
-
-  protected async setup(flags: any) {
-    setupAWS(flags.profile);
-    let appName = getCdkJsonContext()[CONTEXT_KEY_NAME];
-    let dirName = path.basename(process.cwd());
-    if (dirName != appName) {
-      // need to call this.catch manually because when throwing from BaseCommand
-      // the custom error handler is not called
-      this.catch(
-        new Error(
-          `App name '${appName}' does not match directory name '${dirName}'.\n\n` +
-            "Either rename the app in cdk.json or rename the directory to match the app name."
-        )
-      );
-    }
   }
 
   /**

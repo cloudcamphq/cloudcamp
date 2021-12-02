@@ -5,18 +5,18 @@ title: "Installation"
 category: "getting-started"
 ---
 
-Learn how to get cloudcamp up and running for your project.
+Learn how to install CloudCamp on your machine.
 
 # Prerequisites
 
-To install cloudcamp, you need to have node.js V14 or higher installed. You can
+To install CloudCamp, you need to have node.js V14 or higher installed. You can
 either [install it with your package
 manager](https://nodejs.org/en/download/package-manager/), or [download an
 installer](https://nodejs.org/en/download/) for your OS.
 
-# Installing cloudcamp
+# Installing CloudCamp
 
-Cloudcamp comes with `camp`, a command line program.
+CloudCamp comes with `camp`, a command line program.
 
 Install it via `npm`
 
@@ -24,17 +24,11 @@ Install it via `npm`
 $ npm install @cloudcamp/cli -g
 ```
 
-Or with `yarn`
-
-```bash
-$ yarn global add @cloudcamp/cli
-```
-
 # AWS Setup
 
-You need to make sure that your credentials for AWS are set up.
+To deploy to AWS, your credentials must be set up.
 
-If you haven't already, [install AWS
+If you haven't already, [install the AWS
 CLI](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html) and
 set up a default profile with administrator access.
 

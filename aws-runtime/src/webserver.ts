@@ -105,8 +105,44 @@ export interface WebServerAlarmProps {
   readonly slow?: AlarmConfiguration;
 }
 
-export interface ScalingSchedule extends applicationautoscaling.CronOptions {
+export interface ScalingSchedule {
   readonly id: string;
+  /**
+   * The minute to run this rule at.
+   *
+   * @default - Every minute
+   */
+  readonly minute?: string;
+  /**
+   * The hour to run this rule at.
+   *
+   * @default - Every hour
+   */
+  readonly hour?: string;
+  /**
+   * The day of the month to run this rule at.
+   *
+   * @default - Every day of the month
+   */
+  readonly day?: string;
+  /**
+   * The month to run this rule at.
+   *
+   * @default - Every month
+   */
+  readonly month?: string;
+  /**
+   * The year to run this rule at.
+   *
+   * @default - Every year
+   */
+  readonly year?: string;
+  /**
+   * The day of the week to run this rule at.
+   *
+   * @default - Any day of the week
+   */
+  readonly weekDay?: string;
 }
 
 export interface ScheduleScalingProps {
@@ -164,8 +200,8 @@ export class WebServer extends cdk.Construct {
    * });
    * ```
    *
-   * See `{@link "command/domain-create" | domain:create}` and
-   * `{@link "command/cert-create" | cert:create}` for more information on
+   * See `{@link "command/domain/#domain-create" | domain:create}` and
+   * `{@link "command/cert/#cert-create" | cert:create}` for more information on
    * setting up domains/SSL.
    *
    * @remarks During initialization you can configure: Custom domains, SSL,

@@ -3,6 +3,8 @@ let Prism = require("prismjs");
 let loadLanguages = require("prismjs/components/");
 let _ = require("lodash");
 let showdownConverter = new showdown.Converter();
+let SourceTranslator = require("../../../cli/src/assembly").SourceTranslator;
+import * as jsiispec from "@jsii/spec";
 
 import {
   Language,
@@ -13,99 +15,36 @@ import {
   Java,
 } from "./languages";
 
-export interface JsiiApi {
-  types: {
-    [key: string]: JsiiDefinition;
-  };
-}
-
-export interface JsiiDefinition {
-  name: string;
-  base?: string;
-  datatype?: true;
-  kind: string;
-  fqn: string;
-  docs?: JsiiDoc;
-  initializer?: JsiiMethod;
-  methods?: JsiiMethod[];
-  properties?: JsiiProperty[];
-}
-
-export interface JsiiDoc {
-  stability?: string;
-  summary?: string;
-  remarks?: string;
-  custom?: {
-    topic?: string;
-    remarks?: string;
-    ignore?: "true";
-    order?: string;
-  };
-  usage?: string;
-  signature?: string;
-  simpleSignature?: string;
-  propsTable?: string;
-}
-
-export interface JsiiMethod {
-  locationInModule: { line: number };
-  name?: string;
-  docs?: JsiiDoc;
-  parameters?: JsiiParameter[];
-  returns?: { type: JsiiType };
-  static?: true;
-  initializer?: true;
-}
-
-export interface JsiiProperty {
-  name?: string;
-  docs: JsiiDoc;
-  immutable?: boolean;
-  locationInModule: { line: number };
-  type?: JsiiType;
-  static?: true;
-}
-
-export interface JsiiParameter {
-  name: string;
-  optional?: true;
-  docs?: JsiiDoc;
-  type: JsiiType;
-}
-
-export interface JsiiType {
-  fqn?: string;
-  primitive?: string;
-}
-
 loadLanguages(Language.LANGUAGE_CODES);
 
 export default class ApiSource {
-  public api!: JsiiApi;
+  public result!: jsiispec.Assembly;
   private languages: Language[];
 
-  constructor(private project: JsiiApi) {
+  constructor(private assembly: jsiispec.Assembly) {
+    let translator = new SourceTranslator();
     this.languages = [
-      new TypeScript("ts", this.project),
-      new JavaScript("javascript", this.project),
-      new Python("python", this.project),
-      new CSharp("csharp", this.project),
-      new Java("java", this.project),
+      new TypeScript("ts", this.assembly, translator),
+      new JavaScript("javascript", this.assembly, translator),
+      new Python("python", this.assembly, translator),
+      new CSharp("csharp", this.assembly, translator),
+      new Java("java", this.assembly, translator),
     ];
   }
 
-  generateApi() {
-    this.api = {
+  transform() {
+    this.result = {
+      ...this.assembly,
       types: Object.fromEntries(
-        Object.entries(this.project.types).map(([name, definition]) => [
+        Object.entries(this.assembly.types).map(([name, definition]) => [
           name,
-          this.makeDefinition(name, definition),
+          this.transformType(name, definition as jsiispec.ClassType),
         ])
       ),
     };
   }
 
-  makeUsage(name: string) {
+  generateUsage(name: string) {
     return [
       ...this.languages.map(
         (lang) =>
@@ -122,79 +61,130 @@ export default class ApiSource {
     ].join("");
   }
 
-  makeDefinition(name: string, definition: JsiiDefinition): JsiiDefinition {
+  transformType(
+    name: string,
+    type: jsiispec.ClassType | (jsiispec.InterfaceType & { initializer: any })
+  ): jsiispec.ClassType | (jsiispec.InterfaceType & { initializer: any }) {
     // TODO filter private and inherited and ignored
 
-    let summary = definition.docs?.summary;
+    let summary = type.docs?.summary;
     if (summary) {
       // hack to allow multi line summaries
       summary = summary.replace(/․/g, ".");
     }
-    let remarks = definition.docs?.remarks;
-
-    // if (definition.docs?.remarks) {
-    //   let parts = remarks.split("\n\n");
-    //   if (parts.length > 1) {
-    //     summary += " " + parts[0].trim();
-    //     remarks = parts.slice(1).join("\n\n");
-    //   }
-    // }
+    let remarks = type.docs?.remarks;
 
     return {
-      name: definition.name,
-      base: definition.base,
-      datatype: definition.datatype,
-      kind: definition.kind,
-      fqn: definition.fqn,
+      ...type,
       docs: {
         summary: this.parseMarkdown(summary),
         remarks: this.parseMarkdown(this.translateCode(remarks)),
-        custom: definition.docs?.custom,
-        stability: definition.docs?.stability,
-        usage: this.makeUsage(definition.name),
+        custom: {
+          ...type.docs?.custom,
+          usage: this.generateUsage(type.name),
+        },
+        stability: type.docs?.stability,
       },
       initializer:
-        definition.initializer &&
-        this.makeMethod(definition.name, {
-          ...definition.initializer,
+        type.initializer &&
+        this.transformMethod(type.name, {
+          ...type.initializer,
           initializer: true,
         }),
       methods:
-        definition.methods &&
-        definition.methods.map((method) =>
-          this.makeMethod(definition.name, method)
-        ),
+        type.methods &&
+        type.methods.map((method) => this.transformMethod(type.name, method)),
       properties:
-        definition.properties &&
-        definition.properties.map((prop) =>
-          this.makeProperty(definition.name, prop)
-        ),
+        type.properties &&
+        type.properties.map((prop) => this.transformProperty(type.name, prop)),
     };
   }
 
-  makePropsTable(className: string, method: JsiiMethod): string | undefined {
+  private generatePropsAllLanguages(
+    className: string,
+    method: jsiispec.Method,
+    param: jsiispec.Parameter,
+    type: jsiispec.ClassType | jsiispec.InterfaceType
+  ): string {
+    let result = [
+      ...this.languages.map(
+        (lang) =>
+          `<span data-language="${lang.languageCode}">` +
+          lang.propsTable(className, method, param, type as any) +
+          "</span>"
+      ),
+    ].join("");
+    return result;
+  }
+
+  generatePropsTable(
+    className: string,
+    method: jsiispec.Method
+  ): string | undefined {
     let params = method.parameters || [];
     if (params.length) {
-      let lastParam = params[params.length - 1];
-      let type = this.project.types[lastParam.type.fqn];
+      let lastParam = params[params.length - 1] as any;
+      let type = this.assembly.types[lastParam.type.fqn];
       if (!type) {
         return undefined;
       }
       if (type.kind == "interface") {
-        return [
-          ...this.languages.map(
-            (lang) =>
-              `<span data-language="${lang.languageCode}">` +
-              lang.propsTable(className, method, lastParam, type) +
-              "</span>"
-          ),
-        ].join("");
+        let result = this.generatePropsAllLanguages(
+          className,
+          method,
+          lastParam,
+          type as any
+        );
+
+        let types = {};
+        let typeNames = [];
+        let props: jsiispec.Property[] = _.clone(type.properties);
+
+        props = props.sort((a, b) =>
+          a.locationInModule.line > b.locationInModule.line ? 1 : -1
+        );
+
+        for (let prop of props || []) {
+          let type = this.assembly.types[(prop.type as any).fqn];
+          if (type && type.kind == "interface") {
+            if (!typeNames.includes(type.fqn)) {
+              types[type.fqn] = type;
+              typeNames.push(type.fqn);
+            }
+          } else if (
+            (prop.type as any)?.collection?.kind == "array" &&
+            (prop.type as any)?.collection?.elementtype?.fqn
+          ) {
+            let type =
+              this.assembly.types[
+                (prop.type as any)?.collection?.elementtype?.fqn
+              ];
+            if (type && type.kind == "interface") {
+              if (!typeNames.includes(type.fqn)) {
+                types[type.fqn] = type;
+                typeNames.push(type.fqn);
+              }
+            }
+          }
+        }
+
+        for (let typeName of typeNames) {
+          let type = types[typeName];
+          result += this.generatePropsAllLanguages(
+            className,
+            method,
+            lastParam,
+            type as any
+          );
+        }
+
+        return result;
       }
     }
     return undefined;
   }
 
-  makeMethodSignature(className: string, method: JsiiMethod): string {
+  generateMethodSignature(className: string, method: jsiispec.Method): string {
     return [
       ...this.languages.map(
         (lang) =>
@@ -205,7 +195,10 @@ export default class ApiSource {
     ].join("");
   }
 
-  makeSimpleMethodSignature(className: string, method: JsiiMethod): string {
+  generateSimpleMethodSignature(
+    className: string,
+    method: jsiispec.Method
+  ): string {
     return [
       ...this.languages.map(
         (lang) =>
@@ -216,10 +209,9 @@ export default class ApiSource {
     ].join("");
   }
 
-  makeMethod(className: string, method: JsiiMethod): JsiiMethod {
+  transformMethod(className: string, method: jsiispec.Method): jsiispec.Method {
     return {
-      locationInModule: method.locationInModule,
-      name: method.name,
+      ...method,
       docs: {
         summary: this.parseMarkdown(method.docs?.summary),
         remarks: this.parseMarkdown(this.translateCode(method.docs?.remarks)),
@@ -229,24 +221,24 @@ export default class ApiSource {
           ),
           topic: method.docs?.custom?.topic,
           ignore: method.docs?.custom?.ignore,
+          signature: this.generateMethodSignature(className, method),
+          simpleSignature: this.generateSimpleMethodSignature(
+            className,
+            method
+          ),
+          propsTable: this.generatePropsTable(className, method),
         },
         stability: method.docs?.stability,
-        signature: this.makeMethodSignature(className, method),
-        simpleSignature: this.makeSimpleMethodSignature(className, method),
-        propsTable: this.makePropsTable(className, method),
       },
       parameters:
         method.parameters &&
-        method.parameters.map((param) => this.makeParameter(param)),
-      returns: method.returns,
-      static: method.static,
+        method.parameters.map((param) => this.transformParameter(param)),
     };
   }
 
-  makeParameter(param: JsiiParameter): JsiiParameter {
+  transformParameter(param: jsiispec.Parameter): jsiispec.Parameter {
     return {
-      name: param.name,
-      optional: param.optional,
+      ...param,
       docs: {
         summary:
           param.docs?.summary &&
@@ -255,11 +247,13 @@ export default class ApiSource {
             .replaceAll("<p>", "")
             .replaceAll("</p>", ""),
       },
-      type: param.type,
     };
   }
 
-  makePropertySignature(className: string, property: JsiiProperty): string {
+  generatePropertySignature(
+    className: string,
+    property: jsiispec.Property
+  ): string {
     return [
       ...this.languages.map(
         (lang) =>
@@ -270,9 +264,9 @@ export default class ApiSource {
     ].join("");
   }
 
-  makeSimplePropertySignature(
+  generateSimplePropertySignature(
     className: string,
-    property: JsiiProperty
+    property: jsiispec.Property
   ): string {
     return [
       ...this.languages.map(
@@ -284,10 +278,12 @@ export default class ApiSource {
     ].join("");
   }
 
-  makeProperty(className: string, prop: JsiiProperty): JsiiProperty {
-    // TODO static
+  transformProperty(
+    className: string,
+    prop: jsiispec.Property
+  ): jsiispec.Property {
     return {
-      name: prop.name,
+      ...prop,
       docs: {
         summary: this.parseMarkdown(prop.docs?.summary),
         remarks: this.parseMarkdown(this.translateCode(prop.docs?.remarks)),
@@ -297,15 +293,14 @@ export default class ApiSource {
           ),
           topic: prop.docs?.custom?.topic,
           ignore: prop.docs?.custom?.ignore,
+          signature: this.generatePropertySignature(className, prop),
+          simpleSignature: this.generateSimplePropertySignature(
+            className,
+            prop
+          ),
         },
         stability: prop.docs?.stability,
-        signature: this.makePropertySignature(className, prop),
-        simpleSignature: this.makeSimplePropertySignature(className, prop),
       },
-      immutable: prop.immutable,
-      locationInModule: prop.locationInModule,
-      type: prop.type,
-      static: prop.static,
     };
   }
 
@@ -324,7 +319,7 @@ export default class ApiSource {
       )
       .replaceAll(
         /{@link\s*([a-zA-Z0-9\#]*?)\s*\|\s*(.*?)}/g,
-        (match, $1, $2) => `<a href="/docs/api/${$1}">${$2}</a>`
+        (match, $1, $2) => `<a href="/docs/api/${_.kebabCase($1)}">${$2}</a>`
       )
       .replaceAll(
         /{@link\s*([a-zA-Z0-9]*?)\.(.*?)\s*\|\s*(.*?)}/g,
@@ -350,9 +345,12 @@ export default class ApiSource {
     if (match) {
       for (let codeSection of match) {
         let code = codeSection.slice("```ts".length, "```".length * -1);
+
         let highlightedCode = this.highlightCode(
           "ts",
-          new TypeScript("ts", this.project).translate(code).trim()
+          new TypeScript("ts", this.assembly, new SourceTranslator())
+            .translate(code)
+            .trim()
         );
 
         if (fixEmptyLinesForMarkdown) {
@@ -370,6 +368,7 @@ export default class ApiSource {
             language.languageCode,
             translatedCode.trim()
           );
+
           if (fixEmptyLinesForMarkdown) {
             highlightedCode = this.fixEmptyLinesForMarkdown(highlightedCode);
           }
@@ -389,10 +388,11 @@ export default class ApiSource {
       return source;
     }
 
-    return source
+    let ret = source
       .split("\n")
       .map((line) => (line.trim().length == 0 ? "&nbsp;" : line))
       .join("\n");
+    return ret;
   }
 
   highlightCode(languageCode: string, source: string): string {

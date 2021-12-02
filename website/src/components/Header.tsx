@@ -12,7 +12,8 @@ export default function Header({
     // @ts-ignore
     <Helmet>
       <meta charSet="utf-8" />
-      <title>{"cloudcamp - " + title}</title>
+      <meta name="theme-color" content="#ffffff" />
+      <title>{"CloudCamp - " + title}</title>
       {canonical && (
         <link rel="canonical" href={"{https://cloudcamphq.com" + canonical} />
       )}

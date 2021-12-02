@@ -1,7 +1,7 @@
 import _ from "lodash";
 import { flags } from "@oclif/command";
 import { BaseCommand } from "../command";
-import { getCdkJsonContext, updateCdkJsonContext } from "../project";
+import { getCdkJsonContext, updateCdkJsonContext } from "../utils";
 import {
   assumeAWSProfile,
   setAWSRegion,
@@ -29,6 +29,8 @@ import {
   CONTEXT_REPOSITORY_TOKEN_SECRET,
 } from "@cloudcamp/aws-runtime/src/constants";
 import { RepositoryHost } from "@cloudcamp/aws-runtime";
+import { resolveHome } from "../utils";
+import { AwsRegion } from "@cloudcamp/aws-runtime/src/types";
 
 /**
  * Deploy a CloudCamp app to AWS.
@@ -46,8 +48,14 @@ export default class Deploy extends BaseCommand {
    */
   static flags = {
     help: flags.help({ char: "h" }),
-    profile: flags.string({ char: "p", description: "the AWS profile name" }),
-    yes: flags.boolean({ description: "accept default choices" }),
+    profile: flags.string({ char: "p", description: "The AWS profile name" }),
+    home: flags.string({ description: "The home directory of your app." }),
+    yes: flags.boolean({ description: "Accept default choices" }),
+    region: flags.string({
+      char: "r",
+      description: "The AWS region to deploy to.",
+      options: Object.values(AwsRegion),
+    }),
   };
 
   /**
@@ -55,14 +63,13 @@ export default class Deploy extends BaseCommand {
    */
   async run() {
     const { flags } = this.parse(Deploy);
+    let home = resolveHome(flags.home);
 
-    let context = getCdkJsonContext();
+    let context = getCdkJsonContext(home);
     await assumeAWSProfile(flags.profile);
 
-    this.ux.displayBanner();
-
     let credentials = new CredentialsInput(flags.profile);
-    let region = new RegionChoice(context[CONTEXT_KEY_REGION]);
+    let region = new RegionChoice(flags.region || context[CONTEXT_KEY_REGION]);
     let remote = new GitRemoteChoice(context[CONTEXT_KEY_REPOSITORY]);
     let branch = new BranchInput();
     let settings = await new Settings(
@@ -71,11 +78,9 @@ export default class Deploy extends BaseCommand {
       remote,
       branch
     ).init();
+
     this.ux.log(
-      "Confirm deployment settings for " + context[CONTEXT_KEY_NAME] + ":"
-    );
-    this.ux.log(
-      "(CloudCamp will make changes and push to your git repository)"
+      "Note: CloudCamp will update configuration files and push to your git repository."
     );
     this.ux.log("");
     if (!flags.yes) {
@@ -145,7 +150,7 @@ export default class Deploy extends BaseCommand {
     context[CONTEXT_KEY_REGION] = region.value;
     context[CONTEXT_KEY_VPC] = vpcId;
 
-    updateCdkJsonContext(context);
+    updateCdkJsonContext(home, context);
 
     // Run bootstrap if needed
     if (!(await CloudFormation.stackExists("CDKToolkit"))) {
@@ -155,7 +160,7 @@ export default class Deploy extends BaseCommand {
     }
 
     this.ux.start("Synthesizing app");
-    await CDK.synth(flags.profile);
+    await CDK.synth(home, flags.profile);
     this.ux.stop();
 
     // push changes
@@ -165,7 +170,7 @@ export default class Deploy extends BaseCommand {
       this.ux.stop();
     }
 
-    await CDK.deploy(this.ux, flags.profile);
+    await CDK.deploy(this.ux, home, flags.profile);
     this.ux.nice("Deploy succeeded.");
   }
 
@@ -182,11 +187,7 @@ export default class Deploy extends BaseCommand {
       keep = true;
     } else if (secretExists) {
       this.log("");
-      this.log(
-        ` ${chalk.red(
-          "›"
-        )} There already is a GitHub token associated with this app.`
-      );
+      this.log(` ${chalk.green("›")} Existing GitHub token found.`);
       this.log("");
 
       keep = await this.ux.confirm({

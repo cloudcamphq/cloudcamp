@@ -1,11 +1,12 @@
 import { flags } from "@oclif/command";
-import { Route53 } from "../../aws";
+import { assumeAWSProfile, Route53 } from "../../aws";
 import { BaseCommand } from "../../command";
 import { cli } from "cli-ux";
 import chalk from "chalk";
 
 /**
- * @order 7
+ * @order 4
+ * @suborder 4
  */
 export default class ShowDomain extends BaseCommand {
   static description = `Show nameservers and certificate.`;
@@ -14,12 +15,12 @@ export default class ShowDomain extends BaseCommand {
 
   static flags = {
     help: flags.help({ char: "h" }),
-    profile: flags.string({ char: "p", description: "the AWS profile name" }),
+    profile: flags.string({ char: "p", description: "The AWS profile name" }),
   };
 
   async run() {
     const { flags, args } = this.parse(ShowDomain);
-    this.setup(flags);
+    assumeAWSProfile(flags.profile);
 
     let nameservers = await Route53.getNameServers(args.domain);
     let domain = await Route53.getDomain(args.domain);

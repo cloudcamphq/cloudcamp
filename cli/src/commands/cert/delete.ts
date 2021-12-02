@@ -1,9 +1,10 @@
 import { flags } from "@oclif/command";
-import { CertificateManager } from "../../aws";
+import { assumeAWSProfile, CertificateManager } from "../../aws";
 import { BaseCommand } from "../../command";
 
 /**
- * @order 9
+ * @order 5
+ * @suborder 2
  */
 export default class DeleteCert extends BaseCommand {
   static description = `Delete an SSL certificate.`;
@@ -22,7 +23,7 @@ export default class DeleteCert extends BaseCommand {
 
   async run() {
     const { flags, args } = this.parse(DeleteCert);
-    this.setup(flags);
+    assumeAWSProfile(flags.profile);
 
     await CertificateManager.remove(args.domain);
     this.ux.logSuccess("Certificate deleted:", args.domain);

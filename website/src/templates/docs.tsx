@@ -23,7 +23,7 @@ export default function Docs({
   let html = data.markdownRemark.html;
 
   // @ts-ignore
-  html = html.replaceAll(/<a/gm, `<a class="text-purple-600" `);
+  html = html.replaceAll(/<a/gm, `<a style="color: #d63200;" `);
 
   html = html.replace(/<h1>(.*?)<\/h1>/gm, (match, $1) => {
     let id = _.kebabCase($1);
