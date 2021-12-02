@@ -2874,7 +2874,7 @@
       "kind": "enum",
       "locationInModule": {
         "filename": "src/language.ts",
-        "line": 4
+        "line": 6
       },
       "members": [
         {
@@ -4492,5 +4492,5 @@
     }
   },
   "version": "0.0.1-alpha.8",
-  "fingerprint": "2JFKQSwSLrZxJz7ixoN+6HSSFlc1w9e80Q1DbFAJP/Y="
+  "fingerprint": "HeW9kihxrUFycf83uuc1lYdfWeYIYG/5b3Z9ZVlkqnM="
 }

@@ -18,7 +18,7 @@ jobs:
         uses: actions/checkout@v2
       - name: Install dependencies
         run: |
-          pip install twine
+          pip install twine && yarn global add jsii-release
       - name: Build aws-runtime
         run: yarn install && yarn build && yarn package
         working-directory: ${{env.AWS_RUNTIME_DIR}}
@@ -35,6 +35,10 @@ jobs:
       - name: Publish aws-runtime (NuGet)
         run: |
           dotnet nuget push $(ls -1 dist/dotnet/*.nupkg) --api-key ${NUGET_TOKEN} --source https://api.nuget.org/v3/index.json
+        working-directory: ${{env.AWS_RUNTIME_DIR}}
+      - name: Publish aws-runtime (Maven)
+        run: |
+          jsii-release-maven
         working-directory: ${{env.AWS_RUNTIME_DIR}}
       - name: Build cli
         run: yarn install
