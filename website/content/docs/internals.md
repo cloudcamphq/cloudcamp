@@ -12,6 +12,7 @@ want to make a source code contribution.
 
 This software is used to build/release CloudCamp for various programming languages:
 
+- standard version (https://www.npmjs.com/package/standard-version)
 - npm (https://www.npmjs.com)
 - yarn (https://yarnpkg.com/)
 - sponge (https://linux.die.net/man/1/sponge)
@@ -19,6 +20,7 @@ This software is used to build/release CloudCamp for various programming languag
 - fswatch (https://github.com/emcrisostomo/fswatch)
 - twine (https://pypi.org/project/twine/)
 - dotnet (https://dotnet.microsoft.com)
+- maven (http://maven.apache.org)
 
 # Releasing
 
@@ -37,10 +39,12 @@ $ git push
 To release, run:
 
 ```bash
-$ git checkout main
-$ yarn release
 $ git checkout release
 $ git merge main
+$ yarn release
+$ git push
+$ git checkout main
+$ git merge release
 $ git push
 ```
 
