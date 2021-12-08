@@ -329,7 +329,33 @@ export class App extends cdk.App {
    * @ignore
    */
   synth(options?: cdk.StageSynthesisOptions): cxapi.CloudAssembly {
-    for (let stage of this.stages.values()) {
+    let names = Array.from(this.stages.keys());
+    names.sort((a, b) => {
+      switch (a) {
+        case "network":
+          if (b == "staging" || b == "production") {
+            return -1;
+          }
+          return 0;
+        case "staging":
+          if (b == "network") {
+            return 1;
+          }
+          if (b == "production") {
+            return -1;
+          }
+          return 0;
+        case "production":
+          if (b == "network" || b == "staging") {
+            return 1;
+          }
+          return 0;
+        default:
+          return 0;
+      }
+    });
+    for (let name of names) {
+      let stage = this.stages.get(name)!;
       let appStage = this.pipeline.addApplicationStage(stage);
       if (stage.needsManualApproval) {
         appStage.addManualApprovalAction();
