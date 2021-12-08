@@ -158,7 +158,7 @@ export abstract class Language {
           method.name,
           (prop as any).type
         )}</td>
-        <td class="px-6 py-2 border font-mono text-sm whitespace-nowrap">${defaultValue}</td>
+        <td class="px-6 py-2 border font-mono text-sm">${defaultValue}</td>
         <td class="px-6 py-2 border">
          ${prop.docs?.summary || ""}
         </td>

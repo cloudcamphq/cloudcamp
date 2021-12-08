@@ -15,12 +15,12 @@ import * as _ from "lodash";
  * @order 2
  */
 export class Stack extends cdk.Stack {
-  constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
-    let stackName =
-      props?.stackName ||
-      _.upperFirst(_.camelCase(App.instance.configuration.name + "-" + id));
+  constructor(scope: cdk.Construct, id: string) {
+    let stackName = _.upperFirst(
+      _.camelCase(App.instance.configuration.name + "-" + id)
+    );
 
-    super(scope, id, { ...props, stackName: stackName });
+    super(scope, id, { stackName: stackName });
 
     new ssm.StringParameter(this, "ssm-stack", {
       parameterName: `/cloudcamp/${

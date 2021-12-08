@@ -83,11 +83,11 @@ then takes care of making the necessary changes to accomplish our desired state.
 Open up <code class="language-text" data-language="ts">src/camp.ts</code><code class="language-text" data-language="javascript">src/camp.js</code><code class="language-text" data-language="python">src/camp.py</code><code class="language-text" data-language="java">src/Camp.java</code><code class="language-text" data-language="csharp">src/Camp.cs</code> in your camp's directory and take a look.
 
 ```ts
-import { App, WebServer } from "@cloudcamp/aws-runtime";
+import { App, WebService } from "@cloudcamp/aws-runtime";
 
 const app = new App();
 
-const web = new WebServer(app.production, "web", {
+const web = new WebService(app.production, "web", {
   dockerfile: "../../Dockerfile",
   port: 3000,
 });
@@ -96,7 +96,7 @@ const web = new WebServer(app.production, "web", {
 In the beginning we instantiate the class `App` which stands
 for an instance of our application running in the cloud.
 
-Next, we create a new `WebServer`, by passing in the stack it belongs to
+Next, we create a new `WebService`, by passing in the stack it belongs to
 (`app.production`) and a unique identifier (`"web"`). Additionally, we pass a Dockerfile and a
 port so our web server knows what to run.
 
@@ -107,7 +107,7 @@ TODO add a database and monitoring at the same time
 To add a PostgreSQL database, change the code to look like this:
 
 ```ts
-import { App, WebServer, Database } from "@cloudcamp/aws-runtime";
+import { App, WebService, Database } from "@cloudcamp/aws-runtime";
 
 const app = new App();
 
@@ -115,7 +115,7 @@ const db = new Database(app.production, "db", {
   engine: "postgres",
 });
 
-const web = new WebServer(app.production, "web", {
+const web = new WebService(app.production, "web", {
   dockerfile: "../../Dockerfile",
   port: 3000,
   environment: { DATABASE_URL: db.databaseUrl },
@@ -141,12 +141,12 @@ the database.
 In a production app, we need to know when things goes wrong - for example, when
 users encounter a server error. To simulate an error, visit the `/error` path on
 your webserver. Now wouldn't it be nice if we got a notification whenever there
-is an error? The `WebServer` class provides an API for exactly that.
+is an error? The `WebService` class provides an API for exactly that.
 
 Update your code to add error notifications:
 
 ```ts
-import { App, WebServer, Database } from "@cloudcamp/aws-runtime";
+import { App, WebService, Database } from "@cloudcamp/aws-runtime";
 
 const app = new App();
 
@@ -154,7 +154,7 @@ const db = new Database(app.production, "db", {
   engine: "postgres",
 });
 
-const web = new WebServer(app.production, "web", {
+const web = new WebService(app.production, "web", {
   dockerfile: "../../Dockerfile",
   port: 3000,
   environment: { DATABASE_URL: db.databaseUrl },
@@ -214,7 +214,7 @@ Finally, update the source code:
 
 ```ts
 void 0;
-import { App, WebServer, Database } from "@cloudcamp/aws-runtime";
+import { App, WebService, Database } from "@cloudcamp/aws-runtime";
 
 let app = new App();
 
@@ -223,7 +223,7 @@ let productionDb = new Database(app.production, "db", {
 });
 void "show";
 
-let productionWeb = new WebServer(app.production, "web", {
+let productionWeb = new WebService(app.production, "web", {
   // ⬇ add your domain
   domains: ["yourdomain.com"],
   // ⬇ enable https

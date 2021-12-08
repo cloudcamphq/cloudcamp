@@ -20,10 +20,12 @@ import {
 type DatabaseCapacity = 1 | 2 | 4 | 8 | 16 | 32 | 64 | 128 | 192 | 256 | 384;
 
 export interface DatabaseProps {
-  readonly engine: "mysql" | "postgres";
+  /**
+   * @default "postgres"
+   */
+  readonly engine?: "mysql" | "postgres";
   readonly databaseName?: string;
   readonly username?: string;
-  readonly vpc?: ec2.IVpc;
   readonly autoPause?: number;
   readonly minCapacity?: DatabaseCapacity;
   readonly maxCapacity?: DatabaseCapacity;
@@ -45,7 +47,7 @@ export interface DatabaseVariables {
 export class Database extends cdk.Construct {
   cluster: rds.IServerlessCluster;
 
-  env: DatabaseVariables;
+  vars: DatabaseVariables;
 
   /**
    *
@@ -53,14 +55,17 @@ export class Database extends cdk.Construct {
    * @param id  the id
    * @param props the props
    */
-  constructor(scope: cdk.Construct, id: string, props: DatabaseProps) {
+  constructor(scope: cdk.Construct, id: string, props?: DatabaseProps) {
     super(scope, id);
 
     let engine: rds.IClusterEngine;
     let type: string;
     let port: number;
 
+    props = props || {};
+
     switch (props.engine) {
+      case undefined:
       case "postgres":
         engine = rds.DatabaseClusterEngine.auroraPostgres({
           version: AuroraPostgresEngineVersion.VER_10_14,
@@ -88,11 +93,9 @@ export class Database extends cdk.Construct {
     const password = secret.secretValue;
     const databaseName = props.databaseName || "maindb";
 
-    let vpc =
-      props.vpc ||
-      ec2.Vpc.fromLookup(this, "vpc", {
-        vpcId: App.instance.configuration.vpcId,
-      });
+    let vpc = ec2.Vpc.fromLookup(this, "vpc", {
+      vpcId: App.instance.configuration.vpcId,
+    });
 
     const securityGroup = new ec2.SecurityGroup(this, "security-group", {
       vpc,
@@ -120,7 +123,7 @@ export class Database extends cdk.Construct {
 
     let host = this.cluster.clusterEndpoint.hostname;
 
-    this.env = {
+    this.vars = {
       databaseUrl: `${type}://${username}:${password}@${host}:${port}/${databaseName}`,
       databaseName: databaseName,
       databaseUsername: username,

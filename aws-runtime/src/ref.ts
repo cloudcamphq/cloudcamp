@@ -8,6 +8,7 @@ import * as rds from "@aws-cdk/aws-rds";
  * AWS Systems Manager functions. Used to communicate IDs between stages and apps.
  *
  * @order 7
+ * @ignore
  */
 class SSM {
   /**

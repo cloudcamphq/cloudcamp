@@ -30,21 +30,21 @@ export interface Configuration {
 /**
  * App represents your application running in the cloud․ Every app contains one
  * or more ``{@link Stack | Stacks}``, which you can use to add your own resources, like a
- * ``{@link WebServer | WebServer}`` or a ``{@link Database | Database}``.
+ * ``{@link WebService | WebService}`` or a ``{@link Database | Database}``.
  *
  * An app can be as big or small as you like - from a single webserver to
  * dozens of load-balanced instances serving different parts of your
  * application.
  *
- * This example adds a ``{@link WebServer | WebServer}`` to the
+ * This example adds a ``{@link WebService | WebService}`` to the
  * ``{@link App.production | production}`` stack:
  *
  * ```ts
- * import { App, WebServer } from "@cloudcamp/aws-runtime";
+ * import { App, WebService } from "@cloudcamp/aws-runtime";
  *
  * let app = new App();
  *
- * new WebServer(app.production, "prod-web", {
+ * new WebService(app.production, "prod-web", {
  *  dockerfile: "../Dockerfile"
  * });
  * ```
@@ -187,7 +187,7 @@ export class App extends cdk.App {
    *
    * ```ts
    * void 0;
-   * import { App, WebServer, Stack} from "@cloudcamp/aws-runtime";
+   * import { App, WebService, Stack} from "@cloudcamp/aws-runtime";
    * const app = new App();
    * void 'show';
    * const devStack = app.addStack("development");
@@ -254,12 +254,12 @@ export class App extends cdk.App {
    *
    * This method can be used to add a stage with a custom ``Stack`` subclass.
    * ```ts
-   * import { App, WebServer, Stack } from "@cloudcamp/aws-runtime";
+   * import { App, WebService, Stack } from "@cloudcamp/aws-runtime";
    *
    * class CustomStack extends Stack {
    *   constructor(scope: cdk.Construct, id: string, props: cdk.StackProps) {
    *      super(scope, id, props);
-   *      new WebServer(this, "web", {
+   *      new WebService(this, "web", {
    *        dockerfile: "../Dockerfile"
    *      });
    *   }

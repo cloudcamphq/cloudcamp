@@ -239,6 +239,7 @@ export default class ApiSource {
   transformParameter(param: jsiispec.Parameter): jsiispec.Parameter {
     return {
       ...param,
+      optional: param.optional ? true : false,
       docs: {
         summary:
           param.docs?.summary &&

@@ -1674,7 +1674,7 @@
       "kind": "interface",
       "locationInModule": {
         "filename": "src/domain.ts",
-        "line": 23
+        "line": 21
       },
       "name": "ARecordProps",
       "properties": [
@@ -1686,7 +1686,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/domain.ts",
-            "line": 25
+            "line": 23
           },
           "name": "name",
           "type": {
@@ -1701,7 +1701,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/domain.ts",
-            "line": 26
+            "line": 24
           },
           "name": "targetIP",
           "type": {
@@ -1716,7 +1716,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/domain.ts",
-            "line": 24
+            "line": 22
           },
           "name": "ttl",
           "optional": true,
@@ -1739,7 +1739,7 @@
       "kind": "interface",
       "locationInModule": {
         "filename": "src/domain.ts",
-        "line": 29
+        "line": 27
       },
       "name": "AaaaRecordProps"
     },
@@ -1753,7 +1753,7 @@
       "kind": "interface",
       "locationInModule": {
         "filename": "src/webserver.ts",
-        "line": 87
+        "line": 82
       },
       "name": "AlarmConfiguration",
       "properties": [
@@ -1765,7 +1765,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webserver.ts",
-            "line": 88
+            "line": 83
           },
           "name": "duration",
           "optional": true,
@@ -1781,7 +1781,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webserver.ts",
-            "line": 90
+            "line": 85
           },
           "name": "enabled",
           "optional": true,
@@ -1797,7 +1797,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webserver.ts",
-            "line": 89
+            "line": 84
           },
           "name": "threshold",
           "optional": true,
@@ -1814,9 +1814,9 @@
         "custom": {
           "order": "1"
         },
-        "remarks": "An app can be as big or small as you like - from a single webserver to\ndozens of load-balanced instances serving different parts of your\napplication.\n\nThis example adds a ``{@link WebServer | WebServer}`` to the\n``{@link App.production | production}`` stack:\n\n```ts\nimport { App, WebServer } from \"@cloudcamp/aws-runtime\";\n\nlet app = new App();\n\nnew WebServer(app.production, \"prod-web\", {\n  dockerfile: \"../Dockerfile\"\n});\n```",
+        "remarks": "An app can be as big or small as you like - from a single webserver to\ndozens of load-balanced instances serving different parts of your\napplication.\n\nThis example adds a ``{@link WebService | WebService}`` to the\n``{@link App.production | production}`` stack:\n\n```ts\nimport { App, WebService } from \"@cloudcamp/aws-runtime\";\n\nlet app = new App();\n\nnew WebService(app.production, \"prod-web\", {\n  dockerfile: \"../Dockerfile\"\n});\n```",
         "stability": "experimental",
-        "summary": "App represents your application running in the cloud․ Every app contains one or more ``{@link Stack | Stacks}``, which you can use to add your own resources, like a ``{@link WebServer | WebServer}`` or a ``{@link Database | Database}``."
+        "summary": "App represents your application running in the cloud․ Every app contains one or more ``{@link Stack | Stacks}``, which you can use to add your own resources, like a ``{@link WebService | WebService}`` or a ``{@link Database | Database}``."
       },
       "fqn": "@cloudcamp/aws-runtime.App",
       "initializer": {
@@ -1841,7 +1841,7 @@
       "methods": [
         {
           "docs": {
-            "remarks": "Pass a stack name to create a new, empty stack:\n\n```ts\nvoid 0;\nimport { App, WebServer, Stack} from \"@cloudcamp/aws-runtime\";\nconst app = new App();\nvoid 'show';\nconst devStack = app.addStack(\"development\");\n```",
+            "remarks": "Pass a stack name to create a new, empty stack:\n\n```ts\nvoid 0;\nimport { App, WebService, Stack} from \"@cloudcamp/aws-runtime\";\nconst app = new App();\nvoid 'show';\nconst devStack = app.addStack(\"development\");\n```",
             "stability": "experimental",
             "summary": "Add a new stack to your application."
           },
@@ -1869,7 +1869,7 @@
         },
         {
           "docs": {
-            "remarks": "This method can be used to add a stage with a custom ``Stack`` subclass.\n```ts\nimport { App, WebServer, Stack } from \"@cloudcamp/aws-runtime\";\n\nclass CustomStack extends Stack {\n   constructor(scope: cdk.Construct, id: string, props: cdk.StackProps) {\n      super(scope, id, props);\n      new WebServer(this, \"web\", {\n        dockerfile: \"../Dockerfile\"\n      });\n   }\n}\n\n// later in the code...\nconst app = new App();\nconst stage = app.addStage(\"dev\");\nconst stack = new CustomStack(stage, \"dev\");\n\n// stack is automatically set to the new stack we created\nif (stage.stack == stack) {\n   // outputs \"True!\"\n   console.log(\"True!\");\n}\n```",
+            "remarks": "This method can be used to add a stage with a custom ``Stack`` subclass.\n```ts\nimport { App, WebService, Stack } from \"@cloudcamp/aws-runtime\";\n\nclass CustomStack extends Stack {\n   constructor(scope: cdk.Construct, id: string, props: cdk.StackProps) {\n      super(scope, id, props);\n      new WebService(this, \"web\", {\n        dockerfile: \"../Dockerfile\"\n      });\n   }\n}\n\n// later in the code...\nconst app = new App();\nconst stage = app.addStage(\"dev\");\nconst stack = new CustomStack(stage, \"dev\");\n\n// stack is automatically set to the new stack we created\nif (stage.stack == stack) {\n   // outputs \"True!\"\n   console.log(\"True!\");\n}\n```",
             "stability": "experimental",
             "summary": "Add a new stage."
           },
@@ -2113,7 +2113,7 @@
       "kind": "interface",
       "locationInModule": {
         "filename": "src/domain.ts",
-        "line": 17
+        "line": 15
       },
       "name": "CNameRecordProps",
       "properties": [
@@ -2125,7 +2125,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/domain.ts",
-            "line": 19
+            "line": 17
           },
           "name": "name",
           "type": {
@@ -2140,7 +2140,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/domain.ts",
-            "line": 20
+            "line": 18
           },
           "name": "target",
           "type": {
@@ -2155,7 +2155,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/domain.ts",
-            "line": 18
+            "line": 16
           },
           "name": "ttl",
           "optional": true,
@@ -2302,7 +2302,7 @@
         },
         "locationInModule": {
           "filename": "src/database.ts",
-          "line": 56
+          "line": 58
         },
         "parameters": [
           {
@@ -2328,6 +2328,7 @@
               "summary": "the props."
             },
             "name": "props",
+            "optional": true,
             "type": {
               "fqn": "@cloudcamp/aws-runtime.DatabaseProps"
             }
@@ -2337,7 +2338,7 @@
       "kind": "class",
       "locationInModule": {
         "filename": "src/database.ts",
-        "line": 45
+        "line": 47
       },
       "name": "Database",
       "properties": [
@@ -2347,7 +2348,7 @@
           },
           "locationInModule": {
             "filename": "src/database.ts",
-            "line": 46
+            "line": 48
           },
           "name": "cluster",
           "type": {
@@ -2360,9 +2361,9 @@
           },
           "locationInModule": {
             "filename": "src/database.ts",
-            "line": 48
+            "line": 50
           },
-          "name": "env",
+          "name": "vars",
           "type": {
             "fqn": "@cloudcamp/aws-runtime.DatabaseVariables"
           }
@@ -2391,22 +2392,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/database.ts",
-            "line": 23
-          },
-          "name": "engine",
-          "type": {
-            "primitive": "string"
-          }
-        },
-        {
-          "abstract": true,
-          "docs": {
-            "stability": "experimental"
-          },
-          "immutable": true,
-          "locationInModule": {
-            "filename": "src/database.ts",
-            "line": 27
+            "line": 29
           },
           "name": "autoPause",
           "optional": true,
@@ -2422,9 +2408,26 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/database.ts",
-            "line": 24
+            "line": 27
           },
           "name": "databaseName",
+          "optional": true,
+          "type": {
+            "primitive": "string"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "default": "\"postgres\"",
+            "stability": "experimental"
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/database.ts",
+            "line": 26
+          },
+          "name": "engine",
           "optional": true,
           "type": {
             "primitive": "string"
@@ -2438,7 +2441,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/database.ts",
-            "line": 29
+            "line": 31
           },
           "name": "maxCapacity",
           "optional": true,
@@ -2454,7 +2457,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/database.ts",
-            "line": 28
+            "line": 30
           },
           "name": "minCapacity",
           "optional": true,
@@ -2470,28 +2473,12 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/database.ts",
-            "line": 25
+            "line": 28
           },
           "name": "username",
           "optional": true,
           "type": {
             "primitive": "string"
-          }
-        },
-        {
-          "abstract": true,
-          "docs": {
-            "stability": "experimental"
-          },
-          "immutable": true,
-          "locationInModule": {
-            "filename": "src/database.ts",
-            "line": 26
-          },
-          "name": "vpc",
-          "optional": true,
-          "type": {
-            "fqn": "@aws-cdk/aws-ec2.IVpc"
           }
         }
       ]
@@ -2506,7 +2493,7 @@
       "kind": "interface",
       "locationInModule": {
         "filename": "src/database.ts",
-        "line": 32
+        "line": 34
       },
       "name": "DatabaseVariables",
       "properties": [
@@ -2518,7 +2505,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/database.ts",
-            "line": 37
+            "line": 39
           },
           "name": "databaseHost",
           "type": {
@@ -2533,7 +2520,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/database.ts",
-            "line": 34
+            "line": 36
           },
           "name": "databaseName",
           "type": {
@@ -2548,7 +2535,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/database.ts",
-            "line": 36
+            "line": 38
           },
           "name": "databasePassword",
           "type": {
@@ -2563,7 +2550,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/database.ts",
-            "line": 38
+            "line": 40
           },
           "name": "databasePort",
           "type": {
@@ -2578,7 +2565,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/database.ts",
-            "line": 39
+            "line": 41
           },
           "name": "databaseType",
           "type": {
@@ -2593,7 +2580,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/database.ts",
-            "line": 33
+            "line": 35
           },
           "name": "databaseUrl",
           "type": {
@@ -2608,7 +2595,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/database.ts",
-            "line": 35
+            "line": 37
           },
           "name": "databaseUsername",
           "type": {
@@ -2633,7 +2620,7 @@
         },
         "locationInModule": {
           "filename": "src/domain.ts",
-          "line": 50
+          "line": 47
         },
         "parameters": [
           {
@@ -2662,7 +2649,7 @@
       "kind": "class",
       "locationInModule": {
         "filename": "src/domain.ts",
-        "line": 40
+        "line": 38
       },
       "methods": [
         {
@@ -2671,9 +2658,9 @@
           },
           "locationInModule": {
             "filename": "src/domain.ts",
-            "line": 101
+            "line": 81
           },
-          "name": "addAaaaRecord",
+          "name": "aaaaRecord",
           "parameters": [
             {
               "name": "id",
@@ -2695,9 +2682,9 @@
           },
           "locationInModule": {
             "filename": "src/domain.ts",
-            "line": 92
+            "line": 72
           },
-          "name": "addARecord",
+          "name": "aRecord",
           "parameters": [
             {
               "name": "id",
@@ -2719,9 +2706,9 @@
           },
           "locationInModule": {
             "filename": "src/domain.ts",
-            "line": 83
+            "line": 63
           },
-          "name": "addCnameRecord",
+          "name": "cnameRecord",
           "parameters": [
             {
               "name": "id",
@@ -2743,9 +2730,9 @@
           },
           "locationInModule": {
             "filename": "src/domain.ts",
-            "line": 75
+            "line": 55
           },
-          "name": "addMxRecords",
+          "name": "mxRecord",
           "parameters": [
             {
               "name": "id",
@@ -2767,9 +2754,9 @@
           },
           "locationInModule": {
             "filename": "src/domain.ts",
-            "line": 110
+            "line": 90
           },
-          "name": "addTxtRecord",
+          "name": "txtRecord",
           "parameters": [
             {
               "name": "id",
@@ -2794,25 +2781,11 @@
           },
           "locationInModule": {
             "filename": "src/domain.ts",
-            "line": 41
+            "line": 39
           },
           "name": "hostedZone",
           "type": {
             "fqn": "@aws-cdk/aws-route53.IHostedZone"
-          }
-        },
-        {
-          "docs": {
-            "stability": "experimental"
-          },
-          "locationInModule": {
-            "filename": "src/domain.ts",
-            "line": 42
-          },
-          "name": "certificate",
-          "optional": true,
-          "type": {
-            "fqn": "@aws-cdk/aws-certificatemanager.ICertificate"
           }
         }
       ]
@@ -2827,7 +2800,7 @@
       "kind": "interface",
       "locationInModule": {
         "filename": "src/domain.ts",
-        "line": 7
+        "line": 6
       },
       "name": "DomainProps",
       "properties": [
@@ -2839,27 +2812,11 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/domain.ts",
-            "line": 8
+            "line": 7
           },
-          "name": "name",
+          "name": "domain",
           "type": {
             "primitive": "string"
-          }
-        },
-        {
-          "abstract": true,
-          "docs": {
-            "stability": "experimental"
-          },
-          "immutable": true,
-          "locationInModule": {
-            "filename": "src/domain.ts",
-            "line": 9
-          },
-          "name": "certificate",
-          "optional": true,
-          "type": {
-            "primitive": "boolean"
           }
         }
       ]
@@ -2874,7 +2831,7 @@
       "kind": "enum",
       "locationInModule": {
         "filename": "src/language.ts",
-        "line": 6
+        "line": 4
       },
       "members": [
         {
@@ -2920,7 +2877,7 @@
       "kind": "interface",
       "locationInModule": {
         "filename": "src/webserver.ts",
-        "line": 154
+        "line": 149
       },
       "name": "MetricScalingProps",
       "properties": [
@@ -2932,7 +2889,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webserver.ts",
-            "line": 156
+            "line": 151
           },
           "name": "max",
           "type": {
@@ -2947,7 +2904,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webserver.ts",
-            "line": 155
+            "line": 150
           },
           "name": "min",
           "type": {
@@ -2962,7 +2919,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webserver.ts",
-            "line": 157
+            "line": 152
           },
           "name": "cpu",
           "optional": true,
@@ -2978,7 +2935,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webserver.ts",
-            "line": 158
+            "line": 153
           },
           "name": "memory",
           "optional": true,
@@ -2994,7 +2951,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webserver.ts",
-            "line": 159
+            "line": 154
           },
           "name": "requestCount",
           "optional": true,
@@ -3014,7 +2971,7 @@
       "kind": "interface",
       "locationInModule": {
         "filename": "src/domain.ts",
-        "line": 12
+        "line": 10
       },
       "name": "MxRecordProps",
       "properties": [
@@ -3026,7 +2983,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/domain.ts",
-            "line": 14
+            "line": 12
           },
           "name": "values",
           "type": {
@@ -3046,7 +3003,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/domain.ts",
-            "line": 13
+            "line": 11
           },
           "name": "ttl",
           "optional": true,
@@ -3236,7 +3193,7 @@
       "kind": "class",
       "locationInModule": {
         "filename": "src/ref.ts",
-        "line": 31
+        "line": 32
       },
       "methods": [
         {
@@ -3245,7 +3202,7 @@
           },
           "locationInModule": {
             "filename": "src/ref.ts",
-            "line": 72
+            "line": 73
           },
           "name": "addCertificate",
           "parameters": [
@@ -3283,7 +3240,7 @@
           },
           "locationInModule": {
             "filename": "src/ref.ts",
-            "line": 36
+            "line": 37
           },
           "name": "addHostedZone",
           "parameters": [
@@ -3321,7 +3278,7 @@
           },
           "locationInModule": {
             "filename": "src/ref.ts",
-            "line": 108
+            "line": 109
           },
           "name": "addServerlessCluster",
           "parameters": [
@@ -3359,7 +3316,7 @@
           },
           "locationInModule": {
             "filename": "src/ref.ts",
-            "line": 90
+            "line": 91
           },
           "name": "getCertificate",
           "parameters": [
@@ -3396,7 +3353,7 @@
           },
           "locationInModule": {
             "filename": "src/ref.ts",
-            "line": 54
+            "line": 55
           },
           "name": "getHostedZone",
           "parameters": [
@@ -3433,7 +3390,7 @@
           },
           "locationInModule": {
             "filename": "src/ref.ts",
-            "line": 126
+            "line": 127
           },
           "name": "getServerlessCluster",
           "parameters": [
@@ -3477,7 +3434,7 @@
       "kind": "interface",
       "locationInModule": {
         "filename": "src/ref.ts",
-        "line": 26
+        "line": 27
       },
       "name": "RefParameterProps",
       "properties": [
@@ -3489,7 +3446,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/ref.ts",
-            "line": 27
+            "line": 28
           },
           "name": "appName",
           "optional": true,
@@ -3505,7 +3462,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/ref.ts",
-            "line": 28
+            "line": 29
           },
           "name": "name",
           "optional": true,
@@ -3546,7 +3503,7 @@
       "kind": "interface",
       "locationInModule": {
         "filename": "src/webserver.ts",
-        "line": 108
+        "line": 103
       },
       "name": "ScalingSchedule",
       "properties": [
@@ -3558,7 +3515,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webserver.ts",
-            "line": 109
+            "line": 104
           },
           "name": "id",
           "type": {
@@ -3575,7 +3532,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webserver.ts",
-            "line": 127
+            "line": 122
           },
           "name": "day",
           "optional": true,
@@ -3593,7 +3550,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webserver.ts",
-            "line": 121
+            "line": 116
           },
           "name": "hour",
           "optional": true,
@@ -3611,7 +3568,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webserver.ts",
-            "line": 115
+            "line": 110
           },
           "name": "minute",
           "optional": true,
@@ -3629,7 +3586,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webserver.ts",
-            "line": 133
+            "line": 128
           },
           "name": "month",
           "optional": true,
@@ -3647,7 +3604,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webserver.ts",
-            "line": 145
+            "line": 140
           },
           "name": "weekDay",
           "optional": true,
@@ -3665,7 +3622,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webserver.ts",
-            "line": 139
+            "line": 134
           },
           "name": "year",
           "optional": true,
@@ -3685,7 +3642,7 @@
       "kind": "interface",
       "locationInModule": {
         "filename": "src/webserver.ts",
-        "line": 148
+        "line": 143
       },
       "name": "ScheduleScalingProps",
       "properties": [
@@ -3697,7 +3654,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webserver.ts",
-            "line": 150
+            "line": 145
           },
           "name": "max",
           "type": {
@@ -3712,7 +3669,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webserver.ts",
-            "line": 149
+            "line": 144
           },
           "name": "min",
           "type": {
@@ -3727,7 +3684,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webserver.ts",
-            "line": 151
+            "line": 146
           },
           "name": "schedule",
           "type": {
@@ -3751,7 +3708,7 @@
       "kind": "interface",
       "locationInModule": {
         "filename": "src/webserver.ts",
-        "line": 93
+        "line": 88
       },
       "name": "SlackConfiguration",
       "properties": [
@@ -3763,7 +3720,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webserver.ts",
-            "line": 95
+            "line": 90
           },
           "name": "channelId",
           "type": {
@@ -3778,7 +3735,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webserver.ts",
-            "line": 94
+            "line": 89
           },
           "name": "workspaceId",
           "type": {
@@ -3819,13 +3776,6 @@
             "type": {
               "primitive": "string"
             }
-          },
-          {
-            "name": "props",
-            "optional": true,
-            "type": {
-              "fqn": "@aws-cdk/core.StackProps"
-            }
           }
         ]
       },
@@ -3865,13 +3815,6 @@
             "name": "id",
             "type": {
               "primitive": "string"
-            }
-          },
-          {
-            "name": "props",
-            "optional": true,
-            "type": {
-              "fqn": "@aws-cdk/core.StageProps"
             }
           }
         ]
@@ -3921,7 +3864,7 @@
       "kind": "interface",
       "locationInModule": {
         "filename": "src/domain.ts",
-        "line": 31
+        "line": 29
       },
       "name": "TxtRecordProps",
       "properties": [
@@ -3933,7 +3876,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/domain.ts",
-            "line": 33
+            "line": 31
           },
           "name": "name",
           "type": {
@@ -3948,7 +3891,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/domain.ts",
-            "line": 34
+            "line": 32
           },
           "name": "values",
           "type": {
@@ -3968,7 +3911,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/domain.ts",
-            "line": 32
+            "line": 30
           },
           "name": "ttl",
           "optional": true,
@@ -3978,31 +3921,31 @@
         }
       ]
     },
-    "@cloudcamp/aws-runtime.WebServer": {
+    "@cloudcamp/aws-runtime.WebService": {
       "assembly": "@cloudcamp/aws-runtime",
       "base": "@aws-cdk/core.Construct",
       "docs": {
         "custom": {
           "order": "4"
         },
-        "remarks": "`WebServer` runs any web application behing a load balancers as docker\ncontainers. For example, this runs a web application as a single container\nexposed on port 8080:\n\n```ts\nvoid 0;\nimport { App, WebServer } from \"@cloudcamp/aws-runtime\";\nlet app = new App();\nvoid 'show';\nnew WebServer(app.production, \"prod-web\", {\n   dockerfile: \"../Dockerfile\",\n   port: 8080\n});\n```",
+        "remarks": "`WebService` runs any web application behing a load balancers as docker\ncontainers. For example, this runs a web application as a single container\nexposed on port 8080:\n\n```ts\nvoid 0;\nimport { App, WebService } from \"@cloudcamp/aws-runtime\";\nlet app = new App();\nvoid 'show';\nnew WebService(app.production, \"prod-web\", {\n   dockerfile: \"../Dockerfile\",\n   port: 8080\n});\n```",
         "stability": "experimental",
         "summary": "A scalable web server running one or more docker containers behind a load balancer."
       },
-      "fqn": "@cloudcamp/aws-runtime.WebServer",
+      "fqn": "@cloudcamp/aws-runtime.WebService",
       "initializer": {
         "docs": {
           "custom": {
             "remarks": "During initialization you can configure: Custom domains, SSL,\nmachine configuration, health checks and the default number of instances.",
             "topic": "Initialization"
           },
-          "remarks": "*Examples:*\n\nTo use your own domain and serve traffic via SSL, use the `domain`\nand `ssl` properties:\n```ts\nvoid 0;\nimport { App, WebServer } from \"@cloudcamp/aws-runtime\";\nlet app = new App();\nvoid 'show';\n\nnew WebServer(app.production, \"prod\", {\n   dockerfile: \"../Dockerfile\",\n   domain: \"example.com\",\n   ssl: true\n});\n```\n\nSee `{@link \"command/domain/#domain-create\" | domain:create}` and\n`{@link \"command/cert/#cert-create\" | cert:create}` for more information on\nsetting up domains/SSL.",
+          "remarks": "*Examples:*\n\nTo use your own domain and serve traffic via SSL, use the `domain`\nand `ssl` properties:\n```ts\nvoid 0;\nimport { App, WebService } from \"@cloudcamp/aws-runtime\";\nlet app = new App();\nvoid 'show';\n\nnew WebService(app.production, \"prod\", {\n   dockerfile: \"../Dockerfile\",\n   domain: \"example.com\",\n   ssl: true\n});\n```\n\nSee `{@link \"command/domain/#domain-create\" | domain:create}` and\n`{@link \"command/cert/#cert-create\" | cert:create}` for more information on\nsetting up domains/SSL.",
           "stability": "experimental",
-          "summary": "Initialize a new web server."
+          "summary": "Initialize a new web service."
         },
         "locationInModule": {
           "filename": "src/webserver.ts",
-          "line": 216
+          "line": 211
         },
         "parameters": [
           {
@@ -4025,11 +3968,11 @@
           },
           {
             "docs": {
-              "summary": "the properties of WebServer."
+              "summary": "the properties of WebService."
             },
             "name": "props",
             "type": {
-              "fqn": "@cloudcamp/aws-runtime.WebServerProps"
+              "fqn": "@cloudcamp/aws-runtime.WebServiceProps"
             }
           }
         ]
@@ -4037,7 +3980,7 @@
       "kind": "class",
       "locationInModule": {
         "filename": "src/webserver.ts",
-        "line": 182
+        "line": 177
       },
       "methods": [
         {
@@ -4046,7 +3989,7 @@
           },
           "locationInModule": {
             "filename": "src/webserver.ts",
-            "line": 330
+            "line": 323
           },
           "name": "addAlarms",
           "parameters": [
@@ -4054,7 +3997,7 @@
               "name": "props",
               "optional": true,
               "type": {
-                "fqn": "@cloudcamp/aws-runtime.WebServerAlarmProps"
+                "fqn": "@cloudcamp/aws-runtime.WebServiceAlarmProps"
               }
             }
           ]
@@ -4065,7 +4008,7 @@
           },
           "locationInModule": {
             "filename": "src/webserver.ts",
-            "line": 305
+            "line": 298
           },
           "name": "scaleOnMetric",
           "parameters": [
@@ -4083,7 +4026,7 @@
           },
           "locationInModule": {
             "filename": "src/webserver.ts",
-            "line": 293
+            "line": 286
           },
           "name": "scaleOnSchedule",
           "parameters": [
@@ -4096,7 +4039,7 @@
           ]
         }
       ],
-      "name": "WebServer",
+      "name": "WebService",
       "properties": [
         {
           "docs": {
@@ -4104,7 +4047,7 @@
           },
           "locationInModule": {
             "filename": "src/webserver.ts",
-            "line": 291
+            "line": 284
           },
           "name": "fargateService",
           "type": {
@@ -4113,19 +4056,19 @@
         }
       ]
     },
-    "@cloudcamp/aws-runtime.WebServerAlarmProps": {
+    "@cloudcamp/aws-runtime.WebServiceAlarmProps": {
       "assembly": "@cloudcamp/aws-runtime",
       "datatype": true,
       "docs": {
         "stability": "experimental"
       },
-      "fqn": "@cloudcamp/aws-runtime.WebServerAlarmProps",
+      "fqn": "@cloudcamp/aws-runtime.WebServiceAlarmProps",
       "kind": "interface",
       "locationInModule": {
         "filename": "src/webserver.ts",
-        "line": 98
+        "line": 93
       },
-      "name": "WebServerAlarmProps",
+      "name": "WebServiceAlarmProps",
       "properties": [
         {
           "abstract": true,
@@ -4135,7 +4078,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webserver.ts",
-            "line": 100
+            "line": 95
           },
           "name": "email",
           "optional": true,
@@ -4156,7 +4099,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webserver.ts",
-            "line": 103
+            "line": 98
           },
           "name": "http4xx",
           "optional": true,
@@ -4172,7 +4115,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webserver.ts",
-            "line": 102
+            "line": 97
           },
           "name": "http5xx",
           "optional": true,
@@ -4188,7 +4131,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webserver.ts",
-            "line": 104
+            "line": 99
           },
           "name": "rejected",
           "optional": true,
@@ -4204,7 +4147,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webserver.ts",
-            "line": 99
+            "line": 94
           },
           "name": "slack",
           "optional": true,
@@ -4220,7 +4163,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webserver.ts",
-            "line": 105
+            "line": 100
           },
           "name": "slow",
           "optional": true,
@@ -4236,7 +4179,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webserver.ts",
-            "line": 101
+            "line": 96
           },
           "name": "sms",
           "optional": true,
@@ -4251,19 +4194,19 @@
         }
       ]
     },
-    "@cloudcamp/aws-runtime.WebServerProps": {
+    "@cloudcamp/aws-runtime.WebServiceProps": {
       "assembly": "@cloudcamp/aws-runtime",
       "datatype": true,
       "docs": {
         "stability": "experimental"
       },
-      "fqn": "@cloudcamp/aws-runtime.WebServerProps",
+      "fqn": "@cloudcamp/aws-runtime.WebServiceProps",
       "kind": "interface",
       "locationInModule": {
         "filename": "src/webserver.ts",
         "line": 22
       },
-      "name": "WebServerProps",
+      "name": "WebServiceProps",
       "properties": [
         {
           "abstract": true,
@@ -4284,38 +4227,6 @@
         {
           "abstract": true,
           "docs": {
-            "stability": "experimental"
-          },
-          "immutable": true,
-          "locationInModule": {
-            "filename": "src/webserver.ts",
-            "line": 83
-          },
-          "name": "certificate",
-          "optional": true,
-          "type": {
-            "fqn": "@aws-cdk/aws-certificatemanager.ICertificate"
-          }
-        },
-        {
-          "abstract": true,
-          "docs": {
-            "stability": "experimental"
-          },
-          "immutable": true,
-          "locationInModule": {
-            "filename": "src/webserver.ts",
-            "line": 80
-          },
-          "name": "cluster",
-          "optional": true,
-          "type": {
-            "fqn": "@aws-cdk/aws-ecs.Cluster"
-          }
-        },
-        {
-          "abstract": true,
-          "docs": {
             "default": "256",
             "remarks": "Valid values, which determines your range of valid values for the memory parameter:\n\n- 256 (.25 vCPU) - Available memory values: 0.5GB, 1GB, 2GB\n- 512 (.5 vCPU) - Available memory values: 1GB, 2GB, 3GB, 4GB\n- 1024 (1 vCPU) - Available memory values: 2GB, 3GB, 4GB, 5GB, 6GB, 7GB,\n   8GB\n- 2048 (2 vCPU) - Available memory values: Between 4GB and 16GB in 1GB\n   increments\n- 4096 (4 vCPU) - Available memory values: Between 8GB and 30GB in 1GB\n   increments",
             "stability": "experimental",
@@ -4324,7 +4235,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webserver.ts",
-            "line": 60
+            "line": 59
           },
           "name": "cpu",
           "optional": true,
@@ -4340,7 +4251,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webserver.ts",
-            "line": 81
+            "line": 78
           },
           "name": "desiredCount",
           "optional": true,
@@ -4363,38 +4274,6 @@
           "optional": true,
           "type": {
             "primitive": "string"
-          }
-        },
-        {
-          "abstract": true,
-          "docs": {
-            "stability": "experimental"
-          },
-          "immutable": true,
-          "locationInModule": {
-            "filename": "src/webserver.ts",
-            "line": 43
-          },
-          "name": "domainName",
-          "optional": true,
-          "type": {
-            "primitive": "string"
-          }
-        },
-        {
-          "abstract": true,
-          "docs": {
-            "stability": "experimental"
-          },
-          "immutable": true,
-          "locationInModule": {
-            "filename": "src/webserver.ts",
-            "line": 82
-          },
-          "name": "domainZone",
-          "optional": true,
-          "type": {
-            "fqn": "@aws-cdk/aws-route53.IHostedZone"
           }
         },
         {
@@ -4427,7 +4306,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webserver.ts",
-            "line": 84
+            "line": 79
           },
           "name": "healthCheckPath",
           "optional": true,
@@ -4446,7 +4325,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webserver.ts",
-            "line": 77
+            "line": 76
           },
           "name": "memory",
           "optional": true,
@@ -4471,26 +4350,10 @@
           "type": {
             "primitive": "number"
           }
-        },
-        {
-          "abstract": true,
-          "docs": {
-            "stability": "experimental"
-          },
-          "immutable": true,
-          "locationInModule": {
-            "filename": "src/webserver.ts",
-            "line": 79
-          },
-          "name": "vpc",
-          "optional": true,
-          "type": {
-            "fqn": "@aws-cdk/aws-ec2.IVpc"
-          }
         }
       ]
     }
   },
-  "version": "0.0.1-alpha.8",
-  "fingerprint": "HeW9kihxrUFycf83uuc1lYdfWeYIYG/5b3Z9ZVlkqnM="
+  "version": "0.0.1-alpha.9",
+  "fingerprint": "kAPwd3rq+dzZfXikPYgWWkjB8mpdaRZGAK9z9th6NCM="
 }

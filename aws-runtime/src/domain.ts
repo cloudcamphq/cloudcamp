@@ -1,12 +1,10 @@
 import * as cdk from "@aws-cdk/core";
 import { Ref } from "./ref";
 import * as route53 from "@aws-cdk/aws-route53";
-import * as certificatemanager from "@aws-cdk/aws-certificatemanager";
 import { Duration } from "@aws-cdk/core";
 
 export interface DomainProps {
-  readonly name: string;
-  readonly certificate?: boolean;
+  readonly domain: string;
 }
 
 export interface MxRecordProps {
@@ -39,7 +37,6 @@ export interface TxtRecordProps {
  */
 export class Domain extends cdk.Construct {
   hostedZone: route53.IHostedZone;
-  certificate?: certificatemanager.ICertificate;
 
   /**
    *
@@ -51,28 +48,11 @@ export class Domain extends cdk.Construct {
     super(scope, id);
 
     this.hostedZone = Ref.getHostedZone(this, "hosted-zone", {
-      name: props.name,
+      name: props.domain,
     });
-
-    if (props.certificate !== false) {
-      this.certificate = new certificatemanager.Certificate(
-        this,
-        "certificate",
-        {
-          domainName: "*." + props.name,
-          validation: certificatemanager.CertificateValidation.fromDns(
-            this.hostedZone
-          ),
-        }
-      );
-
-      Ref.addCertificate(this, "global-certificate", this.certificate, {
-        name: props.name,
-      });
-    }
   }
 
-  addMxRecords(id: string, props: MxRecordProps) {
+  mxRecord(id: string, props: MxRecordProps) {
     new route53.MxRecord(this, id, {
       zone: this.hostedZone,
       values: props.values,
@@ -80,7 +60,7 @@ export class Domain extends cdk.Construct {
     });
   }
 
-  addCnameRecord(id: string, props: CNameRecordProps) {
+  cnameRecord(id: string, props: CNameRecordProps) {
     new route53.CnameRecord(this, id, {
       recordName: props.name,
       domainName: props.target,
@@ -89,7 +69,7 @@ export class Domain extends cdk.Construct {
     });
   }
 
-  addARecord(id: string, props: ARecordProps) {
+  aRecord(id: string, props: ARecordProps) {
     new route53.ARecord(this, id, {
       recordName: props.name,
       target: route53.RecordTarget.fromIpAddresses(props.targetIP),
@@ -98,7 +78,7 @@ export class Domain extends cdk.Construct {
     });
   }
 
-  addAaaaRecord(id: string, props: ARecordProps) {
+  aaaaRecord(id: string, props: ARecordProps) {
     new route53.AaaaRecord(this, id, {
       recordName: props.name,
       target: route53.RecordTarget.fromIpAddresses(props.targetIP),
@@ -107,7 +87,7 @@ export class Domain extends cdk.Construct {
     });
   }
 
-  addTxtRecord(id: string, props: TxtRecordProps) {
+  txtRecord(id: string, props: TxtRecordProps) {
     new route53.TxtRecord(this, id, {
       recordName: props.name,
       values: props.values,

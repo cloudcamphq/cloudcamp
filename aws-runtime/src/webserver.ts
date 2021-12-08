@@ -4,11 +4,9 @@ import _ = require("lodash");
 import * as ec2 from "@aws-cdk/aws-ec2";
 import * as logs from "@aws-cdk/aws-logs";
 import * as ecs from "@aws-cdk/aws-ecs";
-import * as route53 from "@aws-cdk/aws-route53";
 import * as ecs_patterns from "@aws-cdk/aws-ecs-patterns";
 import * as cdk from "@aws-cdk/core";
 import * as elasticloadbalancingv2 from "@aws-cdk/aws-elasticloadbalancingv2";
-import * as certificatemanager from "@aws-cdk/aws-certificatemanager";
 import * as chatbot from "@aws-cdk/aws-chatbot";
 import * as sns from "@aws-cdk/aws-sns";
 import * as cloudwatch from "@aws-cdk/aws-cloudwatch";
@@ -16,10 +14,12 @@ import * as cloudwatch_actions from "@aws-cdk/aws-cloudwatch-actions";
 import * as subscriptions from "@aws-cdk/aws-sns-subscriptions";
 import * as applicationautoscaling from "@aws-cdk/aws-applicationautoscaling";
 import { setDefaults } from "./utils";
+import { ICertificate } from "@aws-cdk/aws-certificatemanager";
+import { Ref } from ".";
 
 // TODO add redirectHTTP
 // TODO add multiple domains https://jeremynagel.medium.com/adding-multiple-certificates-to-a-applicationloadbalancedfargateservice-with-cdk-adc877e2831d
-export interface WebServerProps {
+export interface WebServiceProps {
   /**
    * The path to the Dockerfile to run.
    */
@@ -40,7 +40,6 @@ export interface WebServerProps {
    * TODO
    */
   readonly domain?: string;
-  readonly domainName?: string;
   /**
    * The number of cpu units.
    *
@@ -76,11 +75,7 @@ export interface WebServerProps {
    */
   readonly memory?: number;
 
-  readonly vpc?: ec2.IVpc;
-  readonly cluster?: ecs.Cluster;
   readonly desiredCount?: number;
-  readonly domainZone?: route53.IHostedZone;
-  readonly certificate?: certificatemanager.ICertificate;
   readonly healthCheckPath?: string;
 }
 
@@ -95,7 +90,7 @@ export interface SlackConfiguration {
   readonly channelId: string;
 }
 
-export interface WebServerAlarmProps {
+export interface WebServiceAlarmProps {
   readonly slack?: SlackConfiguration;
   readonly email?: string[];
   readonly sms?: string[];
@@ -163,25 +158,25 @@ export interface MetricScalingProps {
  * A scalable web server running one or more docker containers behind a load balancer.
  *
  *
- * `WebServer` runs any web application behing a load balancers as docker
+ * `WebService` runs any web application behing a load balancers as docker
  * containers. For example, this runs a web application as a single container
  * exposed on port 8080:
  *
  * ```ts
  * void 0;
- * import { App, WebServer } from "@cloudcamp/aws-runtime";
+ * import { App, WebService } from "@cloudcamp/aws-runtime";
  * let app = new App();
  * void 'show';
- * new WebServer(app.production, "prod-web", {
+ * new WebService(app.production, "prod-web", {
  *   dockerfile: "../Dockerfile",
  *   port: 8080
  * });
  * ```
  * @order 4
  */
-export class WebServer extends cdk.Construct {
+export class WebService extends cdk.Construct {
   /**
-   * Initialize a new web server.
+   * Initialize a new web service.
    *
    * *Examples:*
    *
@@ -189,11 +184,11 @@ export class WebServer extends cdk.Construct {
    * and `ssl` properties:
    * ```ts
    * void 0;
-   * import { App, WebServer } from "@cloudcamp/aws-runtime";
+   * import { App, WebService } from "@cloudcamp/aws-runtime";
    * let app = new App();
    * void 'show';
    *
-   * new WebServer(app.production, "prod", {
+   * new WebService(app.production, "prod", {
    *   dockerfile: "../Dockerfile",
    *   domain: "example.com",
    *   ssl: true
@@ -209,28 +204,18 @@ export class WebServer extends cdk.Construct {
    *
    * @param scope the parent, i.e. a stack
    * @param id a unique identifier within the parent scope
-   * @param props the properties of WebServer
+   * @param props the properties of WebService
    *
    * @topic Initialization
    */
-  constructor(scope: cdk.Construct, id: string, props: WebServerProps) {
+  constructor(scope: cdk.Construct, id: string, props: WebServiceProps) {
     super(scope, id);
 
     let appName = App.instance.configuration.name;
 
-    let cluster: ecs.Cluster;
-    if (props.cluster === undefined) {
-      // Either use the provided vpc or the default
-      let vpc =
-        props.vpc ||
-        ec2.Vpc.fromLookup(this, "vpc", {
-          vpcId: App.instance.configuration.vpcId,
-        });
-
-      cluster = new ecs.Cluster(this, "ecs-cluster", { vpc: vpc });
-    } else {
-      cluster = props.cluster;
-    }
+    let vpc = ec2.Vpc.fromLookup(this, "vpc", {
+      vpcId: App.instance.configuration.vpcId,
+    });
 
     let logGroup = new logs.LogGroup(this, "log-group", {
       logGroupName: `/${appName}/webserver/${id}`,
@@ -238,23 +223,31 @@ export class WebServer extends cdk.Construct {
       removalPolicy: cdk.RemovalPolicy.DESTROY,
     });
 
+    let certificate: ICertificate | undefined = undefined;
+
+    if (props.domain) {
+      certificate = Ref.getCertificate(this, props.domain! + "-certificate", {
+        appName: App.instance.configuration.name,
+        name: props.domain!,
+      });
+    }
+
     this.fargateService =
       new ecs_patterns.ApplicationLoadBalancedFargateService(
         this,
         "fargate-service",
         {
-          cluster: cluster,
+          vpc: vpc,
           cpu: props.cpu,
           memoryLimitMiB: props.memory,
           desiredCount: props.desiredCount,
           assignPublicIp: true,
           publicLoadBalancer: true,
-          domainZone: props.domainZone,
-          domainName: props.domainName,
-          certificate: props.certificate,
-          redirectHTTP: props.certificate ? true : false,
+          domainName: props.domain,
+          certificate: certificate,
+          redirectHTTP: certificate ? true : false,
           serviceName: id,
-          protocol: props.certificate
+          protocol: certificate
             ? elasticloadbalancingv2.ApplicationProtocol.HTTPS
             : elasticloadbalancingv2.ApplicationProtocol.HTTP,
           taskImageOptions: {
@@ -327,7 +320,7 @@ export class WebServer extends cdk.Construct {
     }
   }
 
-  addAlarms(props?: WebServerAlarmProps) {
+  addAlarms(props?: WebServiceAlarmProps) {
     props = setDefaults(props, {
       slack: undefined,
       emails: [],

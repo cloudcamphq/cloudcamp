@@ -6,11 +6,11 @@ export { Stage } from "./stage";
 export { Stack } from "./stack";
 export { Database, DatabaseProps, DatabaseVariables } from "./database";
 export {
-  WebServer,
-  WebServerProps,
+  WebService,
+  WebServiceProps,
   ScheduleScalingProps,
   MetricScalingProps,
-  WebServerAlarmProps,
+  WebServiceAlarmProps,
   AlarmConfiguration,
   ScalingSchedule,
   SlackConfiguration,

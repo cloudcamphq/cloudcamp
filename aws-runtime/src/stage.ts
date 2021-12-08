@@ -20,10 +20,9 @@ export class Stage extends cdk.Stage {
     return this._needsManualApproval;
   }
 
-  constructor(scope: cdk.Construct, id: string, props?: cdk.StageProps) {
+  constructor(scope: cdk.Construct, id: string) {
     super(scope, id, {
-      ...props,
-      env: props?.env || {
+      env: {
         account: App.instance.configuration.account,
         region: App.instance.configuration.region,
       },
