@@ -120,7 +120,7 @@ function injectCopyButton(html: string) {
       return <Code html={child.outerHTML} language={language} key={key} />;
     } else {
       return (
-        <div dangerouslySetInnerHTML={{ __html: child.outerHTML }} key={key} />
+        <span dangerouslySetInnerHTML={{ __html: child.outerHTML }} key={key} />
       );
     }
   });
