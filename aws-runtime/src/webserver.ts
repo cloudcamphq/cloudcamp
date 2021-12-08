@@ -320,7 +320,7 @@ export class WebService extends cdk.Construct {
     }
   }
 
-  addAlarms(props?: WebServiceAlarmProps) {
+  alarms(props?: WebServiceAlarmProps) {
     props = setDefaults(props, {
       slack: undefined,
       emails: [],

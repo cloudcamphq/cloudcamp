@@ -190,14 +190,14 @@ export class App extends cdk.App {
    * import { App, WebService, Stack} from "@cloudcamp/aws-runtime";
    * const app = new App();
    * void 'show';
-   * const devStack = app.addStack("development");
+   * const devStack = app.stack("development");
    * ```
    *
    * @param name The name of the stack.
    *
    *
    */
-  public addStack(name: string): Stack {
+  public stack(name: string): Stack {
     if (this.stages.get(name)) {
       throw new Error("Stack already exists: " + name);
     }
@@ -267,7 +267,7 @@ export class App extends cdk.App {
    *
    * // later in the code...
    * const app = new App();
-   * const stage = app.addStage("dev");
+   * const stage = app.stage("dev");
    * const stack = new CustomStack(stage, "dev");
    *
    * // stack is automatically set to the new stack we created
@@ -282,7 +282,7 @@ export class App extends cdk.App {
    * @param stage An optional stage object. If not specifed, CloudCamp will
    * create and return an empty stage.
    */
-  public addStage(name: string, stage?: Stage): Stage {
+  public stage(name: string, stage?: Stage): Stage {
     if (this.stages.has(name)) {
       throw new Error("Stage already exists: " + name);
     }

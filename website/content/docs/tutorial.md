@@ -160,7 +160,7 @@ const web = new WebService(app.production, "web", {
   environment: { DATABASE_URL: db.databaseUrl },
 });
 
-productionWeb.addAlarms({
+productionWeb.alarms({
   email: ["youremail@example.com"],
 });
 ```
