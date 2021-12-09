@@ -118,9 +118,13 @@ function injectCopyButton(html: string) {
     let key = hashCode(child.innerHTML + language).toString();
     if (className.includes("gatsby-highlight")) {
       return <Code html={child.outerHTML} language={language} key={key} />;
-    } else {
+    } else if (className.includes("language-text")) {
       return (
         <span dangerouslySetInnerHTML={{ __html: child.outerHTML }} key={key} />
+      );
+    } else {
+      return (
+        <div dangerouslySetInnerHTML={{ __html: child.outerHTML }} key={key} />
       );
     }
   });
