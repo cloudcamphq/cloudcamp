@@ -3,7 +3,7 @@ import { Context } from "./Store";
 import { SearchIcon } from "@heroicons/react/solid";
 import { detect } from "detect-browser";
 
-export default function SearchButton() {
+export default function SearchButton(props?: { noml?: boolean }) {
   // @ts-ignore
   const [, dispatch] = useContext(Context);
 
@@ -26,9 +26,17 @@ export default function SearchButton() {
       break;
   }
 
+  let ml = "ml-6";
+  if (props?.noml === false) {
+    ml = "";
+  }
+
   return (
     <button
-      className="flex-1 flex rounded-md items-center bg-white py-2 overflow-hidden ml-6 mr-6 group focus:ring-indigo-500 focus:ring-2 focus:ring-offset-2 focus:outline-none"
+      className={
+        ml +
+        " flex-1 flex rounded-md items-center bg-white py-2 overflow-hidden mr-6 group focus:ring-indigo-500 focus:ring-2 focus:ring-offset-2 focus:outline-none"
+      }
       onClick={() => dispatch({ type: "SET_SEARCHBOX_VISIBLE", payload: true })}
       id="global-search-button"
       tabIndex={0}
