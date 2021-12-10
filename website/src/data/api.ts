@@ -216,6 +216,9 @@ export async function createPages(createPage: any, graphql: any) {
   let links = makeLinks(nodes);
 
   nodes.forEach((node) => {
+    if (node.docs?.custom?.ignore) {
+      return;
+    }
     let slug = makeSlug(node);
 
     createPage({

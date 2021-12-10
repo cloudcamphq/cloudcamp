@@ -29,6 +29,9 @@ export interface RefParameterProps {
   readonly name?: string;
 }
 
+/**
+ * @ignore
+ */
 export class Ref extends cdk.Construct {
   private constructor(scope: cdk.Construct, id: string) {
     super(scope, id);

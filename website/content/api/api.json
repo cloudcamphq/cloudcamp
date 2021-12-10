@@ -1841,73 +1841,6 @@
       "methods": [
         {
           "docs": {
-            "remarks": "Pass a stack name to create a new, empty stack:\n\n```ts\nvoid 0;\nimport { App, WebService, Stack} from \"@cloudcamp/aws-runtime\";\nconst app = new App();\nvoid 'show';\nconst devStack = app.addStack(\"development\");\n```",
-            "stability": "experimental",
-            "summary": "Add a new stack to your application."
-          },
-          "locationInModule": {
-            "filename": "src/app.ts",
-            "line": 200
-          },
-          "name": "addStack",
-          "parameters": [
-            {
-              "docs": {
-                "summary": "The name of the stack."
-              },
-              "name": "name",
-              "type": {
-                "primitive": "string"
-              }
-            }
-          ],
-          "returns": {
-            "type": {
-              "fqn": "@cloudcamp/aws-runtime.Stack"
-            }
-          }
-        },
-        {
-          "docs": {
-            "remarks": "This method can be used to add a stage with a custom ``Stack`` subclass.\n```ts\nimport { App, WebService, Stack } from \"@cloudcamp/aws-runtime\";\n\nclass CustomStack extends Stack {\n   constructor(scope: cdk.Construct, id: string, props: cdk.StackProps) {\n      super(scope, id, props);\n      new WebService(this, \"web\", {\n        dockerfile: \"../Dockerfile\"\n      });\n   }\n}\n\n// later in the code...\nconst app = new App();\nconst stage = app.addStage(\"dev\");\nconst stack = new CustomStack(stage, \"dev\");\n\n// stack is automatically set to the new stack we created\nif (stage.stack == stack) {\n   // outputs \"True!\"\n   console.log(\"True!\");\n}\n```",
-            "stability": "experimental",
-            "summary": "Add a new stage."
-          },
-          "locationInModule": {
-            "filename": "src/app.ts",
-            "line": 285
-          },
-          "name": "addStage",
-          "parameters": [
-            {
-              "docs": {
-                "summary": "The name of the stage."
-              },
-              "name": "name",
-              "type": {
-                "primitive": "string"
-              }
-            },
-            {
-              "docs": {
-                "remarks": "If not specifed, CloudCamp will\ncreate and return an empty stage.",
-                "summary": "An optional stage object."
-              },
-              "name": "stage",
-              "optional": true,
-              "type": {
-                "fqn": "@cloudcamp/aws-runtime.Stage"
-              }
-            }
-          ],
-          "returns": {
-            "type": {
-              "fqn": "@cloudcamp/aws-runtime.Stage"
-            }
-          }
-        },
-        {
-          "docs": {
             "custom": {
               "remarks": "In addition to the default stacks provided by cloudcamp, you can\ncreate your own stacks.",
               "topic": "Adding custom stacks"
@@ -1960,6 +1893,73 @@
               "name": "name",
               "type": {
                 "primitive": "string"
+              }
+            }
+          ],
+          "returns": {
+            "type": {
+              "fqn": "@cloudcamp/aws-runtime.Stage"
+            }
+          }
+        },
+        {
+          "docs": {
+            "remarks": "Pass a stack name to create a new, empty stack:\n\n```ts\nvoid 0;\nimport { App, WebService, Stack} from \"@cloudcamp/aws-runtime\";\nconst app = new App();\nvoid 'show';\nconst devStack = app.stack(\"development\");\n```",
+            "stability": "experimental",
+            "summary": "Add a new stack to your application."
+          },
+          "locationInModule": {
+            "filename": "src/app.ts",
+            "line": 200
+          },
+          "name": "stack",
+          "parameters": [
+            {
+              "docs": {
+                "summary": "The name of the stack."
+              },
+              "name": "name",
+              "type": {
+                "primitive": "string"
+              }
+            }
+          ],
+          "returns": {
+            "type": {
+              "fqn": "@cloudcamp/aws-runtime.Stack"
+            }
+          }
+        },
+        {
+          "docs": {
+            "remarks": "This method can be used to add a stage with a custom ``Stack`` subclass.\n```ts\nimport { App, WebService, Stack } from \"@cloudcamp/aws-runtime\";\n\nclass CustomStack extends Stack {\n   constructor(scope: cdk.Construct, id: string, props: cdk.StackProps) {\n      super(scope, id, props);\n      new WebService(this, \"web\", {\n        dockerfile: \"../Dockerfile\"\n      });\n   }\n}\n\n// later in the code...\nconst app = new App();\nconst stage = app.stage(\"dev\");\nconst stack = new CustomStack(stage, \"dev\");\n\n// stack is automatically set to the new stack we created\nif (stage.stack == stack) {\n   // outputs \"True!\"\n   console.log(\"True!\");\n}\n```",
+            "stability": "experimental",
+            "summary": "Add a new stage."
+          },
+          "locationInModule": {
+            "filename": "src/app.ts",
+            "line": 285
+          },
+          "name": "stage",
+          "parameters": [
+            {
+              "docs": {
+                "summary": "The name of the stage."
+              },
+              "name": "name",
+              "type": {
+                "primitive": "string"
+              }
+            },
+            {
+              "docs": {
+                "remarks": "If not specifed, CloudCamp will\ncreate and return an empty stage.",
+                "summary": "An optional stage object."
+              },
+              "name": "stage",
+              "optional": true,
+              "type": {
+                "fqn": "@cloudcamp/aws-runtime.Stage"
               }
             }
           ],
@@ -2831,7 +2831,7 @@
       "kind": "enum",
       "locationInModule": {
         "filename": "src/language.ts",
-        "line": 4
+        "line": 6
       },
       "members": [
         {
@@ -3187,13 +3187,16 @@
       "assembly": "@cloudcamp/aws-runtime",
       "base": "@aws-cdk/core.Construct",
       "docs": {
+        "custom": {
+          "ignore": "true"
+        },
         "stability": "experimental"
       },
       "fqn": "@cloudcamp/aws-runtime.Ref",
       "kind": "class",
       "locationInModule": {
         "filename": "src/ref.ts",
-        "line": 32
+        "line": 35
       },
       "methods": [
         {
@@ -3202,7 +3205,7 @@
           },
           "locationInModule": {
             "filename": "src/ref.ts",
-            "line": 73
+            "line": 76
           },
           "name": "addCertificate",
           "parameters": [
@@ -3240,7 +3243,7 @@
           },
           "locationInModule": {
             "filename": "src/ref.ts",
-            "line": 37
+            "line": 40
           },
           "name": "addHostedZone",
           "parameters": [
@@ -3278,7 +3281,7 @@
           },
           "locationInModule": {
             "filename": "src/ref.ts",
-            "line": 109
+            "line": 112
           },
           "name": "addServerlessCluster",
           "parameters": [
@@ -3316,7 +3319,7 @@
           },
           "locationInModule": {
             "filename": "src/ref.ts",
-            "line": 91
+            "line": 94
           },
           "name": "getCertificate",
           "parameters": [
@@ -3353,7 +3356,7 @@
           },
           "locationInModule": {
             "filename": "src/ref.ts",
-            "line": 55
+            "line": 58
           },
           "name": "getHostedZone",
           "parameters": [
@@ -3390,7 +3393,7 @@
           },
           "locationInModule": {
             "filename": "src/ref.ts",
-            "line": 127
+            "line": 130
           },
           "name": "getServerlessCluster",
           "parameters": [
@@ -3991,7 +3994,7 @@
             "filename": "src/webserver.ts",
             "line": 323
           },
-          "name": "addAlarms",
+          "name": "alarms",
           "parameters": [
             {
               "name": "props",
@@ -4355,5 +4358,5 @@
     }
   },
   "version": "0.0.1-alpha.9",
-  "fingerprint": "kAPwd3rq+dzZfXikPYgWWkjB8mpdaRZGAK9z9th6NCM="
+  "fingerprint": "BXCzBTyfXAldYbnxZBoz+gb/BEVprLiSI3h1YtZ3mrM="
 }
