@@ -36,7 +36,7 @@ export default function Index({}) {
         </div>
         <div className="flex max-w-screen-lg mx-auto">
           <div
-            className="mx-auto text-center mt-14 text-4xl lg:text-7xl md:text-6xl md:leading-[1]"
+            className="mx-auto text-center mt-14 text-3xl lg:text-7xl md:text-6xl md:leading-[1]"
             style={{
               fontFamily: '"Helvetica Neue", Arial, sans-serif',
               fontStyle: "italic",
