@@ -68,7 +68,7 @@ export default function Index({}) {
               "transition-all duration-200 "
             }
             style={{ backgroundColor: "#2C80FF" }}
-            to="/docs/tutorial"
+            to="/docs/"
           >
             Get Started
           </Link>

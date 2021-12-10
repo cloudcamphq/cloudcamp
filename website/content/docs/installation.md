@@ -1,6 +1,6 @@
 ---
 slug: "installation"
-order: 1
+order: 2
 title: "Installation"
 category: "getting-started"
 ---

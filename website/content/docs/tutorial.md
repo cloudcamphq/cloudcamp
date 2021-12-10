@@ -1,14 +1,20 @@
 ---
 slug: "tutorial"
-order: 2
+order: 3
 title: "Tutorial"
 category: "getting-started"
 ---
 
 This tutorial will walk you through build and deploying an application with
-CloudCamp. Make sure that [CloudCamp is
-installed](/docs/installation/#installing-cloudcamp) and your [AWS account is
-configured](/docs/installation/#aws-setup).
+CloudCamp. Make sure that CloudCamp is installed and your AWS account is
+configured.
+
+```bash
+$ npm install cloudcamp
+$ aws configure
+```
+
+For more information, check the docs on [Installation](/docs/installation/).
 
 # Clone the tutorial repo
 

@@ -88,8 +88,12 @@ export async function createPages(createPage: any, graphql: any) {
 
   allNodes.forEach((node) => {
     let onThisPage = extractOnThisPage(node);
+    let pagePath = "/docs/" + node.frontmatter.slug;
+    if (node.frontmatter.slug === "overview") {
+      pagePath = "/docs/";
+    }
     createPage({
-      path: "/docs/" + node.frontmatter.slug,
+      path: pagePath,
       component: path.resolve("./src/templates/docs.tsx"),
       context: {
         slug: node.frontmatter.slug,

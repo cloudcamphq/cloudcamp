@@ -45,11 +45,19 @@ function TableOfContentsItem(props: {
   link: string;
   location: any;
 }) {
+  let highlighted = false;
+  if (_.trimEnd(props.link, "/") === "/docs") {
+    if (_.trimEnd(props.location.pathname, "/") === "/docs") {
+      highlighted = true;
+    }
+  } else if (props.location.pathname.startsWith(props.link)) {
+    highlighted = true;
+  }
   return (
     <li key={props.uniqueKey}>
       <Link
         className={
-          props.location.pathname.startsWith(props.link)
+          highlighted
             ? "flex items-center group py-2 px-4 text-sm rounded-md bg-indigo-50 text-indigo-800 font-medium"
             : "flex items-center group py-2 px-4 text-sm rounded-md text-gray-700 hover:bg-gray-100"
         }
@@ -61,14 +69,10 @@ function TableOfContentsItem(props: {
   );
 }
 
-function prepareData({
+export function prepareTocData({
   data,
-  onThisPage,
-  location,
 }: {
   data: Toc;
-  onThisPage: any;
-  location: any;
 }): [MarkdownNode[], MarkdownNode[], ApiNode[], CommandNode[]] {
   let docNodes = data.allMarkdownRemark.nodes.filter(
     (node) =>
@@ -130,13 +134,21 @@ function MobileTableOfContentsItem(props: {
   link: string;
   location: any;
 }) {
+  let highlighted = false;
+  if (_.trimEnd(props.link, "/") === "/docs") {
+    if (_.trimEnd(props.location.pathname, "/") === "/docs") {
+      highlighted = true;
+    }
+  } else if (props.location.pathname.startsWith(props.link)) {
+    highlighted = true;
+  }
   return (
     <Disclosure.Button
       key={props.uniqueKey}
       as="a"
       href={props.link}
       className={classNames(
-        props.location.pathname.startsWith(props.link)
+        highlighted
           ? "bg-indigo-50 text-indigo-800"
           : "text-gray-700 hover:bg-gray-100",
         "flex h-10 pl-8 pr-4 py-2 text-base font-medium"
@@ -160,11 +172,10 @@ export function MobileTableOfContents({
   onThisPage: any;
   location: any;
 }) {
-  let [gettingStarted, operationsGuide, apiNodes, commandNodes] = prepareData({
-    data,
-    onThisPage,
-    location,
-  });
+  let [gettingStarted, operationsGuide, apiNodes, commandNodes] =
+    prepareTocData({
+      data,
+    });
   return (
     <Disclosure.Panel className="lg:hidden h-full overflow-y-auto border-b">
       <div className="pb-3">
@@ -177,7 +188,11 @@ export function MobileTableOfContents({
         {gettingStarted.map((node) => (
           <MobileTableOfContentsItem
             key={node.frontmatter.slug}
-            link={`/docs/${node.frontmatter.slug}`}
+            link={
+              node.frontmatter.slug == "overview"
+                ? "/docs/"
+                : `/docs/${node.frontmatter.slug}`
+            }
             uniqueKey={node.frontmatter.slug}
             title={node.frontmatter.title}
             location={location}
@@ -248,23 +263,26 @@ export function TableOfContents({
   onThisPage: any;
   location: any;
 }) {
-  let [gettingStarted, operationsGuide, apiNodes, commandNodes] = prepareData({
-    data,
-    onThisPage,
-    location,
-  });
+  let [gettingStarted, operationsGuide, apiNodes, commandNodes] =
+    prepareTocData({
+      data,
+    });
 
   return (
     <>
       <nav>
-        <h1 className="tracking-wide font-semibold text-xs uppercase py-2 px-4">
+        <h1 className="tracking-wide font-semibold text-xs uppercase py-2 px-4 ">
           Getting Started
         </h1>
         <ul>
           {gettingStarted.map((node) => (
             <TableOfContentsItem
               key={node.frontmatter.slug}
-              link={`/docs/${node.frontmatter.slug}`}
+              link={
+                node.frontmatter.slug == "overview"
+                  ? "/docs/"
+                  : `/docs/${node.frontmatter.slug}`
+              }
               uniqueKey={node.frontmatter.slug}
               title={node.frontmatter.title}
               location={location}
