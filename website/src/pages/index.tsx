@@ -27,21 +27,20 @@ export default function Index({}) {
           <Social classname="flex" />
         </div>
 
-        <div className="flex max-w-screen-lg mx-auto items-center">
+        <div className="flex max-w-screen-lg mx-auto items-center px-4">
           <img
-            className="h-18 w-auto flex-shrink-0 mx-auto mt-14"
+            className="h-18 w-auto mx-auto mt-14"
             src={logoText}
             alt="CloudCamp"
           />
         </div>
         <div className="flex max-w-screen-lg mx-auto">
           <div
-            className="mx-auto text-center mt-14"
+            className="mx-auto text-center mt-14 text-4xl lg:text-7xl md:text-6xl md:leading-[1]"
             style={{
               fontFamily: '"Helvetica Neue", Arial, sans-serif',
               fontStyle: "italic",
-              fontSize: "72px",
-              lineHeight: "70px",
+              // lineHeight: "70px",
               color: "#433636",
               fontWeight: 400,
             }}
@@ -60,10 +59,10 @@ export default function Index({}) {
             of code
           </div>
         </div>
-        <div className="flex flex-wrap space-y-4 sm:space-y-0 sm:space-x-4 justify-center max-w-screen-lg mx-auto mt-20">
+        <div className="flex flex-wrap space-y-4 sm:space-y-0 sm:space-x-4 justify-center max-w-screen-lg mx-auto mt-14 sm:mt-20 p-4">
           <Link
             className={
-              "w-full sm:w-auto flex-none " +
+              "w-full sm:w-auto flex-none text-center " +
               "text-white text-xl leading-6 font-bold py-3 px-12 border border-transparent rounded-xl " +
               "focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 focus:outline-none hover:scale-105 " +
               "transition-all duration-200 "
