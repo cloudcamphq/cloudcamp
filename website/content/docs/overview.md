@@ -5,11 +5,20 @@ title: "Overview"
 category: "getting-started"
 ---
 
-Welcome to CloudCamp!
+Welcome to CloudCamp.
 
 The easiest way to get started is to [take the tutorial](/docs/tutorial). In
 around 40 minutes, you will learn how to automate any cloud application with a
 minimum amount of effort.
+
+<button
+  class="text-white rounded-md  font-medium flex items-center px-4"
+  style="background-color: #3F223D;"
+  onclick="location.href='/docs/tutorial'">
+<span class="w-16 mr-4">![CloudCamp logo](./img/icon.png)</span>
+Take the tutorial
+<span class="ml-4" style="width:29px;">![CloudCamp logo](./img/arrow.png)</span>
+</button>
 
 # Introduction
 
