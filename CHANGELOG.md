@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.1](https://github.com/cloudcamphq/cloudcamp/compare/v0.0.1-alpha.9...v0.0.1) (2021-12-14)
+
+
+### Features
+
+* clean up props ([55fede2](https://github.com/cloudcamphq/cloudcamp/commit/55fede24fd3cfe6c35595877370a46582cae535c))
+* ensure stage order ([20b2bf0](https://github.com/cloudcamphq/cloudcamp/commit/20b2bf036932aacdbf9ca3cd145b953122c44fcb))
+* upgrade to cdk 2.1 ([f94f748](https://github.com/cloudcamphq/cloudcamp/commit/f94f748fc2c01e39cb9032ffde045845cd8023a5))
+
 ### [0.0.1-alpha.9](https://github.com/cloudcamphq/cloudcamp/compare/v0.0.1-alpha.8...v0.0.1-alpha.9) (2021-12-02)
 
 

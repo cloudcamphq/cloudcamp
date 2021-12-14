@@ -23,5 +23,5 @@
       "postbump": "jq \".dependencies.\\\"@cloudcamp/aws-runtime\\\" = \\\"$(jq -r '.version' package.json)\\\"\" cli/package.json | sponge cli/package.json"
     }
   },
-  "version": "0.0.1-alpha.9"
+  "version": "0.0.1"
 }
