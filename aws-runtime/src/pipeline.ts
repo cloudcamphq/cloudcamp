@@ -1,7 +1,6 @@
-import * as cdk from "@aws-cdk/core";
-import * as codepipeline from "@aws-cdk/aws-codepipeline";
-import * as pipelines from "@aws-cdk/pipelines";
-import * as codepipeline_actions from "@aws-cdk/aws-codepipeline-actions";
+import * as cdk from "aws-cdk-lib/core";
+import * as pipelines from "aws-cdk-lib/pipelines";
+import * as codepipeline_actions from "aws-cdk-lib/aws-codepipeline-actions";
 import * as _ from "lodash";
 import * as fs from "fs";
 import * as path from "path";
@@ -9,6 +8,7 @@ import { RepositoryHost } from "./types";
 import { Language } from "./language";
 import { App } from "./app";
 import { CONTEXT_KEY_HOME } from "./constants";
+import { Construct } from "constructs";
 
 export interface PipelineStackProps extends cdk.StackProps {
   readonly appName: string;
@@ -23,9 +23,10 @@ export interface PipelineStackProps extends cdk.StackProps {
  * @ignore
  */
 export class PipelineStack extends cdk.Stack {
-  pipeline: pipelines.CdkPipeline;
+  pipeline: pipelines.CodePipeline;
+  pipelineName: string;
 
-  constructor(scope: cdk.Construct, id: string, props: PipelineStackProps) {
+  constructor(scope: Construct, id: string, props: PipelineStackProps) {
     super(scope, id, {
       ...props,
       env: props?.env || {
@@ -34,33 +35,29 @@ export class PipelineStack extends cdk.Stack {
       },
     });
 
-    let sourceArtifact = new codepipeline.Artifact();
-    let cloudAssemblyArtifact = new codepipeline.Artifact();
-    let pipelineName = _.upperFirst(_.camelCase(props.appName + "-pipeline"));
-
-    let { installCommand, buildCommand, synthCommand } =
-      this.getPipelineCommands();
-
+    this.pipelineName = _.upperFirst(_.camelCase(props.appName + "-pipeline"));
     let home = this.getHome();
 
-    this.pipeline = new pipelines.CdkPipeline(this, "cdk-pipeline", {
-      cloudAssemblyArtifact: cloudAssemblyArtifact,
-      pipelineName: pipelineName,
-      sourceAction: this.getSourceAction(
-        props.host,
-        props.owner,
-        props.repo,
-        props.branch,
-        props.repositoryTokenSecretName,
-        sourceArtifact
-      ),
-      synthAction: new pipelines.SimpleSynthAction({
-        sourceArtifact: sourceArtifact,
-        cloudAssemblyArtifact: cloudAssemblyArtifact,
-        installCommands: installCommand ? [installCommand] : undefined,
-        buildCommands: buildCommand ? [buildCommand] : undefined,
-        synthCommand: synthCommand,
-        subdirectory: home,
+    let { installCommands, buildCommands, synthCommands } =
+      this.getPipelineCommands(home);
+
+    this.pipeline = new pipelines.CodePipeline(this, "cdk-pipeline", {
+      selfMutation: true,
+      pipelineName: this.pipelineName,
+      synth: new pipelines.ShellStep("Synth", {
+        input: pipelines.CodePipelineSource.gitHub(
+          props.owner + "/" + props.repo,
+          props.branch,
+          {
+            authentication: cdk.SecretValue.secretsManager(
+              props.repositoryTokenSecretName
+            ),
+            trigger: codepipeline_actions.GitHubTrigger.POLL,
+          }
+        ),
+        installCommands: installCommands,
+        commands: buildCommands.concat(synthCommands),
+        primaryOutputDirectory: path.join(home, "cdk.out"),
       }),
       crossAccountKeys: false,
     });
@@ -79,59 +76,43 @@ export class PipelineStack extends cdk.Stack {
     return process.cwd().slice(process.env.CODEBUILD_SRC_DIR.length + 1);
   }
 
-  private getSourceAction(
-    host: RepositoryHost,
-    owner: string,
-    repo: string,
-    branch: string,
-    repositoryTokenSecretName: string,
-    sourceArtifact: codepipeline.Artifact
-  ): codepipeline_actions.Action {
-    switch (host) {
-      case RepositoryHost.GITHUB:
-        return new codepipeline_actions.GitHubSourceAction({
-          actionName: "GitHub",
-          output: sourceArtifact,
-          oauthToken: cdk.SecretValue.secretsManager(repositoryTokenSecretName),
-          owner: owner,
-          repo: repo,
-          branch: branch,
-          trigger: codepipeline_actions.GitHubTrigger.POLL,
-        });
-    }
-  }
-
   private getLanguage(): Language {
     let cdk_json = JSON.parse(fs.readFileSync("cdk.json").toString());
     let code = Language.languageCodeForExtension(path.extname(cdk_json.app));
     return Language.make(code);
   }
 
-  private getPipelineCommands(): {
-    installCommand?: string;
-    buildCommand?: string;
-    synthCommand: string;
+  private getPipelineCommands(home: string): {
+    installCommands: string[];
+    buildCommands: string[];
+    synthCommands: string[];
   } {
+    let inHome = (cmd: string) => `(cd ${home} && ${cmd})`;
     let language = this.getLanguage();
     let packageJson = JSON.parse(
       fs.readFileSync(path.join(__dirname, "..", "package.json")).toString()
     );
-    let cdkVersion = packageJson.devDependencies["@aws-cdk/core"];
+    let cdkVersion = packageJson.dependencies["aws-cdk-lib"];
 
-    // commands run in a subshell (the parentheses) to preserve cwd
-    let installCommand =
-      `npm install -g npm@latest && npm install aws-cdk@${cdkVersion} -g ` +
-      `&& (${language.installCommand})`;
-    let buildCommand = `(${language.buildCommand})`;
-    if (buildCommand) {
-      buildCommand = `(${buildCommand})`;
-    }
-    let synthCommand = `pwd && ls && ls -al .. && env && cdk synth`;
+    let installCommands = [
+      "npm install -g npm@latest",
+      `npm install aws-cdk@${cdkVersion} -g`,
+    ].concat(language.installCommands);
+    let buildCommands = language.buildCommands;
+    let synthCommands = [
+      "pwd",
+      "ls",
+      "ls node_modules/aws-cdk-lib/package.json",
+      "ls -al ..",
+      "env",
+      'sed -i \'571 i ".\\/core\\": ".\\/core\\/index.js",\' node_modules/aws-cdk-lib/package.json',
+      "cdk synth",
+    ];
 
     return {
-      installCommand: installCommand,
-      buildCommand: buildCommand,
-      synthCommand: synthCommand,
+      installCommands: installCommands.map(inHome),
+      buildCommands: buildCommands.map(inHome),
+      synthCommands: synthCommands.map(inHome),
     };
   }
 }

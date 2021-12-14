@@ -1,8 +1,9 @@
-import * as ssm from "@aws-cdk/aws-ssm";
-import * as cdk from "@aws-cdk/core";
+import * as ssm from "aws-cdk-lib/aws-ssm";
+import * as cdk from "aws-cdk-lib/core";
 import { App } from "./app";
 import { Stage } from "./stage";
 import * as _ from "lodash";
+import { Construct } from "constructs";
 
 /**
  * Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus in convallis
@@ -15,7 +16,7 @@ import * as _ from "lodash";
  * @order 2
  */
 export class Stack extends cdk.Stack {
-  constructor(scope: cdk.Construct, id: string) {
+  constructor(scope: Construct, id: string) {
     let stackName = _.upperFirst(
       _.camelCase(App.instance.configuration.name + "-" + id)
     );

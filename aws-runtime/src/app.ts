@@ -1,4 +1,4 @@
-import * as cdk from "@aws-cdk/core";
+import * as cdk from "aws-cdk-lib/core";
 import * as _ from "lodash";
 import { PipelineStack } from "./pipeline";
 import { Stage } from "./stage";
@@ -13,8 +13,9 @@ import {
   CONTEXT_REPOSITORY_TOKEN_SECRET,
   TAG_APP_NAME,
 } from "./constants";
-import * as ssm from "@aws-cdk/aws-ssm";
-import * as cxapi from "@aws-cdk/cx-api";
+import * as ssm from "aws-cdk-lib/aws-ssm";
+import * as cxapi from "aws-cdk-lib/cx-api";
+import * as pipelines from "aws-cdk-lib/pipelines";
 import { Stack } from "./stack";
 
 export interface Configuration {
@@ -99,7 +100,7 @@ export class App extends cdk.App {
     // We need the name of the codepipeline for later use
     new ssm.StringParameter(this.pipelineStack, "ssm-codepipeline", {
       parameterName: `/cloudcamp/${this.configuration.name}/_/codepipeline`,
-      stringValue: this.pipelineStack.pipeline.codePipeline.pipelineName,
+      stringValue: this.pipelineStack.pipelineName,
     });
 
     // Also, we need to identify the pipeline stack
@@ -356,10 +357,11 @@ export class App extends cdk.App {
     });
     for (let name of names) {
       let stage = this.stages.get(name)!;
-      let appStage = this.pipeline.addApplicationStage(stage);
+      let pre = undefined;
       if (stage.needsManualApproval) {
-        appStage.addManualApprovalAction();
+        pre = [new pipelines.ManualApprovalStep("approve-" + name)];
       }
+      this.pipeline.addStage(stage, { pre: pre });
     }
     return super.synth(options);
   }

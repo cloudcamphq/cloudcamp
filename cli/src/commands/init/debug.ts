@@ -93,12 +93,20 @@ This copies the whole aws-runtime folder in its current state.`;
     });
 
     // run npm install in aws-runtime
-    generator.runAppDir(
+    await generator.runAppDir(
       path.join(generator.home, "aws-runtime"),
       "npm install"
     );
 
-    await generator.installAndBuild();
+    await generator.install();
+
+    // fix package.json
+    await generator.runAppDir(
+      generator.home,
+      "sed -i '' -e '571s/^//p; 571s/^.*/    \".\\/core\\\": \".\\/core\\/index.js\",/'  node_modules/aws-cdk-lib/package.json"
+    );
+
+    await generator.build();
     this.ux.stop();
 
     // And we are done.

@@ -86,7 +86,8 @@ Creates all files necessary for deploying a docker based app on AWS.`;
       });
     }
 
-    await generator.installAndBuild();
+    await generator.install();
+    await generator.build();
     this.ux.stop();
 
     // And we are done.

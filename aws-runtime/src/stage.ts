@@ -1,8 +1,7 @@
-import * as cdk from "@aws-cdk/core";
-// import * as _ from "lodash";
+import * as cdk from "aws-cdk-lib/core";
 import { App } from "./app";
-// import * as ssm from "@aws-cdk/aws-ssm";
 import { Stack } from "./stack";
+import { Construct } from "constructs";
 
 /**
  * @order 3
@@ -20,7 +19,7 @@ export class Stage extends cdk.Stage {
     return this._needsManualApproval;
   }
 
-  constructor(scope: cdk.Construct, id: string) {
+  constructor(scope: Construct, id: string) {
     super(scope, id, {
       env: {
         account: App.instance.configuration.account,

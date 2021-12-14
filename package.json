@@ -15,7 +15,8 @@
   },
   "scripts": {
     "commit": "git-cz",
-    "release": "standard-version"
+    "release": "standard-version",
+    "install-fixed": "yarn install && sed -i '' -e '571s/^//p; 571s/^.*/    \".\\/core\\\": \".\\/core\\/index.js\",/'  node_modules/aws-cdk-lib/package.json"
   },
   "standard-version": {
     "scripts": {

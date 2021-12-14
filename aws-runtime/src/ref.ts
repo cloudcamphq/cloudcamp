@@ -1,8 +1,8 @@
-import * as cdk from "@aws-cdk/core";
-import * as ssm from "@aws-cdk/aws-ssm";
-import * as route53 from "@aws-cdk/aws-route53";
-import * as certificatemanager from "@aws-cdk/aws-certificatemanager";
-import * as rds from "@aws-cdk/aws-rds";
+import * as ssm from "aws-cdk-lib/aws-ssm";
+import * as route53 from "aws-cdk-lib/aws-route53";
+import * as certificatemanager from "aws-cdk-lib/aws-certificatemanager";
+import * as rds from "aws-cdk-lib/aws-rds";
+import { Construct } from "constructs";
 
 /**
  * AWS Systems Manager functions. Used to communicate IDs between stages and apps.
@@ -32,13 +32,13 @@ export interface RefParameterProps {
 /**
  * @ignore
  */
-export class Ref extends cdk.Construct {
-  private constructor(scope: cdk.Construct, id: string) {
+export class Ref extends Construct {
+  private constructor(scope: Construct, id: string) {
     super(scope, id);
   }
 
   static addHostedZone(
-    scope: cdk.Construct,
+    scope: Construct,
     id: string,
     hostedZone: route53.IHostedZone,
     props?: RefParameterProps
@@ -56,7 +56,7 @@ export class Ref extends cdk.Construct {
   }
 
   static getHostedZone(
-    scope: cdk.Construct,
+    scope: Construct,
     id: string,
     props?: RefParameterProps
   ): route53.IHostedZone {
@@ -74,7 +74,7 @@ export class Ref extends cdk.Construct {
   }
 
   static addCertificate(
-    scope: cdk.Construct,
+    scope: Construct,
     id: string,
     certificate: certificatemanager.ICertificate,
     props?: RefParameterProps
@@ -92,7 +92,7 @@ export class Ref extends cdk.Construct {
   }
 
   static getCertificate(
-    scope: cdk.Construct,
+    scope: Construct,
     id: string,
     props?: RefParameterProps
   ): certificatemanager.ICertificate {
@@ -110,7 +110,7 @@ export class Ref extends cdk.Construct {
   }
 
   static addServerlessCluster(
-    scope: cdk.Construct,
+    scope: Construct,
     id: string,
     serverlessCluster: rds.IServerlessCluster,
     props?: RefParameterProps
@@ -128,7 +128,7 @@ export class Ref extends cdk.Construct {
   }
 
   static getServerlessCluster(
-    scope: cdk.Construct,
+    scope: Construct,
     id: string,
     props?: RefParameterProps
   ): rds.IServerlessCluster {

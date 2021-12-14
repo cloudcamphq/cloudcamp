@@ -1,21 +1,22 @@
 import * as path from "path";
 import { App } from "./app";
 import _ = require("lodash");
-import * as ec2 from "@aws-cdk/aws-ec2";
-import * as logs from "@aws-cdk/aws-logs";
-import * as ecs from "@aws-cdk/aws-ecs";
-import * as ecs_patterns from "@aws-cdk/aws-ecs-patterns";
-import * as cdk from "@aws-cdk/core";
-import * as elasticloadbalancingv2 from "@aws-cdk/aws-elasticloadbalancingv2";
-import * as chatbot from "@aws-cdk/aws-chatbot";
-import * as sns from "@aws-cdk/aws-sns";
-import * as cloudwatch from "@aws-cdk/aws-cloudwatch";
-import * as cloudwatch_actions from "@aws-cdk/aws-cloudwatch-actions";
-import * as subscriptions from "@aws-cdk/aws-sns-subscriptions";
-import * as applicationautoscaling from "@aws-cdk/aws-applicationautoscaling";
+import * as ec2 from "aws-cdk-lib/aws-ec2";
+import * as logs from "aws-cdk-lib/aws-logs";
+import * as ecs from "aws-cdk-lib/aws-ecs";
+import * as ecs_patterns from "aws-cdk-lib/aws-ecs-patterns";
+import * as cdk from "aws-cdk-lib/core";
+import * as elasticloadbalancingv2 from "aws-cdk-lib/aws-elasticloadbalancingv2";
+import * as chatbot from "aws-cdk-lib/aws-chatbot";
+import * as sns from "aws-cdk-lib/aws-sns";
+import * as cloudwatch from "aws-cdk-lib/aws-cloudwatch";
+import * as cloudwatch_actions from "aws-cdk-lib/aws-cloudwatch-actions";
+import * as subscriptions from "aws-cdk-lib/aws-sns-subscriptions";
+import * as applicationautoscaling from "aws-cdk-lib/aws-applicationautoscaling";
 import { setDefaults } from "./utils";
-import { ICertificate } from "@aws-cdk/aws-certificatemanager";
+import { ICertificate } from "aws-cdk-lib/aws-certificatemanager";
 import { Ref } from ".";
+import { Construct } from "constructs";
 
 // TODO add redirectHTTP
 // TODO add multiple domains https://jeremynagel.medium.com/adding-multiple-certificates-to-a-applicationloadbalancedfargateservice-with-cdk-adc877e2831d
@@ -174,7 +175,7 @@ export interface MetricScalingProps {
  * ```
  * @order 4
  */
-export class WebService extends cdk.Construct {
+export class WebService extends Construct {
   /**
    * Initialize a new web service.
    *
@@ -208,7 +209,7 @@ export class WebService extends cdk.Construct {
    *
    * @topic Initialization
    */
-  constructor(scope: cdk.Construct, id: string, props: WebServiceProps) {
+  constructor(scope: Construct, id: string, props: WebServiceProps) {
     super(scope, id);
 
     let appName = App.instance.configuration.name;
@@ -439,7 +440,7 @@ export class WebService extends cdk.Construct {
         metric: this.fargateService.loadBalancer.metricHttpCodeElb(elbCode, {
           period: cdk.Duration.minutes(period),
           statistic: "Sum",
-          dimensions: {
+          dimensionsMap: {
             LoadBalancer: this.fargateService.loadBalancer.loadBalancerFullName,
           },
         }),
@@ -474,7 +475,7 @@ export class WebService extends cdk.Construct {
           {
             period: cdk.Duration.minutes(period),
             statistic: "Sum",
-            dimensions: {
+            dimensionsMap: {
               LoadBalancer:
                 this.fargateService.loadBalancer.loadBalancerFullName,
             },
@@ -503,7 +504,7 @@ export class WebService extends cdk.Construct {
       metric: this.fargateService.loadBalancer.metricRejectedConnectionCount({
         period: cdk.Duration.minutes(period),
         statistic: "Sum",
-        dimensions: {
+        dimensionsMap: {
           LoadBalancer: this.fargateService.loadBalancer.loadBalancerFullName,
         },
       }),
@@ -525,7 +526,7 @@ export class WebService extends cdk.Construct {
       metric: this.fargateService.loadBalancer.metricTargetResponseTime({
         period: cdk.Duration.minutes(period),
         statistic: "Sum",
-        dimensions: {
+        dimensionsMap: {
           LoadBalancer: this.fargateService.loadBalancer.loadBalancerFullName,
         },
       }),

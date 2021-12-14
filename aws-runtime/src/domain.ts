@@ -1,7 +1,7 @@
-import * as cdk from "@aws-cdk/core";
 import { Ref } from "./ref";
-import * as route53 from "@aws-cdk/aws-route53";
-import { Duration } from "@aws-cdk/core";
+import * as route53 from "aws-cdk-lib/aws-route53";
+import { Duration } from "aws-cdk-lib/core";
+import { Construct } from "constructs";
 
 export interface DomainProps {
   readonly domain: string;
@@ -35,7 +35,7 @@ export interface TxtRecordProps {
 /**
  * @order 6
  */
-export class Domain extends cdk.Construct {
+export class Domain extends Construct {
   hostedZone: route53.IHostedZone;
 
   /**
@@ -44,7 +44,7 @@ export class Domain extends cdk.Construct {
    * @param id
    * @param props
    */
-  constructor(scope: cdk.Construct, id: string, props: DomainProps) {
+  constructor(scope: Construct, id: string, props: DomainProps) {
     super(scope, id);
 
     this.hostedZone = Ref.getHostedZone(this, "hosted-zone", {

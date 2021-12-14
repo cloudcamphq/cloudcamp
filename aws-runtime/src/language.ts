@@ -109,14 +109,14 @@ export abstract class Language {
    *
    * Note: This command is run in the project directory.
    */
-  abstract get installCommand(): string;
+  abstract get installCommands(): string[];
 
   /**
    * Command to build the CDK code
    *
    * Note: This command is run in the project directory.
    */
-  abstract get buildCommand(): string | undefined;
+  abstract get buildCommands(): string[];
 
   /**
    * Instantiate new Language based on code.
@@ -164,14 +164,14 @@ class TypescriptLanguage extends Language {
     return "npx ts-node --prefer-ts-exts src/app.ts";
   }
 
-  get installCommand() {
-    return "npm i typescript --save-dev && npm install";
+  get installCommands() {
+    return ["npm i typescript --save-dev", "npm install"];
   }
 
-  get buildCommand() {
+  get buildCommands() {
     // When debugging, the aws-runtime directory is copied to the
     // build dir. Compile it with tsc.
-    return `[ -d "aws-runtime" ] && cd aws-runtime && npx tsc || true`;
+    return [`[ -d "aws-runtime" ] && cd aws-runtime && npx tsc || true`];
   }
 }
 
@@ -192,19 +192,23 @@ class PythonLanguage extends Language {
     return "python3 src/camp.py";
   }
 
-  get installCommand(): string {
+  get installCommands(): string[] {
     if (process.platform == "win32") {
-      return `python -m venv .venv &&
-              .venv\\Scripts\\activate.bat &&
-              pip install -r requirements.txt`;
+      return [
+        "python -m venv .venv",
+        ".venv\\Scripts\\activate.bat",
+        "pip install -r requirements.txt",
+      ];
     } else {
-      return `python -m venv .venv &&
-              source .venv/bin/activate &&
-              pip install -r requirements.txt`;
+      return [
+        "python -m venv .venv",
+        "source .venv/bin/activate",
+        "pip install -r requirements.txt",
+      ];
     }
   }
 
-  get buildCommand() {
-    return undefined;
+  get buildCommands() {
+    return [];
   }
 }

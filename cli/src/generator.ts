@@ -126,16 +126,28 @@ export class Generator {
       JSON.stringify(
         {
           app: this.language.cdkAppCommand,
+          watch: {
+            include: ["**"],
+            exclude: [
+              "README.md",
+              "cdk*.json",
+              "**/*.d.ts",
+              "**/*.js",
+              "tsconfig.json",
+              "package*.json",
+              "yarn.lock",
+              "node_modules",
+              "test",
+            ],
+          },
           context: {
+            "@aws-cdk/aws-lambda:recognizeVersionProps": true,
+            "@aws-cdk/aws-cloudfront:defaultSecurityPolicyTLSv1.2_2021": true,
             "@aws-cdk/aws-apigateway:usagePlanKeyOrderInsensitiveId": true,
-            "@aws-cdk/core:enableStackNameDuplicates": "true",
             "aws-cdk:enableDiffNoFail": "true",
             "@aws-cdk/core:stackRelativeExports": "true",
-            "@aws-cdk/aws-ecr-assets:dockerIgnoreSupport": true,
             "@aws-cdk/aws-secretsmanager:parseOwnedSecretName": true,
             "@aws-cdk/aws-kms:defaultKeyPolicies": true,
-            "@aws-cdk/aws-s3:grantWriteWithoutAcl": true,
-            "@aws-cdk/aws-ecs-patterns:removeDefaultDesiredCount": true,
             "@aws-cdk/aws-rds:lowercaseDbIdentifier": true,
             "@aws-cdk/aws-efs:defaultEncryptionAtRest": true,
             "@aws-cdk/core:newStyleStackSynthesis": true,
@@ -152,9 +164,16 @@ export class Generator {
     await this.language.generateFiles(this);
   }
 
-  public async installAndBuild() {
-    await this.runAppDir(this.home, this.language.installCommand);
-    await this.runAppDir(this.home, this.language.buildCommand);
+  public async install() {
+    for (let cmd of this.language.installCommands) {
+      await this.runAppDir(this.home, cmd);
+    }
+  }
+
+  public async build() {
+    for (let cmd of this.language.buildCommands) {
+      await this.runAppDir(this.home, cmd);
+    }
   }
 
   private substituteVars(source: string, vars: any): string {

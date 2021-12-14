@@ -1,13 +1,14 @@
-import * as cdk from "@aws-cdk/core";
-import * as rds from "@aws-cdk/aws-rds";
-import * as ec2 from "@aws-cdk/aws-ec2";
-import { Duration } from "@aws-cdk/core";
-import * as secretsmanager from "@aws-cdk/aws-secretsmanager";
+import * as cdk from "aws-cdk-lib/core";
+import * as rds from "aws-cdk-lib/aws-rds";
+import * as ec2 from "aws-cdk-lib/aws-ec2";
+import { Duration } from "aws-cdk-lib/core";
+import * as secretsmanager from "aws-cdk-lib/aws-secretsmanager";
 import { App } from "./app";
 import {
   AuroraMysqlEngineVersion,
   AuroraPostgresEngineVersion,
-} from "@aws-cdk/aws-rds";
+} from "aws-cdk-lib/aws-rds";
+import { Construct } from "constructs";
 
 // TODO logs
 // TODO alerts
@@ -44,7 +45,7 @@ export interface DatabaseVariables {
 /**
  * @order 5
  */
-export class Database extends cdk.Construct {
+export class Database extends Construct {
   cluster: rds.IServerlessCluster;
 
   vars: DatabaseVariables;
@@ -55,7 +56,7 @@ export class Database extends cdk.Construct {
    * @param id  the id
    * @param props the props
    */
-  constructor(scope: cdk.Construct, id: string, props?: DatabaseProps) {
+  constructor(scope: Construct, id: string, props?: DatabaseProps) {
     super(scope, id);
 
     let engine: rds.IClusterEngine;
