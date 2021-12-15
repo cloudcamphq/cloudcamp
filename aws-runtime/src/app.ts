@@ -17,6 +17,7 @@ import * as ssm from "aws-cdk-lib/aws-ssm";
 import * as cxapi from "aws-cdk-lib/cx-api";
 import * as pipelines from "aws-cdk-lib/pipelines";
 import { Stack } from "./stack";
+import { Step } from "aws-cdk-lib/pipelines";
 
 export interface Configuration {
   readonly name: string;
@@ -158,6 +159,13 @@ export class App extends cdk.App {
   get production(): Stack {
     return this.getOrAddStage("production").stack;
   }
+
+  /**
+   * The order in which stages are created.
+   *
+   * @default ["network", "staging", "production"]
+   */
+  public stageOrder: string[] = ["network", "staging", "production"];
 
   /**
    * Get an existing stack by name.
@@ -332,36 +340,20 @@ export class App extends cdk.App {
   synth(options?: cdk.StageSynthesisOptions): cxapi.CloudAssembly {
     let names = Array.from(this.stages.keys());
     names.sort((a, b) => {
-      switch (a) {
-        case "network":
-          if (b == "staging" || b == "production") {
-            return -1;
-          }
-          return 0;
-        case "staging":
-          if (b == "network") {
-            return 1;
-          }
-          if (b == "production") {
-            return -1;
-          }
-          return 0;
-        case "production":
-          if (b == "network" || b == "staging") {
-            return 1;
-          }
-          return 0;
-        default:
-          return 0;
+      if (this.stageOrder.includes(a) && this.stageOrder.includes(b)) {
+        return this.stageOrder.indexOf(a) < this.stageOrder.indexOf(b) ? -1 : 1;
       }
+      return 0;
     });
     for (let name of names) {
       let stage = this.stages.get(name)!;
-      let pre = undefined;
+      let pre: Step[] = [];
       if (stage.needsManualApproval) {
         pre = [new pipelines.ManualApprovalStep("approve-" + name)];
       }
-      this.pipeline.addStage(stage, { pre: pre });
+      this.pipeline.addStage(stage, {
+        pre: pre.length !== 0 ? pre : undefined,
+      });
     }
     return super.synth(options);
   }
