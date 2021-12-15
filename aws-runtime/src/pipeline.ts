@@ -1,4 +1,4 @@
-import * as cdk from "aws-cdk-lib/core";
+import * as cdk from "aws-cdk-lib";
 import * as pipelines from "aws-cdk-lib/pipelines";
 import * as codepipeline_actions from "aws-cdk-lib/aws-codepipeline-actions";
 import * as _ from "lodash";

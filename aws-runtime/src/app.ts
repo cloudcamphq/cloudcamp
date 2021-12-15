@@ -1,4 +1,4 @@
-import * as cdk from "aws-cdk-lib/core";
+import * as cdk from "aws-cdk-lib";
 import * as _ from "lodash";
 import { PipelineStack } from "./pipeline";
 import { Stage } from "./stage";

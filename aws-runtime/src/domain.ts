@@ -1,6 +1,6 @@
 import { Ref } from "./ref";
 import * as route53 from "aws-cdk-lib/aws-route53";
-import { Duration } from "aws-cdk-lib/core";
+import { Duration } from "aws-cdk-lib";
 import { Construct } from "constructs";
 
 export interface DomainProps {

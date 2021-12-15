@@ -1,5 +1,5 @@
 import * as ssm from "aws-cdk-lib/aws-ssm";
-import * as cdk from "aws-cdk-lib/core";
+import * as cdk from "aws-cdk-lib";
 import { App } from "./app";
 import { Stage } from "./stage";
 import * as _ from "lodash";

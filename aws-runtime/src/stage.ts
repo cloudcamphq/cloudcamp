@@ -1,4 +1,4 @@
-import * as cdk from "aws-cdk-lib/core";
+import * as cdk from "aws-cdk-lib";
 import { App } from "./app";
 import { Stack } from "./stack";
 import { Construct } from "constructs";
