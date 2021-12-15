@@ -9,26 +9,19 @@ export class CSharp extends Language {
   }
 
   cdkDocsLink(fqn: string): string {
-    // = https://docs.aws.amazon.com/cdk/api/latest/dotnet/api/Amazon.CDK.CxApi.CloudAssembly.html
+    // https://docs.aws.amazon.com/cdk/api/v2/dotnet/api/Amazon.CDK.Annotations.html
+    // https://docs.aws.amazon.com/cdk/api/v2/dotnet/api/Amazon.CDK.Alexa.Ask.CfnSkill.html
 
-    // https://docs.aws.amazon.com/cdk/api/latest/dotnet/api/Amazon.CDK.Pipelines.CdkPipeline.html
-
-    let urlPart;
-    if (fqn.startsWith("@aws-cdk/core")) {
-      urlPart = fqn.split(".")[1];
+    let parts = fqn.split(".");
+    let url: string;
+    if (parts[2] == "core") {
+      url = `https://docs.aws.amazon.com/cdk/api/v2/dotnet/api/Amazon.CDK.${parts[2]}.html`;
     } else {
-      let [module, klass] = fqn.split("/")[1].split(".");
-      module = _.upperFirst(_.camelCase(module));
-      urlPart = `${module}.${klass}`;
+      let pkg = _.upperFirst(_.camelCase(parts[1]));
+      url = `https://docs.aws.amazon.com/cdk/api/v2/dotnet/api/Amazon.CDK.${pkg}.${parts[2]}.html`;
     }
-    // @aws-cdk/core.App
-    return (
-      '<a href="https://docs.aws.amazon.com/cdk/api/latest/dotnet/api/Amazon.CDK.' +
-      urlPart +
-      '.html" class="signature-type" target="_blank">' +
-      fqn.split(".")[1] +
-      "</a>"
-    );
+
+    return `<a href="${url}" class="signature-type" target="_blank">${parts[2]}</a>`;
   }
 
   translateType(methodName: string, type: jsiispec.Type): string {

@@ -8,18 +8,18 @@ export class Python extends Language {
   }
 
   cdkDocsLink(fqn: string): string {
-    let urlPart =
-      fqn.split("/")[0].replace("@", "").replace("-", "_") +
-      "." +
-      fqn.split("/")[1].replace(".", "/");
+    // https://docs.aws.amazon.com/cdk/api/v2/python/aws_cdk/Annotations.html
+    // https://docs.aws.amazon.com/cdk/api/v2/python/aws_cdk.alexa_ask/CfnSkill.html
 
-    return (
-      '<a href="https://docs.aws.amazon.com/cdk/api/latest/python/' +
-      urlPart +
-      '.html" class="signature-type" target="_blank">' +
-      fqn.split(".")[1] +
-      "</a>"
-    );
+    let parts = fqn.split(".");
+    let url: string;
+    if (parts[2] == "core") {
+      url = `https://docs.aws.amazon.com/cdk/api/v2/python/aws_cdk/${parts[2]}.html`;
+    } else {
+      url = `https://docs.aws.amazon.com/cdk/api/v2/python/aws_cdk.${parts[1]}/${parts[2]}.html`;
+    }
+
+    return `<a href="${url}" class="signature-type" target="_blank">${parts[2]}</a>`;
   }
 
   translateType(methodName: string, type: jsiispec.Type): string {

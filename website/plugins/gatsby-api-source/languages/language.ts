@@ -105,14 +105,16 @@ export abstract class Language {
 
   // typescript/javascript implementation
   cdkDocsLink(fqn: string): string {
-    // @aws-cdk/core.App
-    return (
-      '<a href="https://docs.aws.amazon.com/cdk/api/latest/docs/' +
-      fqn.replace("/", "_") +
-      '.html" class="signature-type" target="_blank">' +
-      fqn.split(".")[1] +
-      "</a>"
-    );
+    // https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.Annotations.html
+    // https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.alexa_ask.CfnSkill.html
+    let parts = fqn.split(".");
+    let url: string;
+    if (parts[2] == "core") {
+      url = `https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.${parts[2]}.html`;
+    } else {
+      url = `https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.${parts[1]}.${parts[2]}.html`;
+    }
+    return `<a href="${url}" class="signature-type" target="_blank">${parts[2]}</a>`;
   }
 
   propsTableHeader(

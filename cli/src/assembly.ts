@@ -3,7 +3,7 @@ let crypto = require("crypto");
 import * as jsiispec from "@jsii/spec";
 
 import { Language } from "@cloudcamp/aws-runtime/src/language";
-import { Rosetta } from "jsii-rosetta";
+import { RosettaTabletReader } from "jsii-rosetta";
 import { LanguageCode } from "@cloudcamp/aws-runtime";
 import { Runtime } from "@cloudcamp/aws-runtime/src/runtime";
 
@@ -161,13 +161,12 @@ class RosettaTranslator {
   public assembly: jsiispec.Assembly;
 
   private static INSTANCE: RosettaTranslator;
-  private rosetta: Rosetta;
+  private rosetta: RosettaTabletReader;
   private cache: Map<string, string>;
 
   private constructor() {
     this.cache = new Map();
-    this.rosetta = new Rosetta({
-      liveConversion: true,
+    this.rosetta = new RosettaTabletReader({
       targetLanguages: Language.LANGUAGE_CODES.filter(
         (l) => l != "typescript" && l != "javascript"
       ) as any,
@@ -198,9 +197,14 @@ class RosettaTranslator {
 
     const code = {
       visibleSource: source,
-      where: "sample",
+      location: {
+        api: {
+          api: "file",
+          fileName: "sample.ts",
+        },
+      },
     };
-    let result = this.rosetta.translateSnippet(code, language as any);
+    let result = this.rosetta.translateSnippet(code as any, language as any);
     if (result?.source) {
       let translation = !result.source.endsWith("\n")
         ? result.source + "\n"

@@ -9,14 +9,17 @@ export class Java extends Language {
   }
 
   cdkDocsLink(fqn: string): string {
-    // @aws-cdk/core.App
-    return (
-      '<a href="https://docs.aws.amazon.com/cdk/api/latest/java/software/amazon/awscdk/' +
-      fqn.split("/")[1].replace(".", "/") +
-      '.html" class="signature-type" target="_blank">' +
-      fqn.split(".")[1] +
-      "</a>"
-    );
+    // https://docs.aws.amazon.com/cdk/api/v2/java/software/amazon/awscdk/Annotations.html
+    // https://docs.aws.amazon.com/cdk/api/v2/java/software/amazon/awscdk/alexa/ask/CfnSkill.html
+    let parts = fqn.split(".");
+    let url: string;
+    if (parts[2] == "core") {
+      url = `https://docs.aws.amazon.com/cdk/api/v2/java/software/amazon/awscdk/${parts[2]}.html`;
+    } else {
+      let pkg = _.lowerCase(parts[1].replace("_", ""));
+      url = `https://docs.aws.amazon.com/cdk/api/v2/java/software/amazon/awscdk/${pkg}/${parts[2]}.html`;
+    }
+    return `<a href="${url}" class="signature-type" target="_blank">${parts[2]}</a>`;
   }
 
   propsTableHeader(
