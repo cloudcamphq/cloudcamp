@@ -26,20 +26,5 @@ export class Stage extends cdk.Stage {
         region: App.instance.configuration.region,
       },
     });
-
-    // this.stack =
-    //   props?.stack == undefined
-    //     ? new cdk.Stack(this, _.kebabCase(id), {
-    //         stackName: _.upperFirst(
-    //           _.camelCase(App.instance.configuration.name + "-" + id)
-    //         ),
-    //       })
-    //     : props.stack;
-    // new ssm.StringParameter(this.stack, "ssm-stack", {
-    //   parameterName: `/cloudcamp/${
-    //     App.instance.configuration.name
-    //   }/_/stack/${_.kebabCase(this.stack.stackName)}`,
-    //   stringValue: this.stack.stackName,
-    // });
   }
 }
