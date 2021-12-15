@@ -107,6 +107,9 @@ export class Database extends Construct {
     this.cluster = new rds.ServerlessCluster(this, "cluster", {
       engine: engine,
       vpc,
+      vpcSubnets: {
+        subnetType: ec2.SubnetType.PRIVATE_ISOLATED,
+      },
       scaling: {
         autoPause: Duration.minutes(props.autoPause || 0),
         minCapacity: this.getCapacity(props.minCapacity),
