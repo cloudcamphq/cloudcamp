@@ -146,7 +146,6 @@ export class Generator {
             "@aws-cdk/aws-apigateway:usagePlanKeyOrderInsensitiveId": true,
             "aws-cdk:enableDiffNoFail": "true",
             "@aws-cdk/core:stackRelativeExports": "true",
-            "@aws-cdk/aws-secretsmanager:parseOwnedSecretName": true,
             "@aws-cdk/aws-kms:defaultKeyPolicies": true,
             "@aws-cdk/aws-rds:lowercaseDbIdentifier": true,
             "@aws-cdk/aws-efs:defaultEncryptionAtRest": true,
