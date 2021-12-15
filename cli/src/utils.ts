@@ -30,11 +30,19 @@ export function resolveHome(homeFlag?: string): string {
     return CAMP_HOME_DIR;
   }
 
-  throw new Error(
-    `Could not find home directory.\n   ${chalk.gray(
-      "(Did you run `camp init`?)"
-    )}`
-  );
+  if (!fs.existsSync(".git")) {
+    throw new Error(
+      `Project is not a git repository.\n   ${chalk.gray(
+        "(Did you run `git init`?)"
+      )}`
+    );
+  } else {
+    throw new Error(
+      `Could not find home directory.\n   ${chalk.gray(
+        "(Did you run `camp init`?)"
+      )}`
+    );
+  }
 }
 
 export function resolveNewHome(homeFlag?: string): string {
