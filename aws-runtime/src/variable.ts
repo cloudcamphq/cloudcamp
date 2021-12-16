@@ -5,14 +5,24 @@ import { SecretValue, Tokenization } from "aws-cdk-lib";
 import { BuildEnvironmentVariableType } from "aws-cdk-lib/aws-codebuild";
 
 export class Variable {
-  private output: cdk.CfnOutput;
+  private output?: cdk.CfnOutput;
+  private scope: Construct;
+  private id: string;
+  private value: string;
 
   constructor(scope: Construct, id: string, value: string) {
-    this.output = new cdk.CfnOutput(scope, id, { value: value });
+    this.scope = scope;
+    this.id = id;
+    this.value = value;
   }
 
   resolve() {
-    return this.output;
+    if (!this.output) {
+      this.output = new cdk.CfnOutput(this.scope, this.id, {
+        value: this.value,
+      });
+    }
+    return this.output!;
   }
 }
 
@@ -25,11 +35,3 @@ export function classifyTokenType(value: any) {
   }
   return BuildEnvironmentVariableType.PLAINTEXT;
 }
-
-// resolveToBuildVar(scope: Construct, id: string) {
-//   const v = this.resolve(scope, id);
-//   return {
-//     type: classifyTokenType(v),
-//     value: v,
-//   };
-// }
