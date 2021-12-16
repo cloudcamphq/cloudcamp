@@ -4,6 +4,8 @@ import * as ec2 from "aws-cdk-lib/aws-ec2";
 import { Duration } from "aws-cdk-lib";
 import * as secretsmanager from "aws-cdk-lib/aws-secretsmanager";
 import { App } from "./app";
+import { Variable } from "./variable";
+
 import {
   AuroraMysqlEngineVersion,
   AuroraPostgresEngineVersion,
@@ -33,13 +35,14 @@ export interface DatabaseProps {
 }
 
 export interface DatabaseVariables {
-  readonly databaseUrl: string;
-  readonly databaseName: string;
-  readonly databaseUsername: string;
-  readonly databasePassword: string;
-  readonly databaseHost: string;
-  readonly databasePort: string;
-  readonly databaseType: string;
+  // readonly databaseUrl: Variable;
+  readonly databaseSecret: Variable;
+  readonly databaseName: Variable;
+  readonly databaseUsername: Variable;
+  readonly databasePassword: Variable;
+  readonly databaseHost: Variable;
+  readonly databasePort: Variable;
+  readonly databaseType: Variable;
 }
 
 /**
@@ -128,13 +131,26 @@ export class Database extends Construct {
     let host = this.cluster.clusterEndpoint.hostname;
 
     this.vars = {
-      databaseUrl: `${type}://${username}:${password}@${host}:${port}/${databaseName}`,
-      databaseName: databaseName,
-      databaseUsername: username,
-      databasePassword: password.toString(),
-      databaseHost: host,
-      databasePort: `${port}`,
-      databaseType: type,
+      databaseSecret: new Variable(
+        this,
+        "database-secret-var",
+        secret.secretName
+      ),
+      // databaseUrl: new Variable(
+      //   this,
+      //   "database-url-var",
+      //   `${type}://${username}:${password}@${host}:${port}/${databaseName}`
+      // ),
+      databaseName: new Variable(this, "database-name-var", databaseName),
+      databaseUsername: new Variable(this, "database-username-var", username),
+      databasePassword: new Variable(
+        this,
+        "database-password-var",
+        password.toString()
+      ),
+      databaseHost: new Variable(this, "database-host-var", host),
+      databasePort: new Variable(this, "database-port-var", `${port}`),
+      databaseType: new Variable(this, "database-type-var", type),
     };
   }
 

@@ -348,11 +348,17 @@ export class App extends cdk.App {
     for (let name of names) {
       let stage = this.stages.get(name)!;
       let pre: Step[] = [];
+      let post: Step[] = [];
       if (stage.needsManualApproval) {
         pre = [new pipelines.ManualApprovalStep("approve-" + name)];
       }
+
+      pre = pre.concat(stage.pre);
+      post = post.concat(stage.post);
+
       this.pipeline.addStage(stage, {
-        pre: pre.length !== 0 ? pre : undefined,
+        pre: pre.length ? pre : undefined,
+        post: post.length ? post : undefined,
       });
     }
     return super.synth(options);

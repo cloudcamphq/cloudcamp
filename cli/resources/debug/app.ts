@@ -1,11 +1,19 @@
 import * as __vars__ from "../../src/vars";
-import { App, WebService } from "@cloudcamp/aws-runtime";
+import { App, WebService, Database } from "@cloudcamp/aws-runtime";
 
 let app = new App();
 
+let dockerfile = __vars__.dockerfile;
+
 new WebService(app.production, "production-web", {
-  dockerfile: __vars__.dockerfile,
+  dockerfile: dockerfile,
   port: __vars__.port,
 });
 
-// new Database(app.production, "production-db", { engine: "postgres" });
+let db = new Database(app.production, "production-db");
+
+app.production.stage.runPost("test-post-run", {
+  commands: ["echo $DATABASE_URL"],
+  dockerfile: dockerfile,
+  environment: { DATABASE_URL: db.vars.databaseSecret },
+});
