@@ -306,8 +306,10 @@ export class App extends cdk.App {
    * @ignore
    */
   configuration: Configuration;
-
-  private pipelineStack: PipelineStack;
+  /**
+   * @ignore
+   */
+  public pipelineStack: PipelineStack;
   /**
    * @ignore
    */

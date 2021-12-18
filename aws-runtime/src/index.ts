@@ -2,7 +2,7 @@ export { RepositoryHost } from "./types";
 export { LanguageCode } from "./language";
 export { App, Configuration } from "./app";
 export { PipelineStack, PipelineStackProps } from "./pipeline";
-export { Stage } from "./stage";
+export { Stage, RunProps } from "./stage";
 export { Stack } from "./stack";
 export { Database, DatabaseProps, DatabaseVariables } from "./database";
 export {
@@ -14,7 +14,7 @@ export {
   AlarmConfiguration,
   ScalingSchedule,
   SlackConfiguration,
-} from "./webserver";
+} from "./webservice";
 export { Ref, RefParameterProps } from "./ref";
 export {
   Domain,
@@ -25,3 +25,4 @@ export {
   AaaaRecordProps,
   TxtRecordProps,
 } from "./domain";
+export { Variable, ResolvedVariable } from "./variable";

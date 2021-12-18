@@ -17,6 +17,7 @@ import { setDefaults } from "./utils";
 import { ICertificate } from "aws-cdk-lib/aws-certificatemanager";
 import { Ref } from ".";
 import { Construct } from "constructs";
+import { Variable } from "./variable";
 
 // TODO add redirectHTTP
 // TODO add multiple domains https://jeremynagel.medium.com/adding-multiple-certificates-to-a-applicationloadbalancedfargateservice-with-cdk-adc877e2831d
@@ -35,7 +36,7 @@ export interface WebServiceProps {
    * Environment variables.
    */
   readonly environment?: {
-    [key: string]: string;
+    [key: string]: string | Variable;
   };
   /**
    * TODO
@@ -233,6 +234,35 @@ export class WebService extends Construct {
       });
     }
 
+    let environment: Record<string, string> = {};
+    let secrets: Record<string, string> = {};
+    let installCommands: string[] = [];
+    let stack = cdk.Stack.of(this);
+
+    for (let [k, v] of Object.entries(props.environment || {})) {
+      if (typeof v === "string") {
+        environment[k] = v;
+      } else {
+        let resolved = (v as Variable).resolve(stack, k, "linux");
+        for (let res of resolved) {
+          switch (res.variableType) {
+            case "output":
+              environment[res.tempName || k] = res.value;
+              break;
+            case "secret":
+              secrets[res.tempName || k] = res.value;
+              break;
+            case "plain":
+              environment[res.tempName || k] = res.value;
+              break;
+          }
+          if (res.installCommands) {
+            installCommands = installCommands.concat(res.installCommands);
+          }
+        }
+      }
+    }
+
     this.fargateService =
       new ecs_patterns.ApplicationLoadBalancedFargateService(
         this,
@@ -269,7 +299,8 @@ export class WebService extends Construct {
               streamPrefix: "ecs",
               logGroup: logGroup,
             }),
-            environment: props.environment,
+            environment: environment,
+            // secrets: secrets,
           },
         }
       );
