@@ -18,6 +18,7 @@ import { ICertificate } from "aws-cdk-lib/aws-certificatemanager";
 import { Ref } from ".";
 import { Construct } from "constructs";
 import { Variable } from "./variable";
+// import * as secretsmanager from "aws-cdk-lib/aws-secretsmanager";
 
 // TODO add redirectHTTP
 // TODO add multiple domains https://jeremynagel.medium.com/adding-multiple-certificates-to-a-applicationloadbalancedfargateservice-with-cdk-adc877e2831d
@@ -235,7 +236,7 @@ export class WebService extends Construct {
     }
 
     let environment: Record<string, string> = {};
-    let secrets: Record<string, string> = {};
+    // let secrets: Record<string, ecs.Secret> = {};
     let installCommands: string[] = [];
     let stack = cdk.Stack.of(this);
 
@@ -250,7 +251,19 @@ export class WebService extends Construct {
               environment[res.tempName || k] = res.value;
               break;
             case "secret":
-              secrets[res.tempName || k] = res.value;
+              environment[res.tempName || k] = cdk.Fn.join("", [
+                "{{resolve:secretsmanager:",
+                cdk.Fn.ref(res.value),
+                ":SecretString:::}}",
+              ]);
+              break;
+              // const secret = secretsmanager.Secret.fromSecretNameV2(
+              //   this,
+              //   _.kebabCase(`${id}-secret`),
+              //   res.value
+              // );
+              // secrets[res.tempName || k] =
+              //   ecs.Secret.fromSecretsManager(secret);
               break;
             case "plain":
               environment[res.tempName || k] = res.value;

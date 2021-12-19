@@ -2923,7 +2923,7 @@
       "kind": "interface",
       "locationInModule": {
         "filename": "src/webservice.ts",
-        "line": 84
+        "line": 85
       },
       "name": "AlarmConfiguration",
       "properties": [
@@ -2935,7 +2935,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webservice.ts",
-            "line": 85
+            "line": 86
           },
           "name": "duration",
           "optional": true,
@@ -2951,7 +2951,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webservice.ts",
-            "line": 87
+            "line": 88
           },
           "name": "enabled",
           "optional": true,
@@ -2967,7 +2967,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webservice.ts",
-            "line": 86
+            "line": 87
           },
           "name": "threshold",
           "optional": true,
@@ -4135,7 +4135,7 @@
       "kind": "interface",
       "locationInModule": {
         "filename": "src/webservice.ts",
-        "line": 151
+        "line": 152
       },
       "name": "MetricScalingProps",
       "properties": [
@@ -4147,7 +4147,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webservice.ts",
-            "line": 153
+            "line": 154
           },
           "name": "max",
           "type": {
@@ -4162,7 +4162,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webservice.ts",
-            "line": 152
+            "line": 153
           },
           "name": "min",
           "type": {
@@ -4177,7 +4177,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webservice.ts",
-            "line": 154
+            "line": 155
           },
           "name": "cpu",
           "optional": true,
@@ -4193,7 +4193,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webservice.ts",
-            "line": 155
+            "line": 156
           },
           "name": "memory",
           "optional": true,
@@ -4209,7 +4209,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webservice.ts",
-            "line": 156
+            "line": 157
           },
           "name": "requestCount",
           "optional": true,
@@ -4984,7 +4984,7 @@
       "kind": "interface",
       "locationInModule": {
         "filename": "src/webservice.ts",
-        "line": 105
+        "line": 106
       },
       "name": "ScalingSchedule",
       "properties": [
@@ -4996,7 +4996,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webservice.ts",
-            "line": 106
+            "line": 107
           },
           "name": "id",
           "type": {
@@ -5013,7 +5013,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webservice.ts",
-            "line": 124
+            "line": 125
           },
           "name": "day",
           "optional": true,
@@ -5031,7 +5031,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webservice.ts",
-            "line": 118
+            "line": 119
           },
           "name": "hour",
           "optional": true,
@@ -5049,7 +5049,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webservice.ts",
-            "line": 112
+            "line": 113
           },
           "name": "minute",
           "optional": true,
@@ -5067,7 +5067,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webservice.ts",
-            "line": 130
+            "line": 131
           },
           "name": "month",
           "optional": true,
@@ -5085,7 +5085,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webservice.ts",
-            "line": 142
+            "line": 143
           },
           "name": "weekDay",
           "optional": true,
@@ -5103,7 +5103,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webservice.ts",
-            "line": 136
+            "line": 137
           },
           "name": "year",
           "optional": true,
@@ -5124,7 +5124,7 @@
       "kind": "interface",
       "locationInModule": {
         "filename": "src/webservice.ts",
-        "line": 145
+        "line": 146
       },
       "name": "ScheduleScalingProps",
       "properties": [
@@ -5136,7 +5136,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webservice.ts",
-            "line": 147
+            "line": 148
           },
           "name": "max",
           "type": {
@@ -5151,7 +5151,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webservice.ts",
-            "line": 146
+            "line": 147
           },
           "name": "min",
           "type": {
@@ -5166,7 +5166,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webservice.ts",
-            "line": 148
+            "line": 149
           },
           "name": "schedule",
           "type": {
@@ -5191,7 +5191,7 @@
       "kind": "interface",
       "locationInModule": {
         "filename": "src/webservice.ts",
-        "line": 90
+        "line": 91
       },
       "name": "SlackConfiguration",
       "properties": [
@@ -5203,7 +5203,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webservice.ts",
-            "line": 92
+            "line": 93
           },
           "name": "channelId",
           "type": {
@@ -5218,7 +5218,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webservice.ts",
-            "line": 91
+            "line": 92
           },
           "name": "workspaceId",
           "type": {
@@ -5632,7 +5632,7 @@
         },
         "locationInModule": {
           "filename": "src/webservice.ts",
-          "line": 213
+          "line": 214
         },
         "parameters": [
           {
@@ -5667,7 +5667,7 @@
       "kind": "class",
       "locationInModule": {
         "filename": "src/webservice.ts",
-        "line": 179
+        "line": 180
       },
       "methods": [
         {
@@ -5676,7 +5676,7 @@
           },
           "locationInModule": {
             "filename": "src/webservice.ts",
-            "line": 355
+            "line": 368
           },
           "name": "alarms",
           "parameters": [
@@ -5695,7 +5695,7 @@
           },
           "locationInModule": {
             "filename": "src/webservice.ts",
-            "line": 330
+            "line": 343
           },
           "name": "scaleOnMetric",
           "parameters": [
@@ -5713,7 +5713,7 @@
           },
           "locationInModule": {
             "filename": "src/webservice.ts",
-            "line": 318
+            "line": 331
           },
           "name": "scaleOnSchedule",
           "parameters": [
@@ -5734,7 +5734,7 @@
           },
           "locationInModule": {
             "filename": "src/webservice.ts",
-            "line": 316
+            "line": 329
           },
           "name": "fargateService",
           "type": {
@@ -5754,7 +5754,7 @@
       "kind": "interface",
       "locationInModule": {
         "filename": "src/webservice.ts",
-        "line": 95
+        "line": 96
       },
       "name": "WebServiceAlarmProps",
       "properties": [
@@ -5766,7 +5766,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webservice.ts",
-            "line": 97
+            "line": 98
           },
           "name": "email",
           "optional": true,
@@ -5787,7 +5787,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webservice.ts",
-            "line": 100
+            "line": 101
           },
           "name": "http4xx",
           "optional": true,
@@ -5803,7 +5803,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webservice.ts",
-            "line": 99
+            "line": 100
           },
           "name": "http5xx",
           "optional": true,
@@ -5819,7 +5819,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webservice.ts",
-            "line": 101
+            "line": 102
           },
           "name": "rejected",
           "optional": true,
@@ -5835,7 +5835,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webservice.ts",
-            "line": 96
+            "line": 97
           },
           "name": "slack",
           "optional": true,
@@ -5851,7 +5851,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webservice.ts",
-            "line": 102
+            "line": 103
           },
           "name": "slow",
           "optional": true,
@@ -5867,7 +5867,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webservice.ts",
-            "line": 98
+            "line": 99
           },
           "name": "sms",
           "optional": true,
@@ -5893,7 +5893,7 @@
       "kind": "interface",
       "locationInModule": {
         "filename": "src/webservice.ts",
-        "line": 24
+        "line": 25
       },
       "name": "WebServiceProps",
       "properties": [
@@ -5906,7 +5906,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webservice.ts",
-            "line": 28
+            "line": 29
           },
           "name": "dockerfile",
           "type": {
@@ -5924,7 +5924,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webservice.ts",
-            "line": 61
+            "line": 62
           },
           "name": "cpu",
           "optional": true,
@@ -5940,7 +5940,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webservice.ts",
-            "line": 80
+            "line": 81
           },
           "name": "desiredCount",
           "optional": true,
@@ -5957,7 +5957,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webservice.ts",
-            "line": 44
+            "line": 45
           },
           "name": "domain",
           "optional": true,
@@ -5974,7 +5974,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webservice.ts",
-            "line": 38
+            "line": 39
           },
           "name": "environment",
           "optional": true,
@@ -6004,7 +6004,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webservice.ts",
-            "line": 81
+            "line": 82
           },
           "name": "healthCheckPath",
           "optional": true,
@@ -6023,7 +6023,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webservice.ts",
-            "line": 78
+            "line": 79
           },
           "name": "memory",
           "optional": true,
@@ -6041,7 +6041,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webservice.ts",
-            "line": 34
+            "line": 35
           },
           "name": "port",
           "optional": true,
@@ -6054,5 +6054,5 @@
     }
   },
   "version": "0.0.1",
-  "fingerprint": "3xwCcg+PVKpJrs2FPrH68ALt8IKtqjzBtooq/1D+HwQ="
+  "fingerprint": "cuMax4ZsGae5aPyRdByjXCqk/qolfSx/7WAZbkwYNLw="
 }

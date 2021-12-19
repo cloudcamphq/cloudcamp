@@ -4,15 +4,15 @@ import { App, Database, WebService } from "@cloudcamp/aws-runtime";
 let app = new App();
 
 let dockerfile = __vars__.dockerfile;
-let db = new Database(app.production, "production-db");
+let db = new Database(app.staging, "production-db");
 
 new WebService(app.production, "production-web", {
   dockerfile: dockerfile,
   port: __vars__.port,
   environment: {
-    DATABASE_HOST: db.vars.databaseHost,
+    // DATABASE_HOST: db.vars.databaseHost,
     DATABASE_PASSWORD: db.vars.databasePassword,
-    DATABASE_URL: db.vars.databaseUrl,
+    // DATABASE_URL: db.vars.databaseUrl,
   },
 });
 
@@ -22,12 +22,12 @@ new WebService(app.production, "production-web", {
 // in same stage: use secret (DATABASE_PASSWORD) WORKS
 // in same stage: use complex variable (DATABASE_URL)
 
-// in other stage: use variable via cfnoutput (DATABASE_HOST) WORKS
-// in other stage: use secret WORKS
-// in other stage: use complex variable (DATABASE_URL) WORKS
+// in other stage: use variable via cfnoutput (DATABASE_HOST)
+// in other stage: use secret
+// in other stage: use complex variable (DATABASE_URL)
 
-app.production.stage.runPost("test-post-run", {
-  commands: ["echo $DATABASE_URL", "export"],
-  dockerfile: dockerfile,
-  environment: { DATABASE_URL: db.vars.databaseUrl },
-});
+// app.production.stage.runPost("test-post-run", {
+//   commands: ["echo $DATABASE_URL", "export"],
+//   dockerfile: dockerfile,
+//   environment: { DATABASE_URL: db.vars.databaseUrl },
+// });

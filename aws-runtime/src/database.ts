@@ -17,7 +17,7 @@ import {
 } from "aws-cdk-lib/aws-rds";
 import { Construct } from "constructs";
 import * as _ from "lodash";
-
+import { withUniqueOutputExportName } from "./utils";
 // TODO logs
 // TODO alerts
 // TODO how to change password?
@@ -152,11 +152,15 @@ export class Database extends Construct {
 
     let host = this.cluster.clusterEndpoint.hostname;
 
-    this.hostOutput = new cdk.CfnOutput(this, "host-output", { value: host });
+    this.hostOutput = withUniqueOutputExportName(
+      new cdk.CfnOutput(this, "host-output", { value: host })
+    );
 
-    this.secretNameOutput = new cdk.CfnOutput(this, "secret-name-output", {
-      value: secretName,
-    });
+    this.secretNameOutput = withUniqueOutputExportName(
+      new cdk.CfnOutput(this, "secret-name-output", {
+        value: secretName,
+      })
+    );
 
     this.vars = {
       databasePassword: new SecretVariable(

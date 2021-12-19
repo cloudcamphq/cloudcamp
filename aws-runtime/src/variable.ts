@@ -46,7 +46,7 @@ export class CfnOutputVariable extends Variable {
       return [
         {
           variableType: "output",
-          value: makeToken(this.output),
+          value: this.output.importValue,
           cfnOutputValue: this.output,
         },
       ];
@@ -130,7 +130,7 @@ export class DatabaseUrlVariable extends Variable {
       return [
         {
           variableType: "output",
-          value: makeToken(this.hostOutput),
+          value: this.hostOutput.importValue,
           cfnOutputValue: this.hostOutput,
           tempName: `DATABASE_HOST_${tmpPostfix}`,
         },
@@ -143,13 +143,6 @@ export class DatabaseUrlVariable extends Variable {
       ];
     }
   }
-}
-
-function makeToken(output: cdk.CfnOutput) {
-  let stack = cdk.Stack.of(output);
-  const stackId = limitIdentifierLength(stack.artifactId, 100);
-  const outputName = stack.resolve(output.logicalId);
-  return `#{${stackId}.${outputName}}`;
 }
 
 function limitIdentifierLength(s: string, n: number): string {
@@ -168,27 +161,6 @@ function hash<A>(obj: A) {
   return d.digest("hex");
 }
 
-// export class Variable {
-//   protected output?: cdk.CfnOutput;
-//   protected scope: Construct;
-//   protected id: string;
-//   protected value: string;
-
-//   constructor(scope: Construct, id: string, value: string) {
-//     this.scope = scope;
-//     this.id = id;
-//     this.value = value;
-//   }
-
-//   resolve() {
-//     if (!this.output) {
-//       this.output = new cdk.CfnOutput(this.scope, this.id, {
-//         value: this.value,
-//       });
-//     }
-//     return this.output!;
-//   }
-// }
 // export function classifyTokenType(value: any) {
 //   const fragments = Tokenization.reverseString(value);
 //   for (const token of fragments.tokens) {
