@@ -12,7 +12,7 @@ new WebService(app.production, "production-web", {
   environment: {
     // DATABASE_HOST: db.vars.databaseHost,
     DATABASE_PASSWORD: db.vars.databasePassword,
-    // DATABASE_URL: db.vars.databaseUrl,
+    DATABASE_URL: db.vars.databaseUrl,
   },
 });
 

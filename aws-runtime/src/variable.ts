@@ -6,6 +6,7 @@ export interface ResolvedVariable {
   readonly variableType: "secret" | "plain" | "output";
   readonly value: string;
   readonly cfnOutputValue?: cdk.CfnOutput;
+  readonly tokenValue?: string;
   readonly installCommands?: string[];
   readonly tempName?: string;
 }
@@ -76,6 +77,11 @@ export class SecretVariable extends Variable {
         {
           variableType: "secret",
           value: this.name,
+          tokenValue: cdk.Fn.join("", [
+            "{{resolve:secretsmanager:",
+            this.name,
+            ":SecretString:::}}",
+          ]),
         },
       ];
     }
@@ -139,6 +145,25 @@ export class DatabaseUrlVariable extends Variable {
           value: this.secretName,
           tempName: `DATABASE_SECRET_${tmpPostfix}`,
           installCommands: installCommands,
+          // `${this.engine}://${this.username}:${this.secretValue}@` +
+          //   `${this.host}:${this.port}/${this.database}`,
+          tokenValue: cdk.Fn.join("", [
+            this.engine,
+            "://",
+            this.username,
+            ":",
+            cdk.Fn.join("", [
+              "{{resolve:secretsmanager:",
+              this.secretName,
+              ":SecretString:::}}",
+            ]),
+            "@",
+            this.hostOutput.importValue,
+            ":",
+            this.port.toString(),
+            "/",
+            this.database,
+          ]),
         },
       ];
     }

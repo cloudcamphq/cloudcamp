@@ -4842,7 +4842,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/variable.ts",
-            "line": 9
+            "line": 10
           },
           "name": "installCommands",
           "optional": true,
@@ -4863,9 +4863,25 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/variable.ts",
-            "line": 10
+            "line": 11
           },
           "name": "tempName",
+          "optional": true,
+          "type": {
+            "primitive": "string"
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "stability": "experimental"
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/variable.ts",
+            "line": 9
+          },
+          "name": "tokenValue",
           "optional": true,
           "type": {
             "primitive": "string"
@@ -5530,7 +5546,7 @@
       "kind": "class",
       "locationInModule": {
         "filename": "src/variable.ts",
-        "line": 13
+        "line": 14
       },
       "methods": [
         {
@@ -5539,7 +5555,7 @@
           },
           "locationInModule": {
             "filename": "src/variable.ts",
-            "line": 20
+            "line": 21
           },
           "name": "hasSameStage",
           "parameters": [
@@ -5570,7 +5586,7 @@
           },
           "locationInModule": {
             "filename": "src/variable.ts",
-            "line": 14
+            "line": 15
           },
           "name": "resolve",
           "parameters": [
@@ -5676,7 +5692,7 @@
           },
           "locationInModule": {
             "filename": "src/webservice.ts",
-            "line": 368
+            "line": 364
           },
           "name": "alarms",
           "parameters": [
@@ -5695,7 +5711,7 @@
           },
           "locationInModule": {
             "filename": "src/webservice.ts",
-            "line": 343
+            "line": 339
           },
           "name": "scaleOnMetric",
           "parameters": [
@@ -5713,7 +5729,7 @@
           },
           "locationInModule": {
             "filename": "src/webservice.ts",
-            "line": 331
+            "line": 327
           },
           "name": "scaleOnSchedule",
           "parameters": [
@@ -5734,7 +5750,7 @@
           },
           "locationInModule": {
             "filename": "src/webservice.ts",
-            "line": 329
+            "line": 325
           },
           "name": "fargateService",
           "type": {
@@ -6054,5 +6070,5 @@
     }
   },
   "version": "0.0.1",
-  "fingerprint": "cuMax4ZsGae5aPyRdByjXCqk/qolfSx/7WAZbkwYNLw="
+  "fingerprint": "Sb5C5gf2vX1Tcjat0bDnGO335chA1SrmKclISLepWnA="
 }

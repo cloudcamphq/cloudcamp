@@ -251,11 +251,7 @@ export class WebService extends Construct {
               environment[res.tempName || k] = res.value;
               break;
             case "secret":
-              environment[res.tempName || k] = cdk.Fn.join("", [
-                "{{resolve:secretsmanager:",
-                cdk.Fn.ref(res.value),
-                ":SecretString:::}}",
-              ]);
+              environment[res.tempName || k] = res.tokenValue!;
               break;
               // const secret = secretsmanager.Secret.fromSecretNameV2(
               //   this,
