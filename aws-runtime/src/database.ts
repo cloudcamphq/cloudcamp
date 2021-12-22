@@ -5,11 +5,19 @@ import { Duration } from "aws-cdk-lib";
 import * as secretsmanager from "aws-cdk-lib/aws-secretsmanager";
 import { App } from "./app";
 import {
+  CfnOutputVariable,
+  DatabaseUrlVariable,
+  SecretVariable,
+  Variable,
+} from "./variable";
+
+import {
   AuroraMysqlEngineVersion,
   AuroraPostgresEngineVersion,
 } from "aws-cdk-lib/aws-rds";
 import { Construct } from "constructs";
-
+import * as _ from "lodash";
+import { withUniqueOutputExportName } from "./utils";
 // TODO logs
 // TODO alerts
 // TODO how to change password?
@@ -25,6 +33,7 @@ export interface DatabaseProps {
    * @default "postgres"
    */
   readonly engine?: "mysql" | "postgres";
+  readonly secretName?: string;
   readonly databaseName?: string;
   readonly username?: string;
   readonly autoPause?: number;
@@ -33,13 +42,13 @@ export interface DatabaseProps {
 }
 
 export interface DatabaseVariables {
-  readonly databaseUrl: string;
+  readonly databaseUrl: Variable;
   readonly databaseName: string;
   readonly databaseUsername: string;
-  readonly databasePassword: string;
-  readonly databaseHost: string;
+  readonly databasePassword: Variable;
   readonly databasePort: string;
   readonly databaseType: string;
+  readonly databaseHost: Variable;
 }
 
 /**
@@ -47,6 +56,9 @@ export interface DatabaseVariables {
  */
 export class Database extends Construct {
   cluster: rds.IServerlessCluster;
+
+  hostOutput: cdk.CfnOutput;
+  secretNameOutput: cdk.CfnOutput;
 
   vars: DatabaseVariables;
 
@@ -84,12 +96,25 @@ export class Database extends Construct {
     }
 
     const username = props.username || "administrator";
+    let secret: secretsmanager.ISecret;
 
-    const secret = new secretsmanager.Secret(this, "cluster-secret", {
-      generateSecretString: {
-        excludePunctuation: true,
-      },
-    });
+    let secretName: string;
+
+    if (props.secretName) {
+      secretName = props.secretName;
+      secret = secretsmanager.Secret.fromSecretNameV2(
+        this,
+        "cluster-secret",
+        props.secretName
+      );
+    } else {
+      const stack = cdk.Stack.of(scope);
+      secretName = _.camelCase(`${stack.artifactId}-${id}-secret`);
+      secret = new secretsmanager.Secret(this, "cluster-secret", {
+        generateSecretString: { excludePunctuation: true },
+        secretName: secretName,
+      });
+    }
 
     const password = secret.secretValue;
     const databaseName = props.databaseName || "maindb";
@@ -127,14 +152,38 @@ export class Database extends Construct {
 
     let host = this.cluster.clusterEndpoint.hostname;
 
+    this.hostOutput = withUniqueOutputExportName(
+      new cdk.CfnOutput(this, "host-output", { value: host })
+    );
+
+    this.secretNameOutput = withUniqueOutputExportName(
+      new cdk.CfnOutput(this, "secret-name-output", {
+        value: secretName,
+      })
+    );
+
     this.vars = {
-      databaseUrl: `${type}://${username}:${password}@${host}:${port}/${databaseName}`,
+      databasePassword: new SecretVariable(
+        this,
+        secretName,
+        secret.secretValue.toString()
+      ),
       databaseName: databaseName,
       databaseUsername: username,
-      databasePassword: password.toString(),
-      databaseHost: host,
+      databaseHost: new CfnOutputVariable(this.hostOutput, host),
       databasePort: `${port}`,
       databaseType: type,
+      databaseUrl: new DatabaseUrlVariable(
+        this,
+        props.engine || "postgres",
+        username,
+        secretName,
+        secret.secretValue.toString(),
+        host,
+        this.hostOutput,
+        port,
+        databaseName
+      ),
     };
   }
 
