@@ -114,11 +114,7 @@ export class Stage extends cdk.Stage {
           value: v,
         };
       } else {
-        let resolved = (v as Variable).resolve(
-          App.instance.pipelineStack,
-          k,
-          props.os || "linux"
-        );
+        let resolved = (v as Variable).resolveForAction(k, props.os || "linux");
         for (let res of resolved) {
           switch (res.variableType) {
             case "output":
@@ -131,7 +127,7 @@ export class Stage extends cdk.Stage {
                   res.variableType == "secret"
                     ? BuildEnvironmentVariableType.SECRETS_MANAGER
                     : BuildEnvironmentVariableType.PLAINTEXT,
-                value: res.value,
+                value: res.stringValue,
               };
               break;
           }
@@ -141,6 +137,8 @@ export class Stage extends cdk.Stage {
         }
       }
     }
+
+    console.log("environmentVariables", environmentVariables);
 
     // let secret = secretsmanager.Secret.fromSecretNameV2(
     //   App.instance.pipelineStack,

@@ -4796,21 +4796,6 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/variable.ts",
-            "line": 7
-          },
-          "name": "value",
-          "type": {
-            "primitive": "string"
-          }
-        },
-        {
-          "abstract": true,
-          "docs": {
-            "stability": "experimental"
-          },
-          "immutable": true,
-          "locationInModule": {
-            "filename": "src/variable.ts",
             "line": 6
           },
           "name": "variableType",
@@ -4853,6 +4838,22 @@
               },
               "kind": "array"
             }
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "stability": "experimental"
+          },
+          "immutable": true,
+          "locationInModule": {
+            "filename": "src/variable.ts",
+            "line": 7
+          },
+          "name": "stringValue",
+          "optional": true,
+          "type": {
+            "primitive": "string"
           }
         },
         {
@@ -5555,7 +5556,7 @@
           },
           "locationInModule": {
             "filename": "src/variable.ts",
-            "line": 21
+            "line": 26
           },
           "name": "hasSameStage",
           "parameters": [
@@ -5582,11 +5583,12 @@
         {
           "abstract": true,
           "docs": {
-            "stability": "experimental"
+            "stability": "experimental",
+            "summary": "Resolve for simple cases (ECS)."
           },
           "locationInModule": {
             "filename": "src/variable.ts",
-            "line": 15
+            "line": 18
           },
           "name": "resolve",
           "parameters": [
@@ -5595,7 +5597,26 @@
               "type": {
                 "fqn": "constructs.Construct"
               }
-            },
+            }
+          ],
+          "returns": {
+            "type": {
+              "primitive": "string"
+            }
+          }
+        },
+        {
+          "abstract": true,
+          "docs": {
+            "stability": "experimental",
+            "summary": "Resolve for actions, where some hacking is needed to work around \"Secrets Manager can't find the specified secret.\"."
+          },
+          "locationInModule": {
+            "filename": "src/variable.ts",
+            "line": 24
+          },
+          "name": "resolveForAction",
+          "parameters": [
             {
               "name": "name",
               "type": {
@@ -5692,7 +5713,7 @@
           },
           "locationInModule": {
             "filename": "src/webservice.ts",
-            "line": 364
+            "line": 337
           },
           "name": "alarms",
           "parameters": [
@@ -5711,7 +5732,7 @@
           },
           "locationInModule": {
             "filename": "src/webservice.ts",
-            "line": 339
+            "line": 312
           },
           "name": "scaleOnMetric",
           "parameters": [
@@ -5729,7 +5750,7 @@
           },
           "locationInModule": {
             "filename": "src/webservice.ts",
-            "line": 327
+            "line": 300
           },
           "name": "scaleOnSchedule",
           "parameters": [
@@ -5750,7 +5771,7 @@
           },
           "locationInModule": {
             "filename": "src/webservice.ts",
-            "line": 325
+            "line": 298
           },
           "name": "fargateService",
           "type": {
@@ -6070,5 +6091,5 @@
     }
   },
   "version": "0.0.1",
-  "fingerprint": "Sb5C5gf2vX1Tcjat0bDnGO335chA1SrmKclISLepWnA="
+  "fingerprint": "Qrbx4AUAZegSd3CP7CG44BcRqO5Yi+hbNf27aje7InA="
 }

@@ -4,7 +4,7 @@ import * as crypto from "crypto";
 
 export interface ResolvedVariable {
   readonly variableType: "secret" | "plain" | "output";
-  readonly value: string;
+  readonly stringValue?: string;
   readonly cfnOutputValue?: cdk.CfnOutput;
   readonly tokenValue?: string;
   readonly installCommands?: string[];
@@ -12,11 +12,16 @@ export interface ResolvedVariable {
 }
 
 export abstract class Variable {
-  abstract resolve(
-    scope: Construct,
-    name: string,
-    os: string
-  ): ResolvedVariable[];
+  /**
+   * Resolve for simple cases (ECS)
+   */
+  abstract resolve(scope: Construct): string;
+
+  /**
+   * Resolve for actions, where some hacking is needed to work around
+   * "Secrets Manager can't find the specified secret."
+   */
+  abstract resolveForAction(name: string, os: string): ResolvedVariable[];
 
   protected hasSameStage(
     constructA: Construct,
@@ -35,23 +40,19 @@ export class CfnOutputVariable extends Variable {
     super();
   }
 
-  resolve(scope: Construct, _name: string, _os: string): ResolvedVariable[] {
-    if (this.hasSameStage(scope, this.output)) {
-      return [
-        {
-          variableType: "plain",
-          value: this.value,
-        },
-      ];
-    } else {
-      return [
-        {
-          variableType: "output",
-          value: this.output.importValue,
-          cfnOutputValue: this.output,
-        },
-      ];
-    }
+  resolve(scope: Construct): string {
+    return this.hasSameStage(scope, this.output)
+      ? this.value
+      : this.output.importValue;
+  }
+
+  resolveForAction(_name: string, _os: string): ResolvedVariable[] {
+    return [
+      {
+        variableType: "output",
+        cfnOutputValue: this.output,
+      },
+    ];
   }
 }
 
@@ -64,27 +65,23 @@ export class SecretVariable extends Variable {
     super();
   }
 
-  resolve(scope: Construct, _name: string, _os: string): ResolvedVariable[] {
-    if (this.hasSameStage(scope, this.origin)) {
-      return [
-        {
-          variableType: "plain",
-          value: this.value,
-        },
-      ];
-    } else {
-      return [
-        {
-          variableType: "secret",
-          value: this.name,
-          tokenValue: cdk.Fn.join("", [
-            "{{resolve:secretsmanager:",
-            this.name,
-            ":SecretString:::}}",
-          ]),
-        },
-      ];
-    }
+  resolve(scope: Construct): string {
+    return this.hasSameStage(scope, this.origin)
+      ? this.value
+      : cdk.Fn.join("", [
+          "{{resolve:secretsmanager:",
+          this.name,
+          ":SecretString:::}}",
+        ]);
+  }
+
+  resolveForAction(_name: string, _os: string): ResolvedVariable[] {
+    return [
+      {
+        variableType: "secret",
+        stringValue: this.name,
+      },
+    ];
   }
 }
 
@@ -103,70 +100,63 @@ export class DatabaseUrlVariable extends Variable {
     super();
   }
 
-  resolve(scope: Construct, name: string, os: string): ResolvedVariable[] {
-    if (this.hasSameStage(scope, this.origin)) {
-      return [
-        {
-          variableType: "plain",
-          value:
-            `${this.engine}://${this.username}:${this.secretValue}@` +
-            `${this.host}:${this.port}/${this.database}`,
-        },
-      ];
-    } else {
-      let stack = cdk.Stack.of(this.hostOutput);
-      const stackId = limitIdentifierLength(stack.artifactId, 100);
-      let tmpPostfix = `${stackId}_${name}`;
-      let installCommands: string[];
-      switch (os) {
-        case "windows":
-          installCommands = [
-            `set "${name}=${this.engine}://${this.username}:%DATABASE_SECRET_${tmpPostfix}%@"` +
-              `%DATABASE_HOST_${tmpPostfix}%:${this.port}/${this.database}"`,
-          ];
-          break;
-        case "linux":
-        default:
-          installCommands = [
-            `export ${name}="${this.engine}://${this.username}:$DATABASE_SECRET_${tmpPostfix}@` +
-              `$DATABASE_HOST_${tmpPostfix}:${this.port}/${this.database}"`,
-          ];
-          break;
-      }
-      return [
-        {
-          variableType: "output",
-          value: this.hostOutput.importValue,
-          cfnOutputValue: this.hostOutput,
-          tempName: `DATABASE_HOST_${tmpPostfix}`,
-        },
-        {
-          variableType: "secret",
-          value: this.secretName,
-          tempName: `DATABASE_SECRET_${tmpPostfix}`,
-          installCommands: installCommands,
-          // `${this.engine}://${this.username}:${this.secretValue}@` +
-          //   `${this.host}:${this.port}/${this.database}`,
-          tokenValue: cdk.Fn.join("", [
-            this.engine,
-            "://",
-            this.username,
-            ":",
-            cdk.Fn.join("", [
-              "{{resolve:secretsmanager:",
-              this.secretName,
-              ":SecretString:::}}",
-            ]),
-            "@",
-            this.hostOutput.importValue,
-            ":",
-            this.port.toString(),
-            "/",
-            this.database,
+  resolve(scope: Construct): string {
+    return this.hasSameStage(scope, this.origin)
+      ? `${this.engine}://${this.username}:${this.secretValue}@` +
+          `${this.host}:${this.port}/${this.database}`
+      : cdk.Fn.join("", [
+          this.engine,
+          "://",
+          this.username,
+          ":",
+          cdk.Fn.join("", [
+            "{{resolve:secretsmanager:",
+            this.secretName,
+            ":SecretString:::}}",
           ]),
-        },
-      ];
+          "@",
+          this.hostOutput.importValue,
+          ":",
+          this.port.toString(),
+          "/",
+          this.database,
+        ]);
+  }
+
+  resolveForAction(name: string, os: string): ResolvedVariable[] {
+    let stack = cdk.Stack.of(this.hostOutput);
+    const stackId = limitIdentifierLength(stack.artifactId, 100);
+    let tmpPostfix = `${stackId}_${name}`;
+    let installCommands: string[];
+
+    switch (os) {
+      case "windows":
+        installCommands = [
+          `set "${name}=${this.engine}://${this.username}:%DATABASE_SECRET_${tmpPostfix}%@"` +
+            `%DATABASE_HOST_${tmpPostfix}%:${this.port}/${this.database}"`,
+        ];
+        break;
+      case "linux":
+      default:
+        installCommands = [
+          `export ${name}="${this.engine}://${this.username}:$DATABASE_SECRET_${tmpPostfix}@` +
+            `$DATABASE_HOST_${tmpPostfix}:${this.port}/${this.database}"`,
+        ];
+        break;
     }
+    return [
+      {
+        variableType: "output",
+        cfnOutputValue: this.hostOutput,
+        tempName: `DATABASE_HOST_${tmpPostfix}`,
+      },
+      {
+        variableType: "secret",
+        tempName: `DATABASE_SECRET_${tmpPostfix}`,
+        stringValue: this.secretName,
+        installCommands: installCommands,
+      },
+    ];
   }
 }
 

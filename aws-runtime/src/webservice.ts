@@ -236,39 +236,13 @@ export class WebService extends Construct {
     }
 
     let environment: Record<string, string> = {};
-    // let secrets: Record<string, ecs.Secret> = {};
-    let installCommands: string[] = [];
     let stack = cdk.Stack.of(this);
 
     for (let [k, v] of Object.entries(props.environment || {})) {
       if (typeof v === "string") {
         environment[k] = v;
       } else {
-        let resolved = (v as Variable).resolve(stack, k, "linux");
-        for (let res of resolved) {
-          switch (res.variableType) {
-            case "output":
-              environment[res.tempName || k] = res.value;
-              break;
-            case "secret":
-              environment[res.tempName || k] = res.tokenValue!;
-              break;
-              // const secret = secretsmanager.Secret.fromSecretNameV2(
-              //   this,
-              //   _.kebabCase(`${id}-secret`),
-              //   res.value
-              // );
-              // secrets[res.tempName || k] =
-              //   ecs.Secret.fromSecretsManager(secret);
-              break;
-            case "plain":
-              environment[res.tempName || k] = res.value;
-              break;
-          }
-          if (res.installCommands) {
-            installCommands = installCommands.concat(res.installCommands);
-          }
-        }
+        environment[k] = (v as Variable).resolve(stack);
       }
     }
 
@@ -309,7 +283,6 @@ export class WebService extends Construct {
               logGroup: logGroup,
             }),
             environment: environment,
-            // secrets: secrets,
           },
         }
       );
