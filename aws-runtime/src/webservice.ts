@@ -220,8 +220,10 @@ export class WebService extends Construct {
       vpcId: App.instance.configuration.vpcId,
     });
 
+    let uniqueId = cdk.Names.uniqueId(this);
+
     let logGroup = new logs.LogGroup(this, "log-group", {
-      logGroupName: `/${appName}/webserver/${id}`,
+      logGroupName: `/${appName}/webservice/${uniqueId}/${id}`,
       retention: logs.RetentionDays.ONE_MONTH,
       removalPolicy: cdk.RemovalPolicy.DESTROY,
     });

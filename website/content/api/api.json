@@ -5713,7 +5713,7 @@
           },
           "locationInModule": {
             "filename": "src/webservice.ts",
-            "line": 337
+            "line": 339
           },
           "name": "alarms",
           "parameters": [
@@ -5732,7 +5732,7 @@
           },
           "locationInModule": {
             "filename": "src/webservice.ts",
-            "line": 312
+            "line": 314
           },
           "name": "scaleOnMetric",
           "parameters": [
@@ -5750,7 +5750,7 @@
           },
           "locationInModule": {
             "filename": "src/webservice.ts",
-            "line": 300
+            "line": 302
           },
           "name": "scaleOnSchedule",
           "parameters": [
@@ -5771,7 +5771,7 @@
           },
           "locationInModule": {
             "filename": "src/webservice.ts",
-            "line": 298
+            "line": 300
           },
           "name": "fargateService",
           "type": {
@@ -6091,5 +6091,5 @@
     }
   },
   "version": "0.0.1",
-  "fingerprint": "Qrbx4AUAZegSd3CP7CG44BcRqO5Yi+hbNf27aje7InA="
+  "fingerprint": "LsJeQtiUWd1jZXiNeQ551uxuhvUNWJjq8CgLyhyU0Sc="
 }
