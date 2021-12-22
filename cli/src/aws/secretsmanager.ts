@@ -12,7 +12,7 @@ import { AWSClientConfig } from "./config";
 /**
  * Manage secrets
  */
-export class SecretManager {
+export class SecretsManager {
   /**
    * Return true if the secret exists
    */
@@ -43,9 +43,9 @@ export class SecretManager {
       if (result.DeletedDate) {
         await secretsmanager.send(new RestoreSecretCommand({ SecretId: name }));
       }
-      SecretManager.update(name, secret);
+      SecretsManager.update(name, secret);
     } catch (_err) {
-      SecretManager.create(name, secret, appName);
+      SecretsManager.create(name, secret, appName);
     }
   }
 

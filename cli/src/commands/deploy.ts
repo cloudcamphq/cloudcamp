@@ -5,7 +5,7 @@ import { getCdkJsonContext, updateCdkJsonContext } from "../utils";
 import {
   assumeAWSProfile,
   setAWSRegion,
-  SecretManager,
+  SecretsManager,
   CloudFormation,
   CDK,
   VPC,
@@ -182,7 +182,7 @@ export default class Deploy extends BaseCommand {
   ) {
     let keep = true;
 
-    let secretExists = await SecretManager.exists(tokenName);
+    let secretExists = await SecretsManager.exists(tokenName);
     if (yesFlag && secretExists) {
       keep = true;
     } else if (secretExists) {
@@ -225,7 +225,7 @@ export default class Deploy extends BaseCommand {
       let token = tokenAuth.token;
 
       this.ux.start("Storing GitHub token");
-      await SecretManager.upsert(tokenName, token, appName);
+      await SecretsManager.upsert(tokenName, token, appName);
       this.ux.stop();
     }
   }
