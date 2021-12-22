@@ -336,6 +336,12 @@ export class WebService extends Construct {
     }
   }
 
+  private longName(): string {
+    let appName = App.instance.configuration.name;
+    let stack = cdk.Stack.of(this);
+    return `${appName}/${stack.stackName}/${this.node.id}`;
+  }
+
   alarms(props?: WebServiceAlarmProps) {
     props = setDefaults(props, {
       slack: undefined,
@@ -363,8 +369,6 @@ export class WebService extends Construct {
       },
     });
 
-    let appName = App.instance.configuration.name;
-
     let topic = new sns.Topic(this, "web-service-alarms-topic", {
       displayName: "Web service Alarms Topic",
     });
@@ -387,10 +391,12 @@ export class WebService extends Construct {
       topic.addSubscription(new subscriptions.SmsSubscription(sms));
     }
 
+    let longName = this.longName();
+
     if (props?.http5xx?.enabled) {
       this.addHttpAlarm(
         "HTTP_5XX",
-        `${appName}/${this.node.id}: HTTP 5XX threshold exceeded`,
+        `${longName}: HTTP 5XX threshold exceeded`,
         topic,
         props?.http5xx?.threshold as number,
         props?.http5xx?.duration as number
@@ -400,7 +406,7 @@ export class WebService extends Construct {
     if (props?.http4xx?.enabled) {
       this.addHttpAlarm(
         "HTTP_4XX",
-        `${appName}/${this.node.id}: HTTP 4XX threshold exceeded`,
+        `${longName}: HTTP 4XX threshold exceeded`,
         topic,
         props?.http4xx?.threshold as number,
         props?.http4xx?.duration as number
@@ -507,10 +513,10 @@ export class WebService extends Construct {
     threshold: number,
     period: number
   ) {
-    let appName = App.instance.configuration.name;
+    let longName = this.longName();
     let alarm = new cloudwatch.Alarm(this, "rejected-connections-alarm", {
       alarmName: "REJECTED",
-      alarmDescription: `${appName}/${this.node.id}: Rejected connections threshold exceeded`,
+      alarmDescription: `${longName}: Rejected connections threshold exceeded`,
       comparisonOperator:
         cloudwatch.ComparisonOperator.GREATER_THAN_OR_EQUAL_TO_THRESHOLD,
       threshold: threshold,
@@ -529,10 +535,10 @@ export class WebService extends Construct {
   }
 
   private addSlowAlarm(topic: sns.ITopic, threshold: number, period: number) {
-    let appName = App.instance.configuration.name;
+    let longName = this.longName();
     let alarm = new cloudwatch.Alarm(this, "rejected-connections-alarm", {
       alarmName: "REJECTED",
-      alarmDescription: `${appName}/${this.node.id}: Rejected connections threshold exceeded`,
+      alarmDescription: `${longName}: Rejected connections threshold exceeded`,
       comparisonOperator:
         cloudwatch.ComparisonOperator.GREATER_THAN_OR_EQUAL_TO_THRESHOLD,
       threshold: threshold,

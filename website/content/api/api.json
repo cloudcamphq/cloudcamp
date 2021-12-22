@@ -4088,7 +4088,7 @@
       "kind": "enum",
       "locationInModule": {
         "filename": "src/language.ts",
-        "line": 6
+        "line": 4
       },
       "members": [
         {
@@ -5713,7 +5713,7 @@
           },
           "locationInModule": {
             "filename": "src/webservice.ts",
-            "line": 339
+            "line": 345
           },
           "name": "alarms",
           "parameters": [
@@ -6091,5 +6091,5 @@
     }
   },
   "version": "0.0.1",
-  "fingerprint": "EPwAYeDTeFz1HyDjI5Z0eoF9R/GX6FW984bcEZI/1BI="
+  "fingerprint": "cw1/JS6dZ6TCgb81cd1JxFETRM3hfvSnPlGTu+U3XW4="
 }
