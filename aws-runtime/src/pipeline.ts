@@ -43,6 +43,7 @@ export class PipelineStack extends cdk.Stack {
 
     this.pipeline = new pipelines.CodePipeline(this, "cdk-pipeline", {
       selfMutation: true,
+      dockerEnabledForSelfMutation: true,
       pipelineName: this.pipelineName,
       synth: new pipelines.ShellStep("Synth", {
         input: pipelines.CodePipelineSource.gitHub(

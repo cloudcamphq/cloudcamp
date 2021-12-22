@@ -16,12 +16,17 @@ import { Construct } from "constructs";
  * @order 2
  */
 export class Stack extends cdk.Stack {
+  stage!: Stage;
+
   constructor(scope: Construct, id: string) {
     let stackName = _.upperFirst(
       _.camelCase(App.instance.configuration.name + "-" + id)
     );
-
     super(scope, id, { stackName: stackName });
+
+    if (scope instanceof Stage) {
+      this.stage = scope;
+    }
 
     new ssm.StringParameter(this, "ssm-stack", {
       parameterName: `/cloudcamp/${

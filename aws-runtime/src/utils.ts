@@ -2,6 +2,8 @@ import * as _ from "lodash";
 import { RepositoryHost } from "./types";
 import * as path from "path";
 import * as fs from "fs";
+import * as cdk from "aws-cdk-lib";
+import * as crypto from "crypto";
 
 export function setDefaults<T>(props: T | undefined, defaults: any): T {
   return _.defaultsDeep(props, defaults || {}) as T;
@@ -27,4 +29,28 @@ export function version(): string {
   let packageJsonPath = path.join(__dirname, "..", "package.json");
   let contents = JSON.parse(fs.readFileSync(packageJsonPath).toString());
   return contents.version;
+}
+
+export function withUniqueOutputExportName(output: cdk.CfnOutput) {
+  let stack = cdk.Stack.of(output);
+  const stackId = limitIdentifierLength(stack.artifactId, 100);
+  const outputName = stack.resolve(output.logicalId);
+  output.exportName = _.camelCase(`${stackId}.${outputName}`);
+  return output;
+}
+
+function limitIdentifierLength(s: string, n: number): string {
+  if (s.length <= n) {
+    return s;
+  }
+  const h = hash(s).substr(0, 8);
+  const mid = Math.floor((n - h.length) / 2);
+
+  return s.substr(0, mid) + h + s.substr(s.length - mid);
+}
+
+function hash<A>(obj: A) {
+  const d = crypto.createHash("sha256");
+  d.update(JSON.stringify(obj));
+  return d.digest("hex");
 }
