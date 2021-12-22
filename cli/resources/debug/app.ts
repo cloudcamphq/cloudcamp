@@ -10,9 +10,9 @@ new WebService(app.production, "web", {
   dockerfile: dockerfile,
   port: __vars__.port,
   environment: {
-    // DATABASE_HOST: db.vars.databaseHost,
-    // DATABASE_PASSWORD: db.vars.databasePassword,
-    // DATABASE_URL: db.vars.databaseUrl,
+    DATABASE_HOST: db.vars.databaseHost,
+    DATABASE_PASSWORD: db.vars.databasePassword,
+    DATABASE_URL: db.vars.databaseUrl,
   },
 });
 
