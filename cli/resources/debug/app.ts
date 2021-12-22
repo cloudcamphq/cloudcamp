@@ -16,15 +16,15 @@ new WebService(app.production, "web", {
   },
 });
 
-// new WebService(app.staging, "web", {
-//   dockerfile: dockerfile,
-//   port: __vars__.port,
-//   environment: {
-//     DATABASE_HOST: db.vars.databaseHost,
-//     DATABASE_PASSWORD: db.vars.databasePassword,
-//     DATABASE_URL: db.vars.databaseUrl,
-//   },
-// });
+new WebService(app.staging, "web", {
+  dockerfile: dockerfile,
+  port: __vars__.port,
+  environment: {
+    DATABASE_HOST: db.vars.databaseHost,
+    DATABASE_PASSWORD: db.vars.databasePassword,
+    DATABASE_URL: db.vars.databaseUrl,
+  },
+});
 
 // things to try:
 

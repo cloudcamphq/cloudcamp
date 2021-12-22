@@ -189,10 +189,11 @@ export class Generator {
       } else {
         value = (__vars__ as any)[k];
       }
+      let varRegex = new RegExp("__vars__\\." + k, "g");
       if (typeof value === "string") {
-        source = source.replace("__vars__." + k, `"${value}"`);
+        source = source.replace(varRegex, `"${value}"`);
       } else {
-        source = source.replace("__vars__." + k, `${value}`);
+        source = source.replace(varRegex, `${value}`);
       }
     }
     return source;
