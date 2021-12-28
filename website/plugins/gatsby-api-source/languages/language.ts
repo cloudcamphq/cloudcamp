@@ -140,7 +140,7 @@ export abstract class Language {
     let props: jsiispec.Property[] = _.clone(type.properties);
 
     props = props.sort((a, b) =>
-      a.locationInModule.line > b.locationInModule.line ? 1 : -1
+      a.locationInModule?.line > b.locationInModule?.line ? 1 : -1
     );
 
     let tbody = props

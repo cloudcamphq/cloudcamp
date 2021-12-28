@@ -20,7 +20,7 @@ function sortedPropsAndMethods(
     ...(type.methods || []),
   ];
   propsAndMethods.sort((a, b) =>
-    a.locationInModule.line > b.locationInModule.line ? 1 : -1
+    a.locationInModule?.line > b.locationInModule?.line ? 1 : -1
   );
   return propsAndMethods;
 }
