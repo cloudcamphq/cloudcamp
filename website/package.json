@@ -54,5 +54,8 @@
     "rehype-react": "^7.0.2",
     "tailwindcss": "^2.2.9",
     "typescript": "^4.4.4"
+  },
+  "devDependencies": {
+    "showdown": "^1.9.1"
   }
 }
