@@ -5,7 +5,7 @@ title: "Tutorial"
 category: "getting-started"
 ---
 
-This tutorial will walk you through build and deploying an application with
+This tutorial will walk you through building and deploying an application with
 CloudCamp. Make sure that CloudCamp is installed and your AWS account is
 configured.
 
