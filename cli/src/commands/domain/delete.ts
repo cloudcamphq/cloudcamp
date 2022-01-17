@@ -22,8 +22,8 @@ export default class DeleteDomain extends BaseCommand {
     assumeAWSProfile(flags.profile);
     // TODO check if the record exists
 
-    let records = await Route53.listRecords(args.domain);
-    let hasCert = await CertificateManager.hasCert(args.domain);
+    const records = await Route53.listRecords(args.domain);
+    const hasCert = await CertificateManager.hasCert(args.domain);
     this.ux.log("");
     this.ux.log(
       `The domain ${args.domain} contains ${records.length} records:`
@@ -44,7 +44,7 @@ export default class DeleteDomain extends BaseCommand {
       this.ux.log("It also has an SSL certificate.");
       this.ux.log("");
     }
-    let shouldDelete = await this.ux.confirm({
+    const shouldDelete = await this.ux.confirm({
       message: hasCert
         ? "Delete all records and certificate?"
         : "Delete all records?",

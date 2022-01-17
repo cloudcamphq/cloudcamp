@@ -68,17 +68,17 @@ export class Generator {
    */
   public copySourceHome(filename: string, vars?: any): void {
     vars = vars || {};
-    let srcDir = path.join(this.home, "src");
+    const srcDir = path.join(this.home, "src");
 
-    let basefile = path.basename(filename);
-    let withoutExt = basefile.slice(0, path.extname(basefile).length * -1);
-    let target =
+    const basefile = path.basename(filename);
+    const withoutExt = basefile.slice(0, path.extname(basefile).length * -1);
+    const target =
       withoutExt + Language.extensionForLanguageCode(this.languageCode);
     let data = fs.readFileSync(filename).toString();
     data = this.substituteVars(data, vars);
 
-    let trans = new SourceTranslator();
-    let result = trans.translate(data, this.languageCode);
+    const trans = new SourceTranslator();
+    const result = trans.translate(data, this.languageCode);
     fs.writeFileSync(path.join(srcDir, target), result);
   }
 
@@ -93,7 +93,7 @@ export class Generator {
       return new Promise<void>((resolve, reject) => {
         exec(cmd, { cwd: appDir }, (err, _stdout, stderr) => {
           if (err) {
-            let msg = err.message + "\n" + stderr;
+            const msg = err.message + "\n" + stderr;
             reject(msg);
           } else {
             resolve();
@@ -177,7 +177,7 @@ export class Generator {
 
   private substituteVars(source: string, vars: any): string {
     // remove the first line
-    let lines = source.split("\n");
+    const lines = source.split("\n");
     lines.splice(0, 1);
     source = lines.join("\n");
 
@@ -189,7 +189,7 @@ export class Generator {
       } else {
         value = (__vars__ as any)[k];
       }
-      let varRegex = new RegExp("__vars__\\." + k, "g");
+      const varRegex = new RegExp("__vars__\\." + k, "g");
       if (typeof value === "string") {
         source = source.replace(varRegex, `"${value}"`);
       } else {

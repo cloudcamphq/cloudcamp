@@ -73,7 +73,7 @@ export default function OnThisPage({ onThisPage }: { onThisPage: any }) {
       </h1>
       <ul>
         {onThisPage.map((item, ix) => {
-          let link = `#${item.id}`;
+          const link = `#${item.id}`;
           return (
             <li className="text-sm rounded-md text-gray-700 " key={item.id}>
               <Link

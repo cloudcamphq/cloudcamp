@@ -30,7 +30,7 @@ function nameAndLogo(code: string) {
 }
 
 function LanguageMenuItem({ code }) {
-  let [language, logo] = nameAndLogo(code);
+  const [language, logo] = nameAndLogo(code);
 
   // @ts-ignore
   const [, dispatch] = useContext(Context);
@@ -63,8 +63,8 @@ function LanguageMenuItem({ code }) {
 export default function LanguageMenu() {
   // @ts-ignore
   const [state, _] = useContext(Context);
-  let code = state.language;
-  let [language, logo] = nameAndLogo(code);
+  const code = state.language;
+  const [language, logo] = nameAndLogo(code);
   return (
     <Menu
       as="div"

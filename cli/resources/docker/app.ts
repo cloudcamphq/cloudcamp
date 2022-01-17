@@ -1,14 +1,14 @@
 import * as __vars__ from "../../src/vars";
 import { App, Database, WebService } from "@cloudcamp/aws-runtime";
 
-let app = new App();
+const app = new App();
 
-let productionDb = new Database(app.production, "production-db", {
+const productionDb = new Database(app.production, "production-db", {
   engine: "postgres",
 });
 
 new WebService(app.production, "production-web", {
   dockerfile: __vars__.dockerfile,
   port: __vars__.port,
-  environment: { DATABASE_URL: productionDb.env.databaseUrl },
+  environment: { DATABASE_URL: productionDb.vars.databaseUrl },
 });

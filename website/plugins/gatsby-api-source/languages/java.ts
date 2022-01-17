@@ -42,7 +42,7 @@ export class Java extends Language {
     param: jsiispec.Parameter,
     type: jsiispec.Type
   ): string {
-    let id = _.kebabCase(method.name) + "-" + _.kebabCase(type.name);
+    const id = _.kebabCase(method.name) + "-" + _.kebabCase(type.name);
     return `
     <h4 class="text-xl ml-6 font-bold mt-6 mb-6 font-display">
       <a href="#${id}" id="${id}">new ${type.name}.Builder()</a>
@@ -56,7 +56,7 @@ export class Java extends Language {
     param: jsiispec.Parameter,
     type: jsiispec.ClassType | jsiispec.InterfaceType
   ): string {
-    let tbody = type.properties
+    const tbody = type.properties
       .map((prop, ix) => {
         let defaultValue = "";
         if (prop.optional !== true) {
@@ -79,7 +79,7 @@ export class Java extends Language {
     `;
       })
       .join("\n");
-    let header = this.propsTableHeader(className, method, param, type);
+    const header = this.propsTableHeader(className, method, param, type);
     return `
       ${header}
       <table class="w-full border overflow-x-auto block">
@@ -108,16 +108,18 @@ export class Java extends Language {
   }
 
   methodSignature(className: string, method: jsiispec.Method): string {
-    let argsList = [];
+    const argsList = [];
 
-    let meths = (method as any).initializer ? `new ${className}` : method.name;
-    let rets = (method as any).initializer
+    const meths = (method as any).initializer
+      ? `new ${className}`
+      : method.name;
+    const rets = (method as any).initializer
       ? ""
       : this.translateType(method.name, method.returns?.type as any) + " ";
 
     for (let param of method.parameters || []) {
-      let paramName = param.name;
-      let typeName = this.translateType(method.name, param.type as any);
+      const paramName = param.name;
+      const typeName = this.translateType(method.name, param.type as any);
 
       argsList.push(`${typeName} ${paramName}`);
     }
@@ -148,7 +150,7 @@ export class Java extends Language {
       (type as any).collection.kind == "array" &&
       (type as any).collection.elementtype?.fqn
     ) {
-      let fqn = (type as any).collection.elementtype.fqn;
+      const fqn = (type as any).collection.elementtype.fqn;
       if (!fqn.startsWith("@cloudcamp")) {
         return this.cdkDocsLink(fqn) + "[]";
       } else {
@@ -178,7 +180,7 @@ export class Java extends Language {
   }
 
   simpleMethodSignature(className: string, method: jsiispec.Method): string {
-    let meths = (method as any).initializer ? `constructor` : method.name;
+    const meths = (method as any).initializer ? `constructor` : method.name;
     return `${meths}`;
   }
 

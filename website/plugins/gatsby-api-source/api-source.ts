@@ -22,7 +22,7 @@ export default class ApiSource {
   private languages: Language[];
 
   constructor(private assembly: jsiispec.Assembly) {
-    let translator = new SourceTranslator();
+    const translator = new SourceTranslator();
     this.languages = [
       new TypeScript("ts", this.assembly, translator),
       new JavaScript("javascript", this.assembly, translator),
@@ -72,7 +72,7 @@ export default class ApiSource {
       // hack to allow multi line summaries
       summary = summary.replace(/․/g, ".");
     }
-    let remarks = type.docs?.remarks;
+    const remarks = type.docs?.remarks;
 
     return {
       ...type,
@@ -121,10 +121,10 @@ export default class ApiSource {
     className: string,
     method: jsiispec.Method
   ): string | undefined {
-    let params = method.parameters || [];
+    const params = method.parameters || [];
     if (params.length) {
-      let lastParam = params[params.length - 1] as any;
-      let type = this.assembly.types[lastParam.type.fqn];
+      const lastParam = params[params.length - 1] as any;
+      const type = this.assembly.types[lastParam.type.fqn];
       if (!type) {
         return undefined;
       }
@@ -136,8 +136,8 @@ export default class ApiSource {
           type as any
         );
 
-        let types = {};
-        let typeNames = [];
+        const types = {};
+        const typeNames = [];
         let props: jsiispec.Property[] = _.clone(type.properties);
 
         props = props.sort((a, b) =>
@@ -145,7 +145,7 @@ export default class ApiSource {
         );
 
         for (let prop of props || []) {
-          let type = this.assembly.types[(prop.type as any).fqn];
+          const type = this.assembly.types[(prop.type as any).fqn];
           if (type && type.kind == "interface") {
             if (!typeNames.includes(type.fqn)) {
               types[type.fqn] = type;
@@ -155,7 +155,7 @@ export default class ApiSource {
             (prop.type as any)?.collection?.kind == "array" &&
             (prop.type as any)?.collection?.elementtype?.fqn
           ) {
-            let type =
+            const type =
               this.assembly.types[
                 (prop.type as any)?.collection?.elementtype?.fqn
               ];
@@ -169,7 +169,7 @@ export default class ApiSource {
         }
 
         for (let typeName of typeNames) {
-          let type = types[typeName];
+          const type = types[typeName];
           result += this.generatePropsAllLanguages(
             className,
             method,
@@ -341,11 +341,11 @@ export default class ApiSource {
       return undefined;
     }
 
-    let regex = new RegExp("```ts(.*?)```", "gms");
-    let match = text.match(regex);
+    const regex = new RegExp("```ts(.*?)```", "gms");
+    const match = text.match(regex);
     if (match) {
       for (let codeSection of match) {
-        let code = codeSection.slice("```ts".length, "```".length * -1);
+        const code = codeSection.slice("```ts".length, "```".length * -1);
 
         let highlightedCode = this.highlightCode(
           "ts",
@@ -364,7 +364,7 @@ export default class ApiSource {
           if (language.languageCode == "ts") {
             continue;
           }
-          let translatedCode = language.translate(code);
+          const translatedCode = language.translate(code);
           let highlightedCode = this.highlightCode(
             language.languageCode,
             translatedCode.trim()
@@ -389,7 +389,7 @@ export default class ApiSource {
       return source;
     }
 
-    let ret = source
+    const ret = source
       .split("\n")
       .map((line) => (line.trim().length == 0 ? "&nbsp;" : line))
       .join("\n");

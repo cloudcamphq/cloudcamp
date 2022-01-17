@@ -24,14 +24,14 @@ export class NameInput extends Input<string> {
     let name: string | undefined = this.value;
 
     if (!name) {
-      let git = new GitRepository();
+      const git = new GitRepository();
       if (await git.isGitRepository()) {
-        let remotes = await git.getGitRemotes();
+        const remotes = await git.getGitRemotes();
         for (let url of Array.from(remotes.values())) {
-          let m1 = url.match(/\/([\w._-]*?)\.git/);
-          let m2 = url.match(/github\.com\/(.*?)\/(.*?)$/);
+          const m1 = url.match(/\/([\w._-]*?)\.git/);
+          const m2 = url.match(/github\.com\/(.*?)\/(.*?)$/);
 
-          let repo = (m1 && m1[1]) || (m2 && m2[2]);
+          const repo = (m1 && m1[1]) || (m2 && m2[2]);
           if (repo && this.validateProjectName(repo)) {
             name = repo;
             break;
@@ -40,7 +40,7 @@ export class NameInput extends Input<string> {
       }
 
       if (!name) {
-        let base = path.basename(process.cwd());
+        const base = path.basename(process.cwd());
         if (this.validateProjectName(base)) {
           name = base;
         } else {
@@ -72,7 +72,7 @@ export class NameInput extends Input<string> {
     this.value = await ux.input({
       message: "App name:",
       validate: async (name) => {
-        let validName = this.validateProjectName(name);
+        const validName = this.validateProjectName(name);
         if (validName !== true) {
           return validName;
         }
@@ -98,7 +98,7 @@ export class NameInput extends Input<string> {
   }
 
   private projectExists(name: string): boolean {
-    let projectPath = path.join(CAMP_HOME_DIR, name);
+    const projectPath = path.join(CAMP_HOME_DIR, name);
     return fs.existsSync(projectPath);
   }
 }

@@ -23,22 +23,22 @@ export class Route53 {
   static async list(
     domainName?: string
   ): Promise<{ id: string; domainName: string; certificate: string }[]> {
-    let route53 = new Route53Client(AWSClientConfig);
-    let ssm = new SSMClient(AWSClientConfig);
-    let acm = new ACMClient(AWSClientConfig);
+    const route53 = new Route53Client(AWSClientConfig);
+    const ssm = new SSMClient(AWSClientConfig);
+    const acm = new ACMClient(AWSClientConfig);
 
-    let ssmData = await ssm.send(
+    const ssmData = await ssm.send(
       new GetParametersByPathCommand({ Path: "/cloudcamp/global/certificate" })
     );
-    let params = domainName ? { DNSName: domainName + "." } : {};
-    let data = await route53.send(new ListHostedZonesByNameCommand(params));
-    let results = [];
+    const params = domainName ? { DNSName: domainName + "." } : {};
+    const data = await route53.send(new ListHostedZonesByNameCommand(params));
+    const results = [];
     // when a domainName was specified, we only want the first zone
-    let zones =
+    const zones =
       (domainName ? data.HostedZones?.slice(0, 1) : data.HostedZones) || [];
     for (let zone of zones) {
       let certStatus: string;
-      let certSsm = (ssmData.Parameters || []).filter((param) =>
+      const certSsm = (ssmData.Parameters || []).filter((param) =>
         _.endsWith(param.Name, "/" + _.trimEnd(zone.Name, "."))
       );
       if (certSsm.length) {
@@ -74,7 +74,7 @@ export class Route53 {
 
   static async getDomain(domainName: string) {
     domainName = domainName.toLowerCase();
-    let domains = (await Route53.list()).filter(
+    const domains = (await Route53.list()).filter(
       (domain) => domain.domainName === domainName
     );
     if (domains.length === 0) {
@@ -87,9 +87,11 @@ export class Route53 {
     domainName: string
   ): Promise<{ nameserver: string }[]> {
     domainName = domainName.toLowerCase();
-    let route53 = new Route53Client(AWSClientConfig);
-    let domain = await Route53.getDomain(domainName);
-    let data = await route53.send(new GetHostedZoneCommand({ Id: domain.id }));
+    const route53 = new Route53Client(AWSClientConfig);
+    const domain = await Route53.getDomain(domainName);
+    const data = await route53.send(
+      new GetHostedZoneCommand({ Id: domain.id })
+    );
     if (!data.DelegationSet?.NameServers?.length) {
       throw new Error("Could not find nameserver information.");
     } else {
@@ -101,7 +103,7 @@ export class Route53 {
 
   static async create(domainName: string): Promise<void> {
     domainName = domainName.toLowerCase();
-    let route53 = new Route53Client(AWSClientConfig);
+    const route53 = new Route53Client(AWSClientConfig);
     let exists = false;
     try {
       await Route53.getDomain(domainName);
@@ -126,9 +128,9 @@ export class Route53 {
     { name: string; type: string; ttl: any; resourceRecords: any; alias: any }[]
   > {
     domainName = domainName.toLowerCase();
-    let route53 = new Route53Client(AWSClientConfig);
-    let domain = await Route53.getDomain(domainName);
-    let data = await route53.send(
+    const route53 = new Route53Client(AWSClientConfig);
+    const domain = await Route53.getDomain(domainName);
+    const data = await route53.send(
       new ListResourceRecordSetsCommand({ HostedZoneId: domain.id })
     );
     return (
@@ -144,16 +146,16 @@ export class Route53 {
 
   static async remove(domainName: string): Promise<void> {
     domainName = domainName.toLowerCase();
-    let route53 = new Route53Client(AWSClientConfig);
-    let domain = await Route53.getDomain(domainName);
-    let changes = (await Route53.listRecords(domainName))
+    const route53 = new Route53Client(AWSClientConfig);
+    const domain = await Route53.getDomain(domainName);
+    const changes = (await Route53.listRecords(domainName))
       .filter(
         (record) =>
           !(record.name == domainName + "." && record.type == "NS") &&
           !(record.name == domainName + "." && record.type == "SOA")
       )
       .map((record) => {
-        let rset: any = {
+        const rset: any = {
           Name: record.name,
           Type: record.type,
           AliasTarget: record.alias,

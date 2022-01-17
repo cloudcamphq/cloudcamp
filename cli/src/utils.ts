@@ -5,8 +5,8 @@ import * as path from "path";
 import _ from "lodash";
 
 export function version(): string {
-  let packageJsonPath = path.join(__dirname, "..", "package.json");
-  let contents = JSON.parse(fs.readFileSync(packageJsonPath).toString());
+  const packageJsonPath = path.join(__dirname, "..", "package.json");
+  const contents = JSON.parse(fs.readFileSync(packageJsonPath).toString());
   return contents.version;
 }
 
@@ -46,7 +46,7 @@ export function resolveHome(homeFlag?: string): string {
 }
 
 export function resolveNewHome(homeFlag?: string): string {
-  let home = homeFlag == undefined ? CAMP_HOME_DIR : homeFlag;
+  const home = homeFlag == undefined ? CAMP_HOME_DIR : homeFlag;
   if (fs.existsSync(home)) {
     throw new Error(
       `Directory exists: ${home}\n   ${chalk.gray(
@@ -61,8 +61,8 @@ export function resolveNewHome(homeFlag?: string): string {
  * Update the CDK Json file to include account etc.
  */
 export function updateCdkJsonContext(home: string, context: any) {
-  let cdkJsonFile = path.join(home, "cdk.json");
-  let cdkJson = JSON.parse(fs.readFileSync(cdkJsonFile).toString());
+  const cdkJsonFile = path.join(home, "cdk.json");
+  const cdkJson = JSON.parse(fs.readFileSync(cdkJsonFile).toString());
   _.assign(cdkJson.context, context);
   fs.writeFileSync(path.join(cdkJsonFile), JSON.stringify(cdkJson, null, 2));
 }
@@ -71,7 +71,7 @@ export function updateCdkJsonContext(home: string, context: any) {
  * Read the cdk.json file or throw an error if it does not exist.
  */
 export function getCdkJsonContext(home: string) {
-  let cdkJsonFile = path.join(home, "cdk.json");
+  const cdkJsonFile = path.join(home, "cdk.json");
   if (!fs.existsSync(cdkJsonFile)) {
     throw new Error("cdk.json not found.");
   }

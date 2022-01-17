@@ -52,19 +52,19 @@ export class SourceTranslator {
   }
 
   private translateCSharp(source: string): string {
-    let translation = this.rosetta.translate("csharp", source);
-    let assembly = this.rosetta.assembly;
+    const translation = this.rosetta.translate("csharp", source);
+    const assembly = this.rosetta.assembly;
 
     const fixedSource = translation.replace(
       /new\s+(.*?)\((.*?),\s+new\s+Struct/g,
       (match, $1, $2) => {
-        let fqn = "@cloudcamp/aws-runtime." + $1;
+        const fqn = "@cloudcamp/aws-runtime." + $1;
 
         if (!assembly.types || !assembly.types[fqn]) {
           return match;
         }
 
-        let types = assembly.types!;
+        const types = assembly.types!;
 
         if (
           !(types[fqn] as jsiispec.ClassType).initializer ||
@@ -73,10 +73,10 @@ export class SourceTranslator {
           return match;
         }
 
-        let ctor = (assembly.types[fqn] as jsiispec.ClassType).initializer!;
-        let last = ctor.parameters!.slice(-1)[0] as any;
+        const ctor = (assembly.types[fqn] as jsiispec.ClassType).initializer!;
+        const last = ctor.parameters!.slice(-1)[0] as any;
         if (last.name == "props" && last.type.fqn) {
-          let typeName = last.type.fqn.split(".")[1];
+          const typeName = last.type.fqn.split(".")[1];
           return `new ${$1}(${$2}, new ${typeName}`;
         }
         return match;
@@ -86,8 +86,8 @@ export class SourceTranslator {
   }
 
   private translateJava(source: string): string {
-    let translation = this.rosetta.translate("java", source);
-    let assembly = this.rosetta.assembly;
+    const translation = this.rosetta.translate("java", source);
+    const assembly = this.rosetta.assembly;
 
     // rosetta gives us type 'Object' fix this with a regex
     let fixedSource = translation.replace(
@@ -142,7 +142,7 @@ export class SourceTranslator {
     fixedSource = fixedSource.replace(
       /new\s+([a-zA-Z0-9]*?)\(\)((\s*\.[a-zA-Z0-9]*?\(.*?\))*)/gms,
       (match, $1, $2) => {
-        let fqn = `@cloudcamp/aws-runtime.${$1}`;
+        const fqn = `@cloudcamp/aws-runtime.${$1}`;
         if (assembly.types![fqn] && assembly.types![fqn].kind == "interface") {
           return `new ${$1}.Builder()${$2}.build()`;
         } else {
@@ -210,12 +210,12 @@ class RosettaTranslator {
         },
       },
     };
-    let result = this.rosetta.translateSnippet(
+    const result = this.rosetta.translateSnippet(
       code as TypeScriptSnippet,
       language as TargetLanguage
     );
     if (result?.source) {
-      let translation = !result.source.endsWith("\n")
+      const translation = !result.source.endsWith("\n")
         ? result.source + "\n"
         : result.source;
       this.cache.set(hash, translation);

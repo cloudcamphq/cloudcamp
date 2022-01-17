@@ -19,7 +19,7 @@ import Main from "./Main";
 function getShowOnThisPage(): boolean {
   const isBrowser = typeof window !== "undefined";
   if (isBrowser) {
-    let showOnThisPage = Cookies.get("show-on-this-page");
+    const showOnThisPage = Cookies.get("show-on-this-page");
     return showOnThisPage == "true" ? true : false;
   }
   return false;
@@ -47,10 +47,10 @@ export default function SidebarLayout({
   data: any;
   pageContext: any;
 }) {
-  let leftBarWidth = "w-64";
-  let leftBarPadding = "px-8";
-  let rightBarWidth = "w-64";
-  let rightBarPadding = "px-4";
+  const leftBarWidth = "w-64";
+  const leftBarPadding = "px-8";
+  const rightBarWidth = "w-64";
+  const rightBarPadding = "px-4";
 
   const [showOnThisPage, setShowOnThisPage] = useState(getShowOnThisPage());
 

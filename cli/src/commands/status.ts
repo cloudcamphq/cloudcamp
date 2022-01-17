@@ -64,12 +64,12 @@ export default class ShowStatus extends BaseCommand {
 
   private async trace() {
     const { flags } = this.parse(ShowStatus);
-    let home = resolveHome(flags.home);
+    const home = resolveHome(flags.home);
     setupAWS(home, flags.profile);
 
-    let appName = getCdkJsonContext(home)[CONTEXT_KEY_NAME];
-    let status = await CloudFormation.getDeploymentStatus(appName);
-    let statusDescr = this.deploymentStatusDescr(status);
+    const appName = getCdkJsonContext(home)[CONTEXT_KEY_NAME];
+    const status = await CloudFormation.getDeploymentStatus(appName);
+    const statusDescr = this.deploymentStatusDescr(status);
 
     if (status === undefined) {
       this.ux.log("Deployment Status: \t", statusDescr);
@@ -81,7 +81,7 @@ export default class ShowStatus extends BaseCommand {
     let stage = undefined;
 
     if (flags.action !== "**current**") {
-      let idx = flags.action.indexOf(".");
+      const idx = flags.action.indexOf(".");
       if (idx == -1) {
         throw new Error(
           `Invalid format: '${flags.action}'. Use 'stage.action'`
@@ -91,7 +91,7 @@ export default class ShowStatus extends BaseCommand {
       action = flags.action.slice(idx + 1);
     }
 
-    let result = await this.getPipelineStatii(appName, stage, action);
+    const result = await this.getPipelineStatii(appName, stage, action);
     this.ux.log("");
 
     cli.table(
@@ -143,12 +143,12 @@ export default class ShowStatus extends BaseCommand {
 
   private async status() {
     const { flags } = this.parse(ShowStatus);
-    let home = resolveHome(flags.home);
+    const home = resolveHome(flags.home);
     setupAWS(home, flags.profile);
-    let appName = getCdkJsonContext(home)[CONTEXT_KEY_NAME];
+    const appName = getCdkJsonContext(home)[CONTEXT_KEY_NAME];
 
-    let form = (label: string, data: string) => {
-      let numSpaces =
+    const form = (label: string, data: string) => {
+      const numSpaces =
         Math.max(
           "Deployment Status".length,
           "Build Status".length,
@@ -161,15 +161,18 @@ export default class ShowStatus extends BaseCommand {
 
     this.ux.log("");
     while (true) {
-      let deploymentStatus = await CloudFormation.getDeploymentStatus(appName);
-      let deploymentStatusDescr = this.deploymentStatusDescr(deploymentStatus);
+      const deploymentStatus = await CloudFormation.getDeploymentStatus(
+        appName
+      );
+      const deploymentStatusDescr =
+        this.deploymentStatusDescr(deploymentStatus);
 
       if (deploymentStatus === undefined) {
         this.ux.log(form("Deployment Status", deploymentStatusDescr));
         return;
       }
 
-      let result = await this.getPipelineStatus(appName);
+      const result = await this.getPipelineStatus(appName);
       let status = result.status;
       let descr = result.descr;
 
@@ -190,7 +193,7 @@ export default class ShowStatus extends BaseCommand {
         this.ux.start(form("Build Status", descr));
         while (true) {
           await new Promise((resolve, _reject) => setTimeout(resolve, 5000));
-          let pipelineStatus = await this.getPipelineStatus(appName);
+          const pipelineStatus = await this.getPipelineStatus(appName);
           status = pipelineStatus.status;
           descr = pipelineStatus.descr;
 
@@ -224,7 +227,7 @@ export default class ShowStatus extends BaseCommand {
             break;
         }
 
-        let image = path.join(__dirname, "..", "..", "resources", "logo.png");
+        const image = path.join(__dirname, "..", "..", "resources", "logo.png");
         notifier.notify({
           title: "Pipeline execution finished.",
           message: "Build Status: " + noteDescr,
@@ -235,7 +238,7 @@ export default class ShowStatus extends BaseCommand {
         });
       }
 
-      let outputs = await CloudFormation.getOutputs(appName);
+      const outputs = await CloudFormation.getOutputs(appName);
       if (outputs.length) {
         this.ux.log("");
         this.ux.log("Outputs:");
@@ -278,7 +281,7 @@ export default class ShowStatus extends BaseCommand {
   }
 
   private async getPipelineStatus(appName: string): Promise<PipelineStatus> {
-    let pipeline = await CodePipeline.getPipeline(appName);
+    const pipeline = await CodePipeline.getPipeline(appName);
 
     let status = "InProgress";
     let descr: string;
@@ -288,7 +291,7 @@ export default class ShowStatus extends BaseCommand {
     let latestCommitUrl = undefined;
 
     if (pipeline !== undefined) {
-      let execution = await CodePipeline.getLatestPipelineExecution(
+      const execution = await CodePipeline.getLatestPipelineExecution(
         pipeline.name!
       );
 
@@ -360,11 +363,11 @@ export default class ShowStatus extends BaseCommand {
     logAction?: string;
     statii: PipelineStatus[];
   }> {
-    let pipeline = await CodePipeline.getPipeline(appName);
+    const pipeline = await CodePipeline.getPipeline(appName);
     if (pipeline == undefined) {
       throw new Error("Pipeline not found.");
     }
-    let logs = await CodePipeline.getLogs(pipeline.name!, stage, action);
+    const logs = await CodePipeline.getLogs(pipeline.name!, stage, action);
     let logText = undefined;
     let logStage = undefined;
     let logAction = undefined;
@@ -375,8 +378,8 @@ export default class ShowStatus extends BaseCommand {
       logAction = logs.logAction;
     }
 
-    let result = (await CodePipeline.getAllStatii(pipeline.name!)) || [];
-    let statii = result.map((status) => ({
+    const result = (await CodePipeline.getAllStatii(pipeline.name!)) || [];
+    const statii = result.map((status) => ({
       stage: status.stage,
       action: status.action,
       status: status.status,

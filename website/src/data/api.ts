@@ -5,7 +5,7 @@ let path = require("path");
 export function sortedPropsAndMethods(
   type: jsiispec.ClassType
 ): (jsiispec.Method | jsiispec.Property)[] {
-  let propsAndMethods = [
+  const propsAndMethods = [
     ...(type.initializer
       ? ([type.initializer] as jsiispec.Method[])
       : ([] as jsiispec.Method[])),
@@ -19,9 +19,9 @@ export function sortedPropsAndMethods(
 }
 
 function extractOnThisPage(type: jsiispec.ClassType) {
-  let propsAndMethods = sortedPropsAndMethods(type);
+  const propsAndMethods = sortedPropsAndMethods(type);
 
-  let onThisPage = [];
+  const onThisPage = [];
   onThisPage.push({ title: "Usage", id: "usage", children: [] });
 
   let currentTopic = [];
@@ -45,7 +45,7 @@ function extractOnThisPage(type: jsiispec.ClassType) {
         children: currentTopic,
       });
     }
-    let title = item.docs.custom.simpleSignature;
+    const title = item.docs.custom.simpleSignature;
     if (item["parameters"] === undefined) {
       currentTopic.push({
         type: "P",
@@ -82,17 +82,17 @@ export function sortedNodes(nodes: jsiispec.ClassType[]) {
 }
 
 function makeLinks(nodes: jsiispec.ClassType[]) {
-  let links = {};
+  const links = {};
   for (var i = 0; i < nodes.length; i++) {
     let node = nodes[i];
     let prev = undefined;
     let next = undefined;
     if (i != 0) {
-      let prevNode = nodes[i - 1];
+      const prevNode = nodes[i - 1];
       prev = { link: `/docs/api/${makeSlug(prevNode)}`, title: prevNode.name };
     }
     if (i + 1 < nodes.length) {
-      let nextNode = nodes[i + 1];
+      const nextNode = nodes[i + 1];
       next = { link: `/docs/api/${makeSlug(nextNode)}`, title: nextNode.name };
     }
     links[makeSlug(node)] = { prev: prev, next: next };
@@ -212,14 +212,14 @@ export async function createPages(createPage: any, graphql: any) {
     }
   `);
 
-  let nodes = sortedNodes(data.allApiDocs.nodes);
-  let links = makeLinks(nodes);
+  const nodes = sortedNodes(data.allApiDocs.nodes);
+  const links = makeLinks(nodes);
 
   nodes.forEach((node) => {
     if (node.docs?.custom?.ignore) {
       return;
     }
-    let slug = makeSlug(node);
+    const slug = makeSlug(node);
 
     createPage({
       path: `/docs/api/${slug}`,

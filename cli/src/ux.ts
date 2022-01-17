@@ -108,7 +108,7 @@ export class UX {
     message: string;
     default?: boolean;
   }): Promise<boolean> {
-    let result = await inquirer.prompt([
+    const result = await inquirer.prompt([
       {
         type: "confirm",
         name: "value",
@@ -132,7 +132,7 @@ export class UX {
     if (options.loop == undefined) {
       options.loop = false;
     }
-    let result = await inquirer.prompt([
+    const result = await inquirer.prompt([
       {
         type: "list",
         name: "value",

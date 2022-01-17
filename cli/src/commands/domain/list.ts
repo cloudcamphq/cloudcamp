@@ -23,7 +23,7 @@ export default class ListDomain extends BaseCommand {
     const { flags } = this.parse(ListDomain);
     assumeAWSProfile(flags.profile);
 
-    let domains = await Route53.list();
+    const domains = await Route53.list();
     if (domains.length == 0) {
       this.ux.log(
         "No domains found. To add a domain, run `camp domain:create yourdomain.com`"

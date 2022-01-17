@@ -12,7 +12,7 @@ export class CSharp extends Language {
     // https://docs.aws.amazon.com/cdk/api/v2/dotnet/api/Amazon.CDK.Annotations.html
     // https://docs.aws.amazon.com/cdk/api/v2/dotnet/api/Amazon.CDK.Alexa.Ask.CfnSkill.html
 
-    let parts = fqn.split(".");
+    const parts = fqn.split(".");
     let url: string;
     let name: string;
     if (parts[0] == "constructs") {
@@ -60,7 +60,7 @@ export class CSharp extends Language {
       (type as any).collection.kind == "array" &&
       (type as any).collection.elementtype?.fqn
     ) {
-      let fqn = (type as any).collection.elementtype.fqn;
+      const fqn = (type as any).collection.elementtype.fqn;
       if (!fqn.startsWith("@cloudcamp")) {
         return this.cdkDocsLink(fqn) + "[]";
       } else {
@@ -83,12 +83,12 @@ export class CSharp extends Language {
   }
 
   methodSignature(className: string, method: jsiispec.Method): string {
-    let argsList = [];
+    const argsList = [];
 
-    let meths = (method as any).initializer
+    const meths = (method as any).initializer
       ? `new ${className}`
       : _.upperFirst(method.name);
-    let rets = (method as any).initializer
+    const rets = (method as any).initializer
       ? ""
       : this.translateType(method.name, method.returns?.type as any) + " ";
 
@@ -97,7 +97,7 @@ export class CSharp extends Language {
       if (param.optional) {
         paramName += "?";
       }
-      let typeName = this.translateType(method.name, param.type as any);
+      const typeName = this.translateType(method.name, param.type as any);
 
       argsList.push(`${paramName}: ${typeName}`);
     }

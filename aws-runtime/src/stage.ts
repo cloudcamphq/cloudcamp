@@ -104,8 +104,9 @@ export class Stage extends cdk.Stage {
     }
 
     let installCommands: string[] = [];
-    let environmentVariables: { [name: string]: BuildEnvironmentVariable } = {};
-    let envFromCfnOutputs: { [name: string]: cdk.CfnOutput } = {};
+    const environmentVariables: { [name: string]: BuildEnvironmentVariable } =
+      {};
+    const envFromCfnOutputs: { [name: string]: cdk.CfnOutput } = {};
 
     for (let [k, v] of Object.entries(props.environment || {})) {
       if (typeof v === "string") {
@@ -114,7 +115,10 @@ export class Stage extends cdk.Stage {
           value: v,
         };
       } else {
-        let resolved = (v as Variable).resolveForAction(k, props.os || "linux");
+        const resolved = (v as Variable).resolveForAction(
+          k,
+          props.os || "linux"
+        );
         for (let res of resolved) {
           switch (res.variableType) {
             case "output":
@@ -165,7 +169,7 @@ export class Stage extends cdk.Stage {
     //     ])
     // );
 
-    let step = new pipelines.CodeBuildStep(id, {
+    const step = new pipelines.CodeBuildStep(id, {
       commands: props.commands,
       installCommands: installCommands,
       buildEnvironment: {

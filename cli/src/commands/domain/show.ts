@@ -22,8 +22,8 @@ export default class ShowDomain extends BaseCommand {
     const { flags, args } = this.parse(ShowDomain);
     assumeAWSProfile(flags.profile);
 
-    let nameservers = await Route53.getNameServers(args.domain);
-    let domain = await Route53.getDomain(args.domain);
+    const nameservers = await Route53.getNameServers(args.domain);
+    const domain = await Route53.getDomain(args.domain);
     this.ux.log("");
     cli.table(nameservers, {
       // @ts-ignore

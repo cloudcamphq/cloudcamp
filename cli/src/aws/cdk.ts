@@ -72,7 +72,7 @@ export class CDK {
     ux: UX
   ): Promise<void> {
     return new Promise((resolve, reject) => {
-      let child = child_process.exec(
+      const child = child_process.exec(
         cmd,
         {
           windowsHide: true,
@@ -85,7 +85,7 @@ export class CDK {
           return resolve();
         }
       );
-      let progress = new DeployProgress(child.stderr, ux);
+      const progress = new DeployProgress(child.stderr, ux);
       progress.start();
     });
   }
@@ -130,11 +130,11 @@ class DeployProgress {
   }
 
   private splitLine(line: string): [number, number, string] | undefined {
-    let parts = line.split("|").map((c) => c.trim());
+    const parts = line.split("|").map((c) => c.trim());
     if (parts.length != 5) {
       return undefined;
     }
-    let progParts = parts[0].split("/");
+    const progParts = parts[0].split("/");
     if (progParts.length != 2) {
       return undefined;
     }
@@ -143,11 +143,11 @@ class DeployProgress {
 
   private lineEvent(line: string) {
     this.lines.push(line);
-    let parts = this.splitLine(line);
+    const parts = this.splitLine(line);
     if (!parts) {
       return;
     }
-    let [step, total, status] = parts;
+    const [step, total, status] = parts;
 
     if (status == "CREATE_FAILED") {
       if (this.status == "SPINNING") {
@@ -171,7 +171,7 @@ class DeployProgress {
 
   private closeEvent() {
     if (this.status == "ERROR") {
-      let idx = this.lines.findIndex((val) =>
+      const idx = this.lines.findIndex((val) =>
         val.startsWith("Failed resources:")
       );
       console.log("");

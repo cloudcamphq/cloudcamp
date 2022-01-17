@@ -33,7 +33,7 @@ export class CloudFormation {
   static async getDeploymentStatus(
     appName: string
   ): Promise<"COMPLETE" | "IN_PROGRESS" | undefined> {
-    let pipelineStack = await CloudFormation.getPipelineStack(appName);
+    const pipelineStack = await CloudFormation.getPipelineStack(appName);
     if (!pipelineStack) {
       return undefined;
     }
@@ -63,9 +63,9 @@ export class CloudFormation {
       return undefined;
     }
 
-    let stackName = ssmResult.Parameter!.Value!;
+    const stackName = ssmResult.Parameter!.Value!;
 
-    let result = await new CloudFormationClient(AWSClientConfig).send(
+    const result = await new CloudFormationClient(AWSClientConfig).send(
       new DescribeStacksCommand({ StackName: stackName })
     );
     if (!result.Stacks || !result.Stacks.length) {
@@ -86,15 +86,15 @@ export class CloudFormation {
     } catch (_e) {
       return [];
     }
-    let stacks: string[] = (ssmResult.Parameters || [])
+    const stacks: string[] = (ssmResult.Parameters || [])
       .map((param) => param.Value)
       .filter((param) => param !== undefined) as string[];
 
-    let outputs: any[] = [];
+    const outputs: any[] = [];
     for (let stack of stacks) {
-      let stage = stack.toLowerCase().slice(appName.length);
+      const stage = stack.toLowerCase().slice(appName.length);
 
-      let stackResult = await new CloudFormationClient(AWSClientConfig).send(
+      const stackResult = await new CloudFormationClient(AWSClientConfig).send(
         new DescribeStacksCommand({ StackName: stack })
       );
 
@@ -122,7 +122,7 @@ export class CloudFormation {
     stage: string,
     stack: string
   ) {
-    let matchers = [
+    const matchers = [
       {
         regex: new RegExp("^(.*?)fargateserviceServiceURL(.*?)$"),
         name: "Web Server URL",
@@ -142,7 +142,7 @@ export class CloudFormation {
     let skip = false;
 
     for (let matcher of matchers) {
-      let result = key.match(matcher.regex);
+      const result = key.match(matcher.regex);
       if (result) {
         name = matcher.name;
         id = result[matcher.idIndex];

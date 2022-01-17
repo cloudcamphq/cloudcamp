@@ -38,7 +38,7 @@ export class GitRepository {
           return reject(err);
         }
         data;
-        let remotes = new Map(
+        const remotes = new Map(
           _.sortBy(data, [(r) => (r.name == "origin" ? "0" + r.name : r.name)])
             .map((r) => [
               r.name,
@@ -59,7 +59,7 @@ export class GitRepository {
    */
   async getCurrentBranch(): Promise<string> {
     const git = simpleGit(this.homeDir);
-    let branches = await git.branch(["-a"]);
+    const branches = await git.branch(["-a"]);
     return branches.current;
   }
 
@@ -67,10 +67,10 @@ export class GitRepository {
    * returns a normalized representation of a git remote.
    */
   static normalizeRemote(url: string): string | undefined {
-    let match1 = url.match(/^.*?@github.com:(.*?)\/(.*?)\.git$/);
-    let match2 = url.match(/github\.com\/(.*?)\/(.*?)$/);
+    const match1 = url.match(/^.*?@github.com:(.*?)\/(.*?)\.git$/);
+    const match2 = url.match(/github\.com\/(.*?)\/(.*?)$/);
     if (match1 || match2) {
-      let [, owner, repo] = (match1 || match2) as any;
+      const [, owner, repo] = (match1 || match2) as any;
       return `https://github.com/${owner}/${repo}`;
     } else {
       return undefined;
@@ -84,13 +84,13 @@ export class GitRepository {
     const gitignorePath = path.join(this.homeDir, ".gitignore");
 
     if (fs.existsSync(gitignorePath)) {
-      let contents = fs.readFileSync(gitignorePath).toString();
-      let existing = new Set(contents.split("\n").map((p) => p.trim()));
+      const contents = fs.readFileSync(gitignorePath).toString();
+      const existing = new Set(contents.split("\n").map((p) => p.trim()));
 
       if (!contents.match(/\r?\n$/)) {
         fs.appendFileSync(gitignorePath, "\n");
       }
-      for (let pattern of patterns) {
+      for (const pattern of patterns) {
         if (existing.has(pattern)) {
           continue;
         }

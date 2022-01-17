@@ -29,7 +29,7 @@ export default class CreateDomain extends BaseCommand {
     const { flags, args } = this.parse(CreateDomain);
     assumeAWSProfile(flags.profile);
     await Route53.create(args.domain);
-    let nameservers = await Route53.getNameServers(args.domain);
+    const nameservers = await Route53.getNameServers(args.domain);
     this.ux.log("");
     cli.table(nameservers, {
       // @ts-ignore

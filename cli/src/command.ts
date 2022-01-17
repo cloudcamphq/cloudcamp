@@ -18,7 +18,7 @@ export abstract class BaseCommand extends Command {
    * Customized error handler
    */
   async catch(error: Error) {
-    let anyerror = error as any;
+    const anyerror = error as any;
 
     if (
       anyerror.oclif &&
@@ -43,7 +43,7 @@ export abstract class BaseCommand extends Command {
       }
       this.log(` ${chalk.red("›")} ${error.message ? error.message : error}`);
     }
-    let code = anyerror.oclif && anyerror.oclif.exit ? anyerror.oclif : 1;
+    const code = anyerror.oclif && anyerror.oclif.exit ? anyerror.oclif : 1;
     process.exit(code);
   }
 }

@@ -63,16 +63,18 @@ export default class Deploy extends BaseCommand {
    */
   async run() {
     const { flags } = this.parse(Deploy);
-    let home = resolveHome(flags.home);
+    const home = resolveHome(flags.home);
 
-    let context = getCdkJsonContext(home);
+    const context = getCdkJsonContext(home);
     await assumeAWSProfile(flags.profile);
 
-    let credentials = new CredentialsInput(flags.profile);
-    let region = new RegionChoice(flags.region || context[CONTEXT_KEY_REGION]);
-    let remote = new GitRemoteChoice(context[CONTEXT_KEY_REPOSITORY]);
-    let branch = new BranchInput();
-    let settings = await new Settings(
+    const credentials = new CredentialsInput(flags.profile);
+    const region = new RegionChoice(
+      flags.region || context[CONTEXT_KEY_REGION]
+    );
+    const remote = new GitRemoteChoice(context[CONTEXT_KEY_REPOSITORY]);
+    const branch = new BranchInput();
+    const settings = await new Settings(
       credentials,
       region,
       remote,
@@ -94,7 +96,7 @@ export default class Deploy extends BaseCommand {
     // an API call to STS; At the same time, we verify if the credentials
     // are working.
     this.ux.start("Getting AWS account info");
-    let account = await STS.getAccountId();
+    const account = await STS.getAccountId();
     this.ux.stop();
 
     if (
@@ -102,7 +104,7 @@ export default class Deploy extends BaseCommand {
       context[CONTEXT_KEY_ACCOUNT] &&
       account != context[CONTEXT_KEY_ACCOUNT]
     ) {
-      let shouldContinue = await this.ux.confirm({
+      const shouldContinue = await this.ux.confirm({
         message: "WARNING: AWS account has changed. Continue?",
         default: false,
       });
@@ -113,7 +115,7 @@ export default class Deploy extends BaseCommand {
     }
 
     // Get the GitHub token name
-    let parsedUrl = parseRepositoryUrl(remote.value);
+    const parsedUrl = parseRepositoryUrl(remote.value);
 
     if (!context[CONTEXT_REPOSITORY_TOKEN_SECRET]) {
       switch (parsedUrl.host) {
@@ -125,7 +127,7 @@ export default class Deploy extends BaseCommand {
     }
 
     // Get GitHub token
-    let gitRepo = new GitRepository();
+    const gitRepo = new GitRepository();
 
     await this.retrieveAndStoreRepositoryToken(
       context[CONTEXT_KEY_NAME],
@@ -182,7 +184,7 @@ export default class Deploy extends BaseCommand {
   ) {
     let keep = true;
 
-    let secretExists = await SecretsManager.exists(tokenName);
+    const secretExists = await SecretsManager.exists(tokenName);
     if (yesFlag && secretExists) {
       keep = true;
     } else if (secretExists) {
@@ -206,7 +208,7 @@ export default class Deploy extends BaseCommand {
     }
 
     if (!secretExists || !keep) {
-      let auth = gitRepo.oauthVerify((verification) => {
+      const auth = gitRepo.oauthVerify((verification) => {
         this.log("Authorizing GitHub access...");
         this.log("");
         this.log(
@@ -222,7 +224,7 @@ export default class Deploy extends BaseCommand {
         type: "oauth",
       });
       this.ux.stop();
-      let token = tokenAuth.token;
+      const token = tokenAuth.token;
 
       this.ux.start("Storing GitHub token");
       await SecretsManager.upsert(tokenName, token, appName);

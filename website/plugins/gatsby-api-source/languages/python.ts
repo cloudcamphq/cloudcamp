@@ -57,7 +57,7 @@ export class Python extends Language {
       (type as any).collection.kind == "array" &&
       (type as any).collection.elementtype?.fqn
     ) {
-      let fqn = (type as any).collection.elementtype.fqn;
+      const fqn = (type as any).collection.elementtype.fqn;
       if (!fqn.startsWith("@cloudcamp")) {
         return "list[" + this.cdkDocsLink(fqn) + "]";
       } else {
@@ -98,17 +98,17 @@ export class Python extends Language {
   }
 
   methodSignature(className: string, method: jsiispec.Method): string {
-    let paramsList = [];
-    let meths = (method as any).initializer
+    const paramsList = [];
+    const meths = (method as any).initializer
       ? `new ${className}`
       : _.snakeCase(method.name);
-    let rets = (method as any).initializer
+    const rets = (method as any).initializer
       ? ""
       : " -> " + this.translateType(method.name, (method as any).returns?.type);
 
     for (let param of method.parameters || []) {
-      let argName = this.translateParameterName(param.name);
-      let typeName = this.translateType(method.name, param.type as any);
+      const argName = this.translateParameterName(param.name);
+      const typeName = this.translateType(method.name, param.type as any);
       if (
         this.assembly.types[(param.type as any).fqn] &&
         this.assembly.types[(param.type as any).fqn].kind == "interface"
@@ -128,7 +128,7 @@ export class Python extends Language {
   }
 
   simpleMethodSignature(className: string, method: jsiispec.Method): string {
-    let meths = (method as any).initializer ? `constructor` : method.name;
+    const meths = (method as any).initializer ? `constructor` : method.name;
     return `${meths}`;
   }
 

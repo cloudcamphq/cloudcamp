@@ -9,7 +9,7 @@ export const AWSClientConfig: any = {};
  * Switch the whole aws sdk to a specific AWS profile
  */
 export async function assumeAWSProfile(profile?: string) {
-  let profileConf = await getProfile(profile);
+  const profileConf = await getProfile(profile);
 
   AWSClientConfig.credentials = {
     accessKeyId: profileConf.key,
@@ -30,7 +30,7 @@ export function setAWSRegion(region: AwsRegion) {
 export function setupAWS(home: string, profile?: string) {
   assumeAWSProfile(profile);
 
-  let context = getCdkJsonContext(home);
+  const context = getCdkJsonContext(home);
   if (!context[CONTEXT_KEY_REGION]) {
     throw new Error("No region found in cdk.json.");
   }
@@ -54,10 +54,10 @@ export async function getProfile(profile?: string): Promise<{
       description: `${process.env.AWS_ACCESS_KEY_ID} [from env vars]`,
     };
   } else {
-    let credentials = await (profile
+    const credentials = await (profile
       ? fromIni({ profile: profile })
       : fromIni())();
-    let profile_ = profile || process.env.AWS_PROFILE || "default";
+    const profile_ = profile || process.env.AWS_PROFILE || "default";
     return {
       profile: profile || process.env.AWS_PROFILE || "default",
       key: credentials.accessKeyId,

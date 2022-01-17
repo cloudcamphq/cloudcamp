@@ -11,10 +11,10 @@ function sortedNodes(nodes: any[]) {
     node.frontmatter?.order ? parseInt(node.frontmatter.order) : 1000
   );
 
-  let gettingStarted = allNodes.filter(
+  const gettingStarted = allNodes.filter(
     (node) => node.frontmatter.category == "getting-started"
   );
-  let operationsGuide = allNodes.filter(
+  const operationsGuide = allNodes.filter(
     (node) => node.frontmatter.category == "operations-guide"
   );
 
@@ -22,21 +22,21 @@ function sortedNodes(nodes: any[]) {
 }
 
 function makeLinks(gettingStarted: any[], operationsGuide: any[]) {
-  let links = {};
+  const links = {};
   for (let nodes of [gettingStarted, operationsGuide]) {
     for (var i = 0; i < nodes.length; i++) {
       let node = nodes[i];
       let prev = undefined;
       let next = undefined;
       if (i != 0) {
-        let prevNode = nodes[i - 1];
+        const prevNode = nodes[i - 1];
         prev = {
           link: `/docs/${prevNode.frontmatter.slug}`,
           title: prevNode.frontmatter.title,
         };
       }
       if (i + 1 < nodes.length) {
-        let nextNode = nodes[i + 1];
+        const nextNode = nodes[i + 1];
         next = {
           link: `/docs/${nextNode.frontmatter.slug}`,
           title: nextNode.frontmatter.title,
@@ -49,7 +49,7 @@ function makeLinks(gettingStarted: any[], operationsGuide: any[]) {
 }
 
 function extractOnThisPage(node: any) {
-  let onThisPage = [];
+  const onThisPage = [];
   for (let item of node.headings) {
     onThisPage.push({
       title: item.value,
@@ -80,14 +80,14 @@ export async function createPages(createPage: any, graphql: any) {
     }
   `);
 
-  let [allNodes, gettingStarted, operationsGuide] = sortedNodes(
+  const [allNodes, gettingStarted, operationsGuide] = sortedNodes(
     data.allMarkdownRemark.nodes
   );
 
-  let links = makeLinks(gettingStarted, operationsGuide);
+  const links = makeLinks(gettingStarted, operationsGuide);
 
   allNodes.forEach((node) => {
-    let onThisPage = extractOnThisPage(node);
+    const onThisPage = extractOnThisPage(node);
     let pagePath = "/docs/" + node.frontmatter.slug;
     if (node.frontmatter.slug === "overview") {
       pagePath = "/docs/";

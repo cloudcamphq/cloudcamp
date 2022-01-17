@@ -11,7 +11,7 @@ export class JavaScript extends Language {
     if ((method as any).initializer) {
       meths = `new ${className}`;
     }
-    let paramsList = (method.parameters || []).map((arg) => arg.name);
+    const paramsList = (method.parameters || []).map((arg) => arg.name);
     return `${meths}(${paramsList.join(", ")})`;
   }
 
@@ -20,7 +20,7 @@ export class JavaScript extends Language {
   }
 
   simpleMethodSignature(className: string, method: jsiispec.Method): string {
-    let meths = (method as any).initializer ? `constructor` : method.name;
+    const meths = (method as any).initializer ? `constructor` : method.name;
     return `${meths}`;
   }
 

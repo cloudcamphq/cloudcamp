@@ -17,9 +17,9 @@ export class SecretsManager {
    * Return true if the secret exists
    */
   static async exists(name: string): Promise<boolean> {
-    let secretsmanager = new SecretsManagerClient(AWSClientConfig);
+    const secretsmanager = new SecretsManagerClient(AWSClientConfig);
     try {
-      let result = await secretsmanager.send(
+      const result = await secretsmanager.send(
         new DescribeSecretCommand({ SecretId: name })
       );
       if (result.DeletedDate) {
@@ -35,9 +35,9 @@ export class SecretsManager {
    * Create or update secret
    */
   static async upsert(name: string, secret: string, appName: string) {
-    let secretsmanager = new SecretsManagerClient(AWSClientConfig);
+    const secretsmanager = new SecretsManagerClient(AWSClientConfig);
     try {
-      let result = await secretsmanager.send(
+      const result = await secretsmanager.send(
         new DescribeSecretCommand({ SecretId: name })
       );
       if (result.DeletedDate) {

@@ -25,11 +25,11 @@ export class VpcInput extends Input<string> {
 
   async edit(ux: UX, _parent?: Input<any>): Promise<void> {
     ux.start("Retrieving VPCs");
-    let vpcs = await VPC.list();
+    const vpcs = await VPC.list();
     ux.stop();
     ux.log("");
 
-    let choices = vpcs.map((vpc) => ({
+    const choices = vpcs.map((vpc) => ({
       value: vpc.id,
       short: vpc.id,
       name: vpc.descr,

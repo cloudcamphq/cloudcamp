@@ -16,14 +16,14 @@ function hashCode(text: string) {
 }
 
 export function Code({ html, language }: { html: string; language: string }) {
-  let parser = new DomParser();
+  const parser = new DomParser();
   var dom = parser.parseFromString(html);
 
-  let codeEl = dom.getElementsByTagName("code")[0];
+  const codeEl = dom.getElementsByTagName("code")[0];
   let code = codeEl.innerHTML.replace(/<[^>]*>/g, "");
 
   if (code.trim().startsWith("$")) {
-    let parts = code.trim().split("\n");
+    const parts = code.trim().split("\n");
     code = "";
     for (let line of parts) {
       if (line.trim().startsWith("$")) {
@@ -100,22 +100,22 @@ export function Code({ html, language }: { html: string; language: string }) {
 }
 
 function injectCopyButton(html: string) {
-  let parser = new DomParser();
+  const parser = new DomParser();
   var dom = parser.parseFromString("<div id='root'>" + html + "</div>");
-  let element = dom.getElementById("root");
+  const element = dom.getElementById("root");
 
   return Array.from(element.childNodes).map((child) => {
     // if child is a text node
     if (child.nodeType == 3) {
       return child.textContent;
     }
-    let attributes = {};
+    const attributes = {};
     for (let attr of child.attributes) {
       attributes[(attr as any).name] = (attr as any).value;
     }
-    let language = attributes["data-language"] || "";
-    let className = attributes["class"] || attributes["className"] || "";
-    let key = hashCode(child.innerHTML + language).toString();
+    const language = attributes["data-language"] || "";
+    const className = attributes["class"] || attributes["className"] || "";
+    const key = hashCode(child.innerHTML + language).toString();
     if (className.includes("gatsby-highlight")) {
       return <Code html={child.outerHTML} language={language} key={key} />;
     } else if (className.includes("language-text")) {

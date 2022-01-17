@@ -12,7 +12,7 @@ import * as jsiispec from "@jsii/spec";
 function sortedPropsAndMethods(
   type: jsiispec.ClassType
 ): (jsiispec.Method | jsiispec.Property)[] {
-  let propsAndMethods = [
+  const propsAndMethods = [
     ...(type.initializer
       ? ([type.initializer] as jsiispec.Method[])
       : ([] as jsiispec.Method[])),
@@ -104,7 +104,7 @@ function ApiType(props: { type: jsiispec.ClassType }) {
 }
 
 function H1Link(props: { title: string; children: any }) {
-  let id = _.kebabCase(props.title);
+  const id = _.kebabCase(props.title);
   return (
     <h1 className="font-display text-4xl font-bold flex items-center" id={id}>
       <Link to={`#${id}`}>{props.children}</Link>
@@ -113,7 +113,7 @@ function H1Link(props: { title: string; children: any }) {
 }
 
 function H2Link(props: { title: string; children: any }) {
-  let id = _.kebabCase(props.title);
+  const id = _.kebabCase(props.title);
   return (
     <h2 className="text-2xl font-bold mt-10 font-display" id={id}>
       <Link to={`#${id}`}>{props.children}</Link>
@@ -258,7 +258,7 @@ function ApiMethod(props: { className: string; meth: jsiispec.Method }) {
 function ApiArgument(props: { param: jsiispec.Parameter }) {
   // @ts-ignore
   const [context] = useContext(Context);
-  let language = context ? context.language : "ts";
+  const language = context ? context.language : "ts";
 
   return (
     <li>

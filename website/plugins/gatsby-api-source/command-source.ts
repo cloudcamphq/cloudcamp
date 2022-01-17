@@ -4,14 +4,14 @@ let path = require("path");
 let fs = require("fs");
 import ApiSource from "./api-source";
 
-let project = JSON.parse(
+const project = JSON.parse(
   fs
     .readFileSync(
       path.join(__dirname, "..", "..", "content", "api", "api.json")
     )
     .toString()
 );
-let apiSource = new ApiSource(project);
+const apiSource = new ApiSource(project);
 
 interface FlagDefinition {
   name: string;
@@ -42,7 +42,7 @@ export default class CommandSource {
   public definition: CommandDefinition;
 
   constructor(absolutePath: string) {
-    let filename = path.basename(absolutePath);
+    const filename = path.basename(absolutePath);
     const node = ts.createSourceFile(
       filename,
       fs.readFileSync(absolutePath, "utf8"),
@@ -53,7 +53,7 @@ export default class CommandSource {
   }
 
   private parseFile(node: TsType.SourceFile, absolutePath: string) {
-    let parts = absolutePath.split(path.sep);
+    const parts = absolutePath.split(path.sep);
     let name: string = path.basename(absolutePath, ".ts");
     let group: string = name;
 
@@ -65,7 +65,7 @@ export default class CommandSource {
     let klass: TsType.ClassDeclaration;
     node.forEachChild((child) => {
       if (ts.SyntaxKind[child.kind] === "ClassDeclaration") {
-        let klassDecl = child as TsType.ClassDeclaration;
+        const klassDecl = child as TsType.ClassDeclaration;
         if (
           klassDecl.heritageClauses &&
           klassDecl.heritageClauses.length &&
@@ -84,12 +84,12 @@ export default class CommandSource {
       throw new Error("No command found in file: " + absolutePath);
     }
 
-    let descriptionDefinition: any = klass.members.filter(
+    const descriptionDefinition: any = klass.members.filter(
       (member) =>
         member.name && (member.name as any).escapedText === "description"
     )[0];
 
-    let summary = descriptionDefinition.initializer.text;
+    const summary = descriptionDefinition.initializer.text;
 
     let argsDefinition: TsType.VariableDeclaration = klass.members.filter(
       (member) => member.name && (member.name as any).escapedText === "args"
@@ -98,11 +98,11 @@ export default class CommandSource {
       argsDefinition = argsDefinition[0];
     }
 
-    let args = [];
+    const args = [];
     if (argsDefinition) {
-      let argsDefinitionElements =
+      const argsDefinitionElements =
         (argsDefinition.initializer as any).elements || [];
-      let arg = {};
+      const arg = {};
       for (let argDefinition of argsDefinitionElements) {
         for (let prop of argDefinition.properties) {
           if (prop.name.escapedText == "name") {
@@ -115,17 +115,17 @@ export default class CommandSource {
       args.push(arg);
     }
 
-    let flagsDefinition: TsType.VariableDeclaration = klass.members.filter(
+    const flagsDefinition: TsType.VariableDeclaration = klass.members.filter(
       (member) => member.name && (member.name as any).escapedText === "flags"
     )[0] as any;
 
-    let flags = [];
-    let flagsDefinitionProperties = flagsDefinition
+    const flags = [];
+    const flagsDefinitionProperties = flagsDefinition
       ? (flagsDefinition.initializer as any).properties
       : [];
 
-    for (let flagDefinition of flagsDefinitionProperties) {
-      let flag = {};
+    for (const flagDefinition of flagsDefinitionProperties) {
+      const flag = {};
       flag["name"] = flagDefinition.name.escapedText;
       flag["type"] = flagDefinition.initializer.expression.name.escapedText;
 
@@ -136,7 +136,7 @@ export default class CommandSource {
       }
 
       for (let prop of flagDefinition.initializer.arguments[0].properties) {
-        let key = prop.name.escapedText;
+        const key = prop.name.escapedText;
         let value = prop.initializer.text;
 
         if (!value) {
@@ -157,7 +157,7 @@ export default class CommandSource {
     let suborder = undefined;
     let ignore = false;
     if ((klass as any).jsDoc && (klass as any).jsDoc.length) {
-      let jsdoc = (klass as any).jsDoc[0];
+      const jsdoc = (klass as any).jsDoc[0];
       if (jsdoc.comment) {
         description = jsdoc.comment;
       }

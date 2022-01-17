@@ -26,13 +26,13 @@ export function parseRepositoryUrl(url: string): {
 }
 
 export function version(): string {
-  let packageJsonPath = path.join(__dirname, "..", "package.json");
-  let contents = JSON.parse(fs.readFileSync(packageJsonPath).toString());
+  const packageJsonPath = path.join(__dirname, "..", "package.json");
+  const contents = JSON.parse(fs.readFileSync(packageJsonPath).toString());
   return contents.version;
 }
 
 export function withUniqueOutputExportName(output: cdk.CfnOutput) {
-  let stack = cdk.Stack.of(output);
+  const stack = cdk.Stack.of(output);
   const stackId = limitIdentifierLength(stack.artifactId, 100);
   const outputName = stack.resolve(output.logicalId);
   output.exportName = _.camelCase(`${stackId}.${outputName}`);

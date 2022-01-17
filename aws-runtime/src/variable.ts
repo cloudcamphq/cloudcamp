@@ -124,9 +124,9 @@ export class DatabaseUrlVariable extends Variable {
   }
 
   resolveForAction(name: string, os: string): ResolvedVariable[] {
-    let stack = cdk.Stack.of(this.hostOutput);
+    const stack = cdk.Stack.of(this.hostOutput);
     const stackId = limitIdentifierLength(stack.artifactId, 100);
-    let tmpPostfix = `${stackId}_${name}`;
+    const tmpPostfix = `${stackId}_${name}`;
     let installCommands: string[];
 
     switch (os) {

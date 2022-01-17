@@ -44,7 +44,7 @@ export interface Configuration {
  * ```ts
  * import { App, WebService } from "@cloudcamp/aws-runtime";
  *
- * let app = new App();
+ * const app = new App();
  *
  * new WebService(app.production, "prod-web", {
  *  dockerfile: "../Dockerfile"
@@ -112,7 +112,7 @@ export class App extends cdk.App {
   }
 
   private getContextOrThrow(key: string): string {
-    let value: string = this.node.tryGetContext(key);
+    const value: string = this.node.tryGetContext(key);
     if (value == null) {
       throw new Error("Missing config in cdk.json: " + key);
     }
@@ -216,12 +216,12 @@ export class App extends cdk.App {
   private stages: Map<string, Stage> = new Map();
 
   private getOrAddStage(id: string) {
-    let existingStage = this.stages.get(id);
+    const existingStage = this.stages.get(id);
     if (existingStage) {
       return existingStage;
     }
-    let stage = new Stage(this, _.upperFirst(_.camelCase(id)));
-    let stack = new Stack(stage, id);
+    const stage = new Stage(this, _.upperFirst(_.camelCase(id)));
+    const stack = new Stack(stage, id);
     stage.stack = stack;
     this.stages.set(id, stage);
 
@@ -320,8 +320,8 @@ export class App extends cdk.App {
   private setupCodePipeline(): PipelineStack {
     const repositoryUrl = this.configuration.repository;
     const branch = this.configuration.branch;
-    let parsed = parseRepositoryUrl(repositoryUrl);
-    let repositoryTokenSecretName = this.configuration.repositoryTokenSecret;
+    const parsed = parseRepositoryUrl(repositoryUrl);
+    const repositoryTokenSecretName = this.configuration.repositoryTokenSecret;
     return new PipelineStack(
       this,
       _.upperFirst(_.camelCase(this.configuration.name + "-pipeline")),
@@ -340,7 +340,7 @@ export class App extends cdk.App {
    * @ignore
    */
   synth(options?: cdk.StageSynthesisOptions): cxapi.CloudAssembly {
-    let names = Array.from(this.stages.keys());
+    const names = Array.from(this.stages.keys());
     names.sort((a, b) => {
       if (this.stageOrder.includes(a) && this.stageOrder.includes(b)) {
         return this.stageOrder.indexOf(a) < this.stageOrder.indexOf(b) ? -1 : 1;
@@ -348,7 +348,7 @@ export class App extends cdk.App {
       return 0;
     });
     for (let name of names) {
-      let stage = this.stages.get(name)!;
+      const stage = this.stages.get(name)!;
       let pre: Step[] = [];
       let post: Step[] = [];
       if (stage.needsManualApproval) {

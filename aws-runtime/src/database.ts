@@ -119,7 +119,7 @@ export class Database extends Construct {
     const password = secret.secretValue;
     const databaseName = props.databaseName || "maindb";
 
-    let vpc = ec2.Vpc.fromLookup(this, "vpc", {
+    const vpc = ec2.Vpc.fromLookup(this, "vpc", {
       vpcId: App.instance.configuration.vpcId,
     });
 
@@ -150,7 +150,7 @@ export class Database extends Construct {
       },
     });
 
-    let host = this.cluster.clusterEndpoint.hostname;
+    const host = this.cluster.clusterEndpoint.hostname;
 
     this.hostOutput = withUniqueOutputExportName(
       new cdk.CfnOutput(this, "host-output", { value: host })

@@ -35,7 +35,7 @@ export class CodePipeline {
       }
     | undefined
   > {
-    let result = await new CodePipelineClient(AWSClientConfig).send(
+    const result = await new CodePipelineClient(AWSClientConfig).send(
       new GetPipelineStateCommand({ name: pipelineName })
     );
     if (
@@ -47,17 +47,17 @@ export class CodePipeline {
     }
 
     // we are always interested in the latest execution (stage 1)
-    let pipelineExecutionId =
+    const pipelineExecutionId =
       result.stageStates[0].latestExecution.pipelineExecutionId!;
 
-    let executionResult = await new CodePipelineClient(AWSClientConfig).send(
+    const executionResult = await new CodePipelineClient(AWSClientConfig).send(
       new GetPipelineExecutionCommand({
         pipelineExecutionId: pipelineExecutionId,
         pipelineName: pipelineName,
       })
     );
 
-    let actionExecutions = await new CodePipelineClient(AWSClientConfig).send(
+    const actionExecutions = await new CodePipelineClient(AWSClientConfig).send(
       new ListActionExecutionsCommand({
         pipelineName: pipelineName,
         filter: { pipelineExecutionId: pipelineExecutionId },
@@ -74,8 +74,8 @@ export class CodePipeline {
     ) {
       stage = actionExecutions.actionExecutionDetails[0].stageName;
       action = actionExecutions.actionExecutionDetails[0].actionName;
-      let numStages = result.stageStates.length;
-      let currentStage = new Set(
+      const numStages = result.stageStates.length;
+      const currentStage = new Set(
         actionExecutions.actionExecutionDetails.map((d) => d.stageName)
       ).size;
       progress = ` [${currentStage}/${numStages}]`;
@@ -153,7 +153,7 @@ export class CodePipeline {
       throw new Error(`Stage not found: ${stage}.${action}`);
     }
 
-    let actionExecutions = await new CodePipelineClient(AWSClientConfig).send(
+    const actionExecutions = await new CodePipelineClient(AWSClientConfig).send(
       new ListActionExecutionsCommand({
         pipelineName: pipelineName,
         filter: { pipelineExecutionId: pipelineExecutionId },
@@ -195,15 +195,16 @@ export class CodePipeline {
     }
 
     if (executionDetail.input.actionTypeId.provider == "CodeBuild") {
-      let projectName: string = executionDetail.input.configuration.ProjectName;
-      let buildsList = await new CodeBuildClient(AWSClientConfig).send(
+      const projectName: string =
+        executionDetail.input.configuration.ProjectName;
+      const buildsList = await new CodeBuildClient(AWSClientConfig).send(
         new ListBuildsForProjectCommand({ projectName: projectName })
       );
       if (!(buildsList.ids && buildsList.ids.length)) {
         return;
       }
-      let buildId: string = buildsList.ids[0];
-      let build = await new CodeBuildClient(AWSClientConfig).send(
+      const buildId: string = buildsList.ids[0];
+      const build = await new CodeBuildClient(AWSClientConfig).send(
         new BatchGetBuildsCommand({ ids: [buildId] })
       );
 
@@ -218,15 +219,15 @@ export class CodePipeline {
       ) {
         return;
       }
-      let logGroupName = build.builds[0].logs.groupName;
-      let logStreamName = build.builds[0].logs.streamName;
-      let logEvents = await new CloudWatchLogsClient(AWSClientConfig).send(
+      const logGroupName = build.builds[0].logs.groupName;
+      const logStreamName = build.builds[0].logs.streamName;
+      const logEvents = await new CloudWatchLogsClient(AWSClientConfig).send(
         new GetLogEventsCommand({
           logGroupName: logGroupName,
           logStreamName: logStreamName,
         })
       );
-      let logs = (logEvents.events || [])
+      const logs = (logEvents.events || [])
         .map((ev) => ev.message || "")
         .join("")
         .trim();
@@ -234,12 +235,12 @@ export class CodePipeline {
     } else if (
       executionDetail.input.actionTypeId.provider == "CloudFormation"
     ) {
-      let stackEvents = await new CloudFormationClient(AWSClientConfig).send(
+      const stackEvents = await new CloudFormationClient(AWSClientConfig).send(
         new DescribeStackEventsCommand({
           StackName: executionDetail.input.configuration!.StackName,
         })
       );
-      let logEvents = [];
+      const logEvents = [];
       for (let event of stackEvents.StackEvents || []) {
         logEvents.push({
           date: event.Timestamp!,
@@ -267,7 +268,7 @@ export class CodePipeline {
       }[]
     | undefined
   > {
-    let pipelineState = await new CodePipelineClient(AWSClientConfig).send(
+    const pipelineState = await new CodePipelineClient(AWSClientConfig).send(
       new GetPipelineStateCommand({ name: pipelineName })
     );
     if (
@@ -278,7 +279,7 @@ export class CodePipeline {
       return undefined;
     }
 
-    let results = [];
+    const results = [];
     for (let stageState of pipelineState.stageStates) {
       for (let actionState of stageState.actionStates || []) {
         results.push({
@@ -311,7 +312,7 @@ export class CodePipeline {
       return undefined;
     }
 
-    let result = await new CodePipelineClient(AWSClientConfig).send(
+    const result = await new CodePipelineClient(AWSClientConfig).send(
       new GetPipelineCommand({ name: ssmResult.Parameter.Value! })
     );
     return result.pipeline;

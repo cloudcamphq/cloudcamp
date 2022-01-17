@@ -21,16 +21,16 @@ import { AWSClientConfig } from "./config";
 export class CertificateManager {
   static async request(domainName: string): Promise<void> {
     domainName = domainName.toLowerCase();
-    let wildcard = "*." + domainName;
+    const wildcard = "*." + domainName;
 
-    let acm = new ACMClient(AWSClientConfig);
-    let ssm = new SSMClient(AWSClientConfig);
-    let route53 = new Route53Client(AWSClientConfig);
+    const acm = new ACMClient(AWSClientConfig);
+    const ssm = new SSMClient(AWSClientConfig);
+    const route53 = new Route53Client(AWSClientConfig);
 
     // We need to validate DNS manually
     // https://docs.amazonaws.cn/en_us/acm/latest/userguide/dns-validation.html
 
-    let reqData = await acm.send(
+    const reqData = await acm.send(
       new RequestCertificateCommand({
         DomainName: wildcard,
         ValidationMethod: "DNS",
@@ -46,14 +46,14 @@ export class CertificateManager {
 
     while (true) {
       await (async () => new Promise((resolve) => setTimeout(resolve, 5000)))();
-      let certData = await acm.send(
+      const certData = await acm.send(
         new DescribeCertificateCommand({
           CertificateArn: reqData.CertificateArn!,
         })
       );
 
       if (certData.Certificate?.DomainValidationOptions![0].ResourceRecord) {
-        let resourceRec =
+        const resourceRec =
           certData.Certificate.DomainValidationOptions![0].ResourceRecord;
         valRecordName = resourceRec.Name!;
         valRecordValue = resourceRec.Value!;
@@ -61,14 +61,14 @@ export class CertificateManager {
       }
     }
 
-    let params = { DNSName: domainName + "." };
-    let hostedZoneData = await route53.send(
+    const params = { DNSName: domainName + "." };
+    const hostedZoneData = await route53.send(
       new ListHostedZonesByNameCommand(params)
     );
     if (hostedZoneData.HostedZones?.length == 0) {
       throw new Error("Domain not found: " + domainName);
     }
-    let hostedZoneId = hostedZoneData.HostedZones![0].Id;
+    const hostedZoneId = hostedZoneData.HostedZones![0].Id;
 
     await route53.send(
       new ChangeResourceRecordSetsCommand({
@@ -102,10 +102,10 @@ export class CertificateManager {
   static async waitForValidated(domainName: string): Promise<void> {
     domainName = domainName.toLowerCase();
 
-    let acm = new ACMClient(AWSClientConfig);
-    let ssm = new SSMClient(AWSClientConfig);
+    const acm = new ACMClient(AWSClientConfig);
+    const ssm = new SSMClient(AWSClientConfig);
 
-    let certData = await ssm.send(
+    const certData = await ssm.send(
       new GetParameterCommand({
         Name: `/cloudcamp/global/certificate/${domainName}`,
       })
@@ -120,11 +120,11 @@ export class CertificateManager {
   static async remove(domainName: string): Promise<void> {
     domainName = domainName.toLowerCase();
 
-    let acm = new ACMClient(AWSClientConfig);
-    let ssm = new SSMClient(AWSClientConfig);
-    let ssmParam = `/cloudcamp/global/certificate/${domainName}`;
+    const acm = new ACMClient(AWSClientConfig);
+    const ssm = new SSMClient(AWSClientConfig);
+    const ssmParam = `/cloudcamp/global/certificate/${domainName}`;
 
-    let data = await ssm.send(new GetParameterCommand({ Name: ssmParam }));
+    const data = await ssm.send(new GetParameterCommand({ Name: ssmParam }));
     await acm.send(
       new DeleteCertificateCommand({ CertificateArn: data.Parameter!.Value! })
     );
@@ -133,9 +133,9 @@ export class CertificateManager {
 
   static async hasCert(domainName: string): Promise<boolean> {
     domainName = domainName.toLowerCase();
-    let ssm = new SSMClient(AWSClientConfig);
+    const ssm = new SSMClient(AWSClientConfig);
 
-    let ssmParam = `/cloudcamp/global/certificate/${domainName}`;
+    const ssmParam = `/cloudcamp/global/certificate/${domainName}`;
     try {
       await ssm.send(new GetParameterCommand({ Name: ssmParam }));
       return true;

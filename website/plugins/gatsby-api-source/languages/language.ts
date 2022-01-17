@@ -88,7 +88,7 @@ export abstract class Language {
   }
 
   internalLink(methodName: string, fqn: string): string {
-    let typeName = fqn.split(".")[1];
+    const typeName = fqn.split(".")[1];
     if (
       this.assembly.types[fqn] &&
       this.assembly.types[fqn].kind == "interface"
@@ -107,7 +107,7 @@ export abstract class Language {
   cdkDocsLink(fqn: string): string {
     // https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.Annotations.html
     // https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.alexa_ask.CfnSkill.html
-    let parts = fqn.split(".");
+    const parts = fqn.split(".");
     let url: string;
     if (parts[2] == "core") {
       url = `https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.${parts[2]}.html`;
@@ -123,7 +123,7 @@ export abstract class Language {
     param: jsiispec.Parameter,
     type: jsiispec.Type
   ): string {
-    let id = _.kebabCase(method.name) + "-" + _.kebabCase(type.name);
+    const id = _.kebabCase(method.name) + "-" + _.kebabCase(type.name);
     return `
     <h4 class="text-xl ml-6 font-bold mt-6 mb-6 font-display">
       <a href="#${id}" id="${id}">${type.name}</a>
@@ -143,7 +143,7 @@ export abstract class Language {
       a.locationInModule?.line > b.locationInModule?.line ? 1 : -1
     );
 
-    let tbody = props
+    const tbody = props
       .map((prop, ix) => {
         let defaultValue = "";
         if (prop.optional !== true) {
@@ -168,7 +168,7 @@ export abstract class Language {
     `;
       })
       .join("\n");
-    let header = this.propsTableHeader(className, method, param, type);
+    const header = this.propsTableHeader(className, method, param, type);
     return `
       ${header}
       <table class="w-full border overflow-x-auto block">

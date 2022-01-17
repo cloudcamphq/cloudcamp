@@ -46,13 +46,13 @@ export default function Command({
 Command.Layout = SidebarLayout;
 
 function CommandItem(props: { command: CommandDefinition }) {
-  let command = props.command;
+  const command = props.command;
   let name = command.name;
   if (name.includes(":") && name.split(":")[1] == "index") {
     name = name.split(":")[0];
   }
-  let id = _.kebabCase(name);
-  let usage = `
+  const id = _.kebabCase(name);
+  const usage = `
     <div class="gatsby-highlight" data-language="bash">
       <pre class="language-bash"><code class="language-bash">$ <span class="token function">camp</span> ${name}${
     command.args && " " + command.args.map((a) => a.name).join(" ")
@@ -66,7 +66,7 @@ function CommandItem(props: { command: CommandDefinition }) {
     html = html.replaceAll(/<a/gm, `<a class="text-purple-900 underline" `);
 
     html = html.replace(/<h2(.*?)>(.*?)<\/h2>/gm, (match, $1, $2) => {
-      let locid = id + "-" + _.kebabCase($2);
+      const locid = id + "-" + _.kebabCase($2);
       return `<h3 class="text-2xl font-bold mt-10 font-display" id="${locid}"><a href="#${locid}">${$2}</a></h3>`;
     });
 
@@ -177,7 +177,7 @@ function CommandItem(props: { command: CommandDefinition }) {
 }
 
 function H2Link(props: { title: string; id?: string; children: any }) {
-  let id = props.id || _.kebabCase(props.title);
+  const id = props.id || _.kebabCase(props.title);
   return (
     <h2 className="text-2xl font-bold mt-10 font-display" id={id}>
       <Link to={`#${id}`}>{props.children}</Link>

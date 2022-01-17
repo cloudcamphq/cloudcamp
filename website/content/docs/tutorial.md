@@ -222,14 +222,14 @@ Finally, update the source code:
 void 0;
 import { App, WebService, Database } from "@cloudcamp/aws-runtime";
 
-let app = new App();
+const app = new App();
 
-let productionDb = new Database(app.production, "db", {
+const productionDb = new Database(app.production, "db", {
   engine: "postgres",
 });
 void "show";
 
-let productionWeb = new WebService(app.production, "web", {
+const productionWeb = new WebService(app.production, "web", {
   // ⬇ add your domain
   domains: ["yourdomain.com"],
   // ⬇ enable https

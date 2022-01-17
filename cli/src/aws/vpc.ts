@@ -25,8 +25,8 @@ export class VPC {
   static async list(): Promise<
     { id: string; descr: string; default: boolean }[]
   > {
-    let ec2 = new EC2Client(AWSClientConfig);
-    let data = await ec2.send(new DescribeVpcsCommand({ MaxResults: 500 }));
+    const ec2 = new EC2Client(AWSClientConfig);
+    const data = await ec2.send(new DescribeVpcsCommand({ MaxResults: 500 }));
     let vpcs = data.Vpcs || [];
     vpcs = _.sortBy(
       vpcs.filter((vpc) => vpc.VpcId),
@@ -70,14 +70,14 @@ export class VPC {
   }
 
   private static async createVpc(appName: string): Promise<string> {
-    let ec2 = new EC2Client(AWSClientConfig);
-    let vpcData = await ec2.send(
+    const ec2 = new EC2Client(AWSClientConfig);
+    const vpcData = await ec2.send(
       new CreateVpcCommand({
         CidrBlock: "10.0.0.0/16",
         TagSpecifications: VPC.tagSpec(appName, "vpc"),
       })
     );
-    let vpcId = vpcData.Vpc!.VpcId!;
+    const vpcId = vpcData.Vpc!.VpcId!;
     await waitUntilVpcAvailable(
       { client: ec2, maxWaitTime: 10_000 },
       { VpcIds: [vpcId] }
@@ -103,30 +103,30 @@ export class VPC {
     vpcId: string,
     appName: string
   ): Promise<[string[], string[]]> {
-    let ec2 = new EC2Client(AWSClientConfig);
-    let azsData = await ec2.send(
+    const ec2 = new EC2Client(AWSClientConfig);
+    const azsData = await ec2.send(
       new DescribeAvailabilityZonesCommand({ AllAvailabilityZones: true })
     );
 
     var block = new Netmask("10.0.0.0/20");
-    let incNetMask = () => {
-      let result = block;
+    const incNetMask = () => {
+      const result = block;
       block = block.next();
       return `${result.base}/${result.bitmask}`;
     };
 
-    let publicNets: string[] = [];
-    let privateNets: string[] = [];
+    const publicNets: string[] = [];
+    const privateNets: string[] = [];
 
-    let azs = azsData.AvailabilityZones!.filter(
+    const azs = azsData.AvailabilityZones!.filter(
       (z) => z.ZoneType === "availability-zone"
     );
 
     // create a private and a public subnet in all AZs
     for (let az of azs) {
-      let azId = az.ZoneId!;
+      const azId = az.ZoneId!;
 
-      let publicSubnet = await ec2.send(
+      const publicSubnet = await ec2.send(
         new CreateSubnetCommand({
           VpcId: vpcId,
           CidrBlock: incNetMask(),
@@ -136,7 +136,7 @@ export class VPC {
       );
       publicNets.push(publicSubnet.Subnet!.SubnetId!);
 
-      let privateSubnet = await ec2.send(
+      const privateSubnet = await ec2.send(
         new CreateSubnetCommand({
           VpcId: vpcId,
           CidrBlock: incNetMask(),
@@ -155,10 +155,10 @@ export class VPC {
     publicNets: string[],
     privateNets: string[]
   ): Promise<void> {
-    let ec2 = new EC2Client(AWSClientConfig);
+    const ec2 = new EC2Client(AWSClientConfig);
 
     // create and attach a new internet gateway to the VPC
-    let gatewayId = (
+    const gatewayId = (
       await ec2.send(
         new CreateInternetGatewayCommand({
           TagSpecifications: VPC.tagSpec(appName, "internet-gateway"),
@@ -174,7 +174,7 @@ export class VPC {
     );
 
     // create a new route table for public subnets
-    let publicRouteTableId = (
+    const publicRouteTableId = (
       await ec2.send(
         new CreateRouteTableCommand({
           VpcId: vpcId,
@@ -188,7 +188,7 @@ export class VPC {
     ).RouteTable!.RouteTableId!;
 
     // create a new route table for private subnets
-    let privateRouteTableId = (
+    const privateRouteTableId = (
       await ec2.send(
         new CreateRouteTableCommand({
           VpcId: vpcId,
@@ -233,8 +233,8 @@ export class VPC {
   }
 
   static async create(appName: string): Promise<string> {
-    let vpcId = await VPC.createVpc(appName);
-    let [publicNets, privateNets] = await VPC.createSubnets(vpcId, appName);
+    const vpcId = await VPC.createVpc(appName);
+    const [publicNets, privateNets] = await VPC.createSubnets(vpcId, appName);
     await VPC.createRoutes(appName, vpcId, publicNets, privateNets);
     return vpcId;
   }

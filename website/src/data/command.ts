@@ -27,20 +27,20 @@ function groupedNodes(nodes: CommandDefinition[]): CommandDefinition[][] {
 }
 
 function makeLinks(nodes: CommandDefinition[][]) {
-  let links = {};
+  const links = {};
   for (var i = 0; i < nodes.length; i++) {
     let group = nodes[i];
     let prev = undefined;
     let next = undefined;
     if (i != 0) {
-      let prevGroup = nodes[i - 1];
+      const prevGroup = nodes[i - 1];
       prev = {
         link: `/docs/command/${makeSlug(prevGroup[0].group)}`,
         title: prevGroup[0].group,
       };
     }
     if (i + 1 < nodes.length) {
-      let nextGroup = nodes[i + 1];
+      const nextGroup = nodes[i + 1];
       next = {
         link: `/docs/command/${makeSlug(nextGroup[0].group)}`,
         title: nextGroup[0].group,
@@ -52,16 +52,16 @@ function makeLinks(nodes: CommandDefinition[][]) {
 }
 
 function extractOnThisPage(group: CommandDefinition[]) {
-  let onThisPage = [];
+  const onThisPage = [];
 
   for (let node of group) {
-    let children = [];
+    const children = [];
     let name = node.name;
 
     if (name.includes(":") && name.split(":")[1] == "index") {
       name = name.split(":")[0];
     }
-    let id = name.replace(/:/g, "-");
+    const id = name.replace(/:/g, "-");
     onThisPage.push({ title: name, id: id, children: children });
 
     children.push({
@@ -115,12 +115,12 @@ export async function createPages(createPage, graphql) {
     }
   `);
 
-  let groups = groupedNodes(data.allCommandDocs.nodes);
-  let links = makeLinks(groups);
+  const groups = groupedNodes(data.allCommandDocs.nodes);
+  const links = makeLinks(groups);
 
   groups.forEach((group) => {
-    let onThisPage = extractOnThisPage(group);
-    let slug = makeSlug(group[0].group);
+    const onThisPage = extractOnThisPage(group);
+    const slug = makeSlug(group[0].group);
 
     createPage({
       path: `/docs/command/${slug}`,

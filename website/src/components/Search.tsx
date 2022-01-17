@@ -10,7 +10,7 @@ export default function Search() {
   const [state, dispatch] = useContext(Context);
   let open = state.searchboxVisible;
 
-  let setOpen = (open: boolean) =>
+  const setOpen = (open: boolean) =>
     dispatch({ type: "SET_SEARCHBOX_VISIBLE", payload: open });
 
   const browser = detect();

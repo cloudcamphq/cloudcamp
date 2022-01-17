@@ -36,9 +36,9 @@ export class PipelineStack extends cdk.Stack {
     });
 
     this.pipelineName = _.upperFirst(_.camelCase(props.appName + "-pipeline"));
-    let home = this.getHome();
+    const home = this.getHome();
 
-    let { installCommands, buildCommands, synthCommands } =
+    const { installCommands, buildCommands, synthCommands } =
       this.getPipelineCommands(home);
 
     this.pipeline = new pipelines.CodePipeline(this, "cdk-pipeline", {
@@ -78,8 +78,8 @@ export class PipelineStack extends cdk.Stack {
   }
 
   private getLanguage(): Language {
-    let cdk_json = JSON.parse(fs.readFileSync("cdk.json").toString());
-    let code = Language.languageCodeForExtension(path.extname(cdk_json.app));
+    const cdk_json = JSON.parse(fs.readFileSync("cdk.json").toString());
+    const code = Language.languageCodeForExtension(path.extname(cdk_json.app));
     return Language.make(code);
   }
 
@@ -88,19 +88,19 @@ export class PipelineStack extends cdk.Stack {
     buildCommands: string[];
     synthCommands: string[];
   } {
-    let inHome = (cmd: string) => `(cd ${home} && ${cmd})`;
-    let language = this.getLanguage();
-    let packageJson = JSON.parse(
+    const inHome = (cmd: string) => `(cd ${home} && ${cmd})`;
+    const language = this.getLanguage();
+    const packageJson = JSON.parse(
       fs.readFileSync(path.join(__dirname, "..", "package.json")).toString()
     );
-    let cdkVersion = packageJson.dependencies["aws-cdk-lib"];
+    const cdkVersion = packageJson.dependencies["aws-cdk-lib"];
 
-    let installCommands = [
+    const installCommands = [
       "npm install -g npm@latest",
       `npm install aws-cdk@${cdkVersion} -g`,
     ].concat(language.installCommands);
-    let buildCommands = language.buildCommands;
-    let synthCommands = [
+    const buildCommands = language.buildCommands;
+    const synthCommands = [
       "pwd",
       "ls",
       "ls node_modules/aws-cdk-lib/package.json",

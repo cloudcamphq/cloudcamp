@@ -1,10 +1,10 @@
 import * as __vars__ from "../../src/vars";
 import { App, Database, WebService } from "@cloudcamp/aws-runtime";
 
-let app = new App();
+const app = new App();
 
-let dockerfile = __vars__.dockerfile;
-let db = new Database(app.staging, "db");
+const dockerfile = __vars__.dockerfile;
+const db = new Database(app.staging, "db");
 
 new WebService(app.production, "web", {
   dockerfile: dockerfile,

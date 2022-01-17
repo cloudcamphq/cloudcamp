@@ -34,16 +34,16 @@ This copies the whole aws-runtime folder in its current state.`;
   async run() {
     const { flags } = this.parse(InitDebug);
 
-    let home = resolveNewHome(flags.home);
+    const home = resolveNewHome(flags.home);
 
     // if the user specified a home dir, be smart and use it as app name
-    let name = new NameInput(
+    const name = new NameInput(
       flags.name || (home && home != CAMP_HOME_DIR)
         ? path.basename(home)
         : undefined
     );
-    let language = new LanguageChoice(flags.language as LanguageCode);
-    let settings = await new Settings(name, language).init();
+    const language = new LanguageChoice(flags.language as LanguageCode);
+    const settings = await new Settings(name, language).init();
 
     if (!flags.yes) {
       await settings.edit(this.ux);

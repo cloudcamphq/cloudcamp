@@ -21,7 +21,7 @@ export default function Docs({
   };
   pageContext: any;
 }) {
-  let [gettingStarted, operationsGuide, apiNodes, commandNodes] =
+  const [gettingStarted, operationsGuide, apiNodes, commandNodes] =
     prepareTocData({ data } as any);
   let html = data.markdownRemark.html;
 
@@ -29,11 +29,11 @@ export default function Docs({
   html = html.replaceAll(/<a/gm, `<a style="color: #d63200;" `);
 
   html = html.replace(/<h1>(.*?)<\/h1>/gm, (match, $1) => {
-    let id = _.kebabCase($1);
+    const id = _.kebabCase($1);
     return `<h2 class="text-2xl font-bold mt-10 font-display" id="${id}"><a href="#${id}">${$1}</a></h2>`;
   });
   html = html.replace(/<h2>(.*?)<\/h2>/gm, (match, $1) => {
-    let id = _.kebabCase($1);
+    const id = _.kebabCase($1);
     return `<h3 class="text-2xl font-bold mt-10 font-display" id="${id}"><a href="#${id}">${$1}</a></h3>`;
   });
 

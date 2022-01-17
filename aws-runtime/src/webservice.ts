@@ -168,7 +168,7 @@ export interface MetricScalingProps {
  * ```ts
  * void 0;
  * import { App, WebService } from "@cloudcamp/aws-runtime";
- * let app = new App();
+ * const app = new App();
  * void 'show';
  * new WebService(app.production, "prod-web", {
  *   dockerfile: "../Dockerfile",
@@ -188,7 +188,7 @@ export class WebService extends Construct {
    * ```ts
    * void 0;
    * import { App, WebService } from "@cloudcamp/aws-runtime";
-   * let app = new App();
+   * const app = new App();
    * void 'show';
    *
    * new WebService(app.production, "prod", {
@@ -214,15 +214,15 @@ export class WebService extends Construct {
   constructor(scope: Construct, id: string, props: WebServiceProps) {
     super(scope, id);
 
-    let appName = App.instance.configuration.name;
+    const appName = App.instance.configuration.name;
 
-    let vpc = ec2.Vpc.fromLookup(this, "vpc", {
+    const vpc = ec2.Vpc.fromLookup(this, "vpc", {
       vpcId: App.instance.configuration.vpcId,
     });
 
-    let uniqueId = cdk.Names.uniqueId(this);
+    const uniqueId = cdk.Names.uniqueId(this);
 
-    let logGroup = new logs.LogGroup(this, "log-group", {
+    const logGroup = new logs.LogGroup(this, "log-group", {
       logGroupName: `/${appName}/webservice/${uniqueId}/${id}`,
       retention: logs.RetentionDays.ONE_MONTH,
       removalPolicy: cdk.RemovalPolicy.DESTROY,
@@ -237,8 +237,8 @@ export class WebService extends Construct {
       });
     }
 
-    let environment: Record<string, string> = {};
-    let stack = cdk.Stack.of(this);
+    const environment: Record<string, string> = {};
+    const stack = cdk.Stack.of(this);
 
     for (let [k, v] of Object.entries(props.environment || {})) {
       if (typeof v === "string") {
@@ -300,7 +300,7 @@ export class WebService extends Construct {
   fargateService: ecs_patterns.ApplicationLoadBalancedFargateService;
 
   scaleOnSchedule(props: ScheduleScalingProps) {
-    let task = this.fargateService.service.autoScaleTaskCount({
+    const task = this.fargateService.service.autoScaleTaskCount({
       minCapacity: props.min,
       maxCapacity: props.max,
     });
@@ -312,7 +312,7 @@ export class WebService extends Construct {
   }
 
   scaleOnMetric(props: MetricScalingProps) {
-    let task = this.fargateService.service.autoScaleTaskCount({
+    const task = this.fargateService.service.autoScaleTaskCount({
       minCapacity: props.min,
       maxCapacity: props.max,
     });
@@ -337,8 +337,8 @@ export class WebService extends Construct {
   }
 
   private longName(): string {
-    let appName = App.instance.configuration.name;
-    let stack = cdk.Stack.of(this);
+    const appName = App.instance.configuration.name;
+    const stack = cdk.Stack.of(this);
     return `${appName}/${stack.stackName}/${this.node.id}`;
   }
 
@@ -369,7 +369,7 @@ export class WebService extends Construct {
       },
     });
 
-    let topic = new sns.Topic(this, "web-service-alarms-topic", {
+    const topic = new sns.Topic(this, "web-service-alarms-topic", {
       displayName: "Web service Alarms Topic",
     });
 
@@ -391,7 +391,7 @@ export class WebService extends Construct {
       topic.addSubscription(new subscriptions.SmsSubscription(sms));
     }
 
-    let longName = this.longName();
+    const longName = this.longName();
 
     if (props?.http5xx?.enabled) {
       this.addHttpAlarm(
@@ -447,7 +447,7 @@ export class WebService extends Construct {
         break;
     }
 
-    let elbAlarm = new cloudwatch.Alarm(
+    const elbAlarm = new cloudwatch.Alarm(
       this,
       _.kebabCase(name + "-elb-alarm"),
       {
@@ -480,7 +480,7 @@ export class WebService extends Construct {
         break;
     }
 
-    let targetAlarm = new cloudwatch.Alarm(
+    const targetAlarm = new cloudwatch.Alarm(
       this,
       _.kebabCase(name + "-target-alarm"),
       {
@@ -513,8 +513,8 @@ export class WebService extends Construct {
     threshold: number,
     period: number
   ) {
-    let longName = this.longName();
-    let alarm = new cloudwatch.Alarm(this, "rejected-connections-alarm", {
+    const longName = this.longName();
+    const alarm = new cloudwatch.Alarm(this, "rejected-connections-alarm", {
       alarmName: "REJECTED",
       alarmDescription: `${longName}: Rejected connections threshold exceeded`,
       comparisonOperator:
@@ -535,8 +535,8 @@ export class WebService extends Construct {
   }
 
   private addSlowAlarm(topic: sns.ITopic, threshold: number, period: number) {
-    let longName = this.longName();
-    let alarm = new cloudwatch.Alarm(this, "rejected-connections-alarm", {
+    const longName = this.longName();
+    const alarm = new cloudwatch.Alarm(this, "rejected-connections-alarm", {
       alarmName: "REJECTED",
       alarmDescription: `${longName}: Rejected connections threshold exceeded`,
       comparisonOperator:

@@ -51,24 +51,29 @@ Creates all files necessary for deploying a docker based app on AWS.`;
   async run() {
     const { flags } = this.parse(Init);
 
-    let home = resolveNewHome(flags.home);
+    const home = resolveNewHome(flags.home);
 
     // if the user specified a home dir, be smart and use it as app name
-    let name = new NameInput(
+    const name = new NameInput(
       flags.name ||
         (home && home != CAMP_HOME_DIR ? path.basename(home) : undefined)
     );
-    let language = new LanguageChoice(flags.language as LanguageCode);
-    let dockerfile = new DockerfileInput(flags.dockerfile);
-    let port = new PortInput(flags.port);
-    let settings = await new Settings(name, language, dockerfile, port).init();
+    const language = new LanguageChoice(flags.language as LanguageCode);
+    const dockerfile = new DockerfileInput(flags.dockerfile);
+    const port = new PortInput(flags.port);
+    const settings = await new Settings(
+      name,
+      language,
+      dockerfile,
+      port
+    ).init();
 
     if (!flags.yes) {
       await settings.edit(this.ux);
     }
 
     this.ux.start("Generating project");
-    let generator = new Generator(home, name.value, language.value);
+    const generator = new Generator(home, name.value, language.value);
     await generator.generate();
     if (dockerfile.value === undefined) {
       generator.copySourceHome(generator.resources("docker", "app.ts"), {

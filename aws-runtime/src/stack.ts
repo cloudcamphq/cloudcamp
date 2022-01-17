@@ -19,7 +19,7 @@ export class Stack extends cdk.Stack {
   stage!: Stage;
 
   constructor(scope: Construct, id: string) {
-    let stackName = _.upperFirst(
+    const stackName = _.upperFirst(
       _.camelCase(App.instance.configuration.name + "-" + id)
     );
     super(scope, id, { stackName: stackName });

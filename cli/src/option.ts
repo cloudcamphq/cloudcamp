@@ -40,7 +40,7 @@ export abstract class Input<A> {
   abstract edit(ux: UX, parent?: Input<any>): Promise<void>;
 
   toString(): string {
-    let tab = this.message.length <= 3 ? "\t\t" : "\t";
+    const tab = this.message.length <= 3 ? "\t\t" : "\t";
     return `${this.message}:${tab}${chalk.bold(this.displayValue)}`;
   }
 }
@@ -75,7 +75,7 @@ export abstract class Choice<A> extends Input<A> {
    * Show a picker
    */
   async edit(ux: UX): Promise<void> {
-    let choices = this.choicesForPicker;
+    const choices = this.choicesForPicker;
 
     if (choices.length == 0) {
       // should not happen
@@ -85,7 +85,7 @@ export abstract class Choice<A> extends Input<A> {
       ux.log();
       await pressAnyKey();
     } else {
-      let key = await ux.list({
+      const key = await ux.list({
         message: this.message + ":",
         choices: choices,
         default: this.key,
@@ -168,7 +168,7 @@ export abstract class CompositeInput extends Input<Input<any>[]> {
       choices.push({ value: "quit", short: "quit", name: "Quit" });
     }
 
-    let selection = await ux.list({
+    const selection = await ux.list({
       message: "Settings:",
       choices: choices,
       default: "continue",

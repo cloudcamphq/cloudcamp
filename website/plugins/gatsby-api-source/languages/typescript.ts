@@ -7,9 +7,11 @@ export class TypeScript extends Language {
   }
 
   methodSignature(className: string, method: jsiispec.Method): string {
-    let argsList = [];
-    let meths = (method as any).initializer ? `new ${className}` : method.name!;
-    let rets = (method as any).initializer
+    const argsList = [];
+    const meths = (method as any).initializer
+      ? `new ${className}`
+      : method.name!;
+    const rets = (method as any).initializer
       ? ""
       : ": " + this.translateType(method.name, method.returns?.type as any);
 
@@ -18,7 +20,7 @@ export class TypeScript extends Language {
       if (param.optional) {
         paramName += "?";
       }
-      let typeName = this.translateType(method.name, param.type as any);
+      const typeName = this.translateType(method.name, param.type as any);
       argsList.push(`${paramName}: ${typeName}`);
     }
     return `${meths}(${argsList.join(", ")})${rets}`;
@@ -31,7 +33,7 @@ export class TypeScript extends Language {
   }
 
   simpleMethodSignature(className: string, method: jsiispec.Method): string {
-    let meths = (method as any).initializer ? `constructor` : method.name;
+    const meths = (method as any).initializer ? `constructor` : method.name;
     return `${meths}`;
   }
 

@@ -43,7 +43,7 @@ export class Ref extends Construct {
     hostedZone: route53.IHostedZone,
     props?: RefParameterProps
   ) {
-    let global = new Ref(scope, id);
+    const global = new Ref(scope, id);
     new ssm.StringParameter(global, "parameter", {
       parameterName: SSM.parameter(
         "hosted-zone",
@@ -60,8 +60,8 @@ export class Ref extends Construct {
     id: string,
     props?: RefParameterProps
   ): route53.IHostedZone {
-    let global = new Ref(scope, id);
-    let hostedZoneId = ssm.StringParameter.fromStringParameterName(
+    const global = new Ref(scope, id);
+    const hostedZoneId = ssm.StringParameter.fromStringParameterName(
       global,
       "parameter",
       SSM.parameter("hosted-zone", id, props?.appName, props?.name)
@@ -79,7 +79,7 @@ export class Ref extends Construct {
     certificate: certificatemanager.ICertificate,
     props?: RefParameterProps
   ) {
-    let global = new Ref(scope, id);
+    const global = new Ref(scope, id);
     new ssm.StringParameter(global, "parameter", {
       parameterName: SSM.parameter(
         "certificate",
@@ -96,8 +96,8 @@ export class Ref extends Construct {
     id: string,
     props?: RefParameterProps
   ): certificatemanager.ICertificate {
-    let global = new Ref(scope, id);
-    let certificateArn = ssm.StringParameter.fromStringParameterName(
+    const global = new Ref(scope, id);
+    const certificateArn = ssm.StringParameter.fromStringParameterName(
       global,
       "parameter",
       SSM.parameter("certificate", id, props?.appName, props?.name)
@@ -115,7 +115,7 @@ export class Ref extends Construct {
     serverlessCluster: rds.IServerlessCluster,
     props?: RefParameterProps
   ) {
-    let global = new Ref(scope, id);
+    const global = new Ref(scope, id);
     new ssm.StringParameter(global, "parameter", {
       parameterName: SSM.parameter(
         "serverless-cluster",
@@ -132,8 +132,8 @@ export class Ref extends Construct {
     id: string,
     props?: RefParameterProps
   ): rds.IServerlessCluster {
-    let global = new Ref(scope, id);
-    let clusterIdentifier = ssm.StringParameter.fromStringParameterName(
+    const global = new Ref(scope, id);
+    const clusterIdentifier = ssm.StringParameter.fromStringParameterName(
       global,
       "parameter",
       SSM.parameter("serverless-cluster", id, props?.appName, props?.name)

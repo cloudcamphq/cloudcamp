@@ -14,7 +14,7 @@ export class GitRemoteChoice extends Choice<string> {
   }
 
   async init() {
-    let git = new GitRepository();
+    const git = new GitRepository();
     if (await git.isGitRepository()) {
       this.choices = await git.getGitRemotes();
 

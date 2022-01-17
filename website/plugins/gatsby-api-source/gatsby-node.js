@@ -28,7 +28,7 @@ exports.onCreateNode = async function onCreateNode({
 
 function commandDocs(node, actions, createNodeId, createContentDigest) {
   const { createNode } = actions;
-  let commandSource = new CommandSource(node.absolutePath);
+  const commandSource = new CommandSource(node.absolutePath);
 
   const nodeContent = JSON.stringify(commandSource.definition);
   const nodeMeta = {
@@ -47,24 +47,24 @@ function commandDocs(node, actions, createNodeId, createContentDigest) {
 }
 
 function remark(node) {
-  let project = JSON.parse(
+  const project = JSON.parse(
     fs
       .readFileSync(
         path.join(__dirname, "..", "..", "content", "api", "api.json")
       )
       .toString()
   );
-  let apiSource = new ApiSource(project);
+  const apiSource = new ApiSource(project);
   node.internal.content = apiSource.translateCode(node.internal.content, true);
 }
 
 function apiDocs(node, actions, createNodeId, createContentDigest) {
   const { createNode } = actions;
-  let project = JSON.parse(fs.readFileSync(node.absolutePath).toString());
-  let apiSource = new ApiSource(project);
+  const project = JSON.parse(fs.readFileSync(node.absolutePath).toString());
+  const apiSource = new ApiSource(project);
   apiSource.transform();
 
-  let sortedTypes = _.sortBy(
+  const sortedTypes = _.sortBy(
     Object.values(apiSource.result.types),
     (item) => item.name
   );

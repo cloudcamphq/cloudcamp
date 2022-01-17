@@ -83,10 +83,10 @@ export function prepareTocData({
     node.frontmatter?.order ? parseInt(node.frontmatter.order) : 1000
   );
 
-  let gettingStarted: MarkdownNode[] = docNodes.filter(
+  const gettingStarted: MarkdownNode[] = docNodes.filter(
     (node) => node.frontmatter.category == "getting-started"
   );
-  let operationsGuide: MarkdownNode[] = docNodes.filter(
+  const operationsGuide: MarkdownNode[] = docNodes.filter(
     (node) => node.frontmatter.category == "operations-guide"
   );
 
@@ -172,7 +172,7 @@ export function MobileTableOfContents({
   onThisPage: any;
   location: any;
 }) {
-  let [gettingStarted, operationsGuide, apiNodes, commandNodes] =
+  const [gettingStarted, operationsGuide, apiNodes, commandNodes] =
     prepareTocData({
       data,
     });
@@ -263,7 +263,7 @@ export function TableOfContents({
   onThisPage: any;
   location: any;
 }) {
-  let [gettingStarted, operationsGuide, apiNodes, commandNodes] =
+  const [gettingStarted, operationsGuide, apiNodes, commandNodes] =
     prepareTocData({
       data,
     });
