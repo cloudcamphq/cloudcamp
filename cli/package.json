@@ -1,6 +1,6 @@
 {
   "name": "cloudcamp",
-  "description": "CloudCamp - Launch faster by building scalable infrastructure in few lines of code.",
+  "description": "CloudCamp - Infrastructure as few lines of code.",
   "bin": {
     "camp": "bin/camp"
   },
