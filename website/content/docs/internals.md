@@ -21,6 +21,7 @@ This software is used to build/release CloudCamp for various programming languag
 - twine (https://pypi.org/project/twine/)
 - dotnet (https://dotnet.microsoft.com)
 - maven (http://maven.apache.org)
+- jq (https://stedolan.github.io/jq/)
 
 # Releasing
 
