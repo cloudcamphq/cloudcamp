@@ -16,10 +16,7 @@ export default function Index({}) {
   return (
     <>
       <Store>
-        <Header
-          title="Launch faster by building scalable infrastructure in few lines of code"
-          canonical="/"
-        />
+        <Header title="infrastructure as few lines of code" canonical="/" />
         <Search />
 
         <div className="h-16 border-b bg-white items-center flex flex-none max-w-screen-lg mx-auto">
@@ -36,27 +33,20 @@ export default function Index({}) {
         </div>
         <div className="flex max-w-screen-lg mx-auto">
           <div
-            className="mx-auto text-center mt-14 text-3xl lg:text-7xl md:text-6xl md:leading-[1]"
+            className="mx-auto text-center mt-20 text-4xl md:text-6xl lg:text-8xl  md:leading-[1]"
             style={{
               fontFamily: '"Helvetica Neue", Arial, sans-serif',
-              fontStyle: "italic",
+
               // lineHeight: "70px",
               color: "#433636",
               fontWeight: 400,
             }}
           >
-            Launch{" "}
-            <span style={{ color: "#D63201", fontWeight: 500 }}>faster</span> by
-            building <br />
-            <span style={{ color: "#D63201", fontWeight: 500 }}>
-              scalable
-            </span>{" "}
-            infrastructure <br />
-            in{" "}
+            Infrastructure as <br />
             <span style={{ color: "#D63201", fontWeight: 500 }}>
               few lines
             </span>{" "}
-            of code
+            of code.
           </div>
         </div>
         <div className="flex flex-wrap space-y-4 sm:space-y-0 sm:space-x-4 justify-center max-w-screen-lg mx-auto mt-14 sm:mt-20 p-4">
