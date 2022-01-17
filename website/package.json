@@ -42,7 +42,7 @@
     "gatsby-source-filesystem": "^4.0.0",
     "gatsby-transformer-remark": "^5.0.0",
     "js-cookie": "^3.0.1",
-    "jsii-rosetta": "1.49.0",
+    "jsii-rosetta": "1.52.1",
     "lodash": "^4.17.21",
     "postcss": "^8.3.6",
     "prism-themes": "^1.8.0",
