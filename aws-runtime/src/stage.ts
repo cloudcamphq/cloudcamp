@@ -138,8 +138,6 @@ export class Stage extends cdk.Stage {
       }
     }
 
-    console.log("environmentVariables", environmentVariables);
-
     // let secret = secretsmanager.Secret.fromSecretNameV2(
     //   App.instance.pipelineStack,
     //   "get-secret-by-namev2",

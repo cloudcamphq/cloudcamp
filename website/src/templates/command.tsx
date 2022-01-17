@@ -47,7 +47,6 @@ Command.Layout = SidebarLayout;
 
 function CommandItem(props: { command: CommandDefinition }) {
   let command = props.command;
-  console.log(command);
   let name = command.name;
   if (name.includes(":") && name.split(":")[1] == "index") {
     name = name.split(":")[0];

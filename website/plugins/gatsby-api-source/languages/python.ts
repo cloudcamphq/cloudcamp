@@ -10,16 +10,23 @@ export class Python extends Language {
   cdkDocsLink(fqn: string): string {
     // https://docs.aws.amazon.com/cdk/api/v2/python/aws_cdk/Annotations.html
     // https://docs.aws.amazon.com/cdk/api/v2/python/aws_cdk.alexa_ask/CfnSkill.html
+    // https://docs.aws.amazon.com/cdk/api/v2/python/constructs/Construct.html
 
     let parts = fqn.split(".");
     let url: string;
-    if (parts[2] == "core") {
-      url = `https://docs.aws.amazon.com/cdk/api/v2/python/aws_cdk/${parts[2]}.html`;
+    let name: string;
+    if (parts[0] == "constructs") {
+      url = `https://docs.aws.amazon.com/cdk/api/v2/python/constructs/${parts[1]}.html`;
+      name = parts[1];
+    } else if (parts.length == 2) {
+      url = `https://docs.aws.amazon.com/cdk/api/v2/python/aws_cdk/${parts[1]}.html`;
+      name = parts[1];
     } else {
       url = `https://docs.aws.amazon.com/cdk/api/v2/python/aws_cdk.${parts[1]}/${parts[2]}.html`;
+      name = parts[2];
     }
 
-    return `<a href="${url}" class="signature-type" target="_blank">${parts[2]}</a>`;
+    return `<a href="${url}" class="signature-type" target="_blank">${name}</a>`;
   }
 
   translateType(methodName: string, type: jsiispec.Type): string {

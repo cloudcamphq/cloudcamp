@@ -11,15 +11,29 @@ export class Java extends Language {
   cdkDocsLink(fqn: string): string {
     // https://docs.aws.amazon.com/cdk/api/v2/java/software/amazon/awscdk/Annotations.html
     // https://docs.aws.amazon.com/cdk/api/v2/java/software/amazon/awscdk/alexa/ask/CfnSkill.html
+
     let parts = fqn.split(".");
     let url: string;
-    if (parts[2] == "core") {
-      url = `https://docs.aws.amazon.com/cdk/api/v2/java/software/amazon/awscdk/${parts[2]}.html`;
-    } else {
-      let pkg = _.lowerCase(parts[1].replace("_", ""));
-      url = `https://docs.aws.amazon.com/cdk/api/v2/java/software/amazon/awscdk/${pkg}/${parts[2]}.html`;
+    let name: string;
+    if (parts[1] == "cx_api") {
+      parts[1] = "cxapi";
     }
-    return `<a href="${url}" class="signature-type" target="_blank">${parts[2]}</a>`;
+    if (parts[0] == "constructs") {
+      return parts[1];
+    } else if (parts.length == 2) {
+      url = `https://docs.aws.amazon.com/cdk/api/v2/java/software/amazon/awscdk/${parts[1]}.html`;
+      name = parts[1];
+    } else if (parts[1].startsWith("aws_")) {
+      const pkg = parts[1].substring("aws_".length).replace("_", "/");
+      url = `https://docs.aws.amazon.com/cdk/api/v2/java/software/amazon/awscdk/services/${pkg}/${parts[2]}.html`;
+      name = parts[2];
+    } else {
+      const pkg = parts[1].replace("_", "/").toLowerCase();
+      url = `https://docs.aws.amazon.com/cdk/api/v2/java/software/amazon/awscdk/${pkg}/${parts[2]}.html`;
+      name = parts[2];
+    }
+
+    return `<a href="${url}" class="signature-type" target="_blank">${name}</a>`;
   }
 
   propsTableHeader(

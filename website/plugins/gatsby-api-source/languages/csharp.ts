@@ -14,14 +14,24 @@ export class CSharp extends Language {
 
     let parts = fqn.split(".");
     let url: string;
-    if (parts[2] == "core") {
-      url = `https://docs.aws.amazon.com/cdk/api/v2/dotnet/api/Amazon.CDK.${parts[2]}.html`;
+    let name: string;
+    if (parts[0] == "constructs") {
+      return parts[1];
+    } else if (parts.length == 2) {
+      name = parts[1];
+      url = `https://docs.aws.amazon.com/cdk/api/v2/dotnet/api/Amazon.CDK.${parts[1]}.html`;
     } else {
-      let pkg = _.upperFirst(_.camelCase(parts[1]));
+      const pkg = parts[1]
+        .split("_")
+        .map((s) =>
+          s.length <= 3 ? s.toUpperCase() : _.upperFirst(_.camelCase(s))
+        )
+        .join(".");
       url = `https://docs.aws.amazon.com/cdk/api/v2/dotnet/api/Amazon.CDK.${pkg}.${parts[2]}.html`;
+      name = parts[2];
     }
 
-    return `<a href="${url}" class="signature-type" target="_blank">${parts[2]}</a>`;
+    return `<a href="${url}" class="signature-type" target="_blank">${name}</a>`;
   }
 
   translateType(methodName: string, type: jsiispec.Type): string {
