@@ -17,7 +17,7 @@ export default function Header({
       {canonical && (
         <link rel="canonical" href={"{https://cloudcamphq.com" + canonical} />
       )}
-      <link
+      {/* <link
         rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/@docsearch/js@alpha/dist/cdn/docsearch.min.css"
       />
@@ -33,7 +33,7 @@ export default function Header({
           debug: false,
         }
         );`}
-      </script>
+      </script> */}
     </Helmet>
   );
 }
