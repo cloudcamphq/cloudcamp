@@ -1,6 +1,6 @@
 {
   "name": "@cloudcamp/aws-runtime",
-  "description": "CloudCamp - Launch faster by building scalable infrastructure in few lines of code.",
+  "description": "CloudCamp - Infrastructure as few lines of code.",
   "main": "lib/index.js",
   "scripts": {
     "build": "jsii -v && cp .jsii ../website/content/api/api.json",
