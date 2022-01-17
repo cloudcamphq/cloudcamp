@@ -100,12 +100,6 @@ This copies the whole aws-runtime folder in its current state.`;
 
     await generator.install();
 
-    // fix package.json
-    await generator.runAppDir(
-      generator.home,
-      "sed -i '' -e '571s/^//p; 571s/^.*/    \".\\/core\\\": \".\\/core\\/index.js\",/'  node_modules/aws-cdk-lib/package.json"
-    );
-
     await generator.build();
     this.ux.stop();
 

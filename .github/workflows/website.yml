@@ -34,9 +34,6 @@ jobs:
       - name: Install plugin packages
         run: npm install
         working-directory: ${{env.PLUGIN_DIR}}
-      - name: Fix package.json
-        run: >-
-          sed -i '571 i "./core": "./core/index.js",\' node_modules/aws-cdk-lib/package.json
       - name: Build Website
         run: gatsby build
         working-directory: ${{env.WEBSITE_DIR}}
