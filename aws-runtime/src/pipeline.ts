@@ -101,12 +101,13 @@ export class PipelineStack extends cdk.Stack {
     ].concat(language.installCommands);
     const buildCommands = language.buildCommands;
     const synthCommands = [
-      "pwd",
-      "ls",
-      "ls node_modules/aws-cdk-lib/package.json",
-      "ls -al ..",
-      "env",
-      'sed -i \'571 i ".\\/core\\": ".\\/core\\/index.js",\' node_modules/aws-cdk-lib/package.json',
+      // TODO remove this when it's not needed anymore
+      // "pwd",
+      // "ls",
+      // "ls node_modules/aws-cdk-lib/package.json",
+      // "ls -al ..",
+      // "env",
+      // 'sed -i \'571 i ".\\/core\\": ".\\/core\\/index.js",\' node_modules/aws-cdk-lib/package.json',
       "cdk synth",
     ];
 
