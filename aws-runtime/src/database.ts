@@ -18,13 +18,12 @@ import {
 import { Construct } from "constructs";
 import * as _ from "lodash";
 import { withUniqueOutputExportName } from "./utils";
+import { PrivateNamespace } from "./namespace";
+import { DnsRecordType } from "aws-cdk-lib/aws-servicediscovery";
 // TODO logs
 // TODO alerts
 // TODO how to change password?
 // TODO how to run scripts to create databases
-
-// Needs a private subnet
-// https://github.com/aws/aws-cdk/issues/7062
 
 type DatabaseCapacity = 1 | 2 | 4 | 8 | 16 | 32 | 64 | 128 | 192 | 256 | 384;
 
@@ -39,6 +38,7 @@ export interface DatabaseProps {
   readonly autoPause?: number;
   readonly minCapacity?: DatabaseCapacity;
   readonly maxCapacity?: DatabaseCapacity;
+  readonly privateDnsName?: string;
 }
 
 export interface DatabaseVariables {
@@ -152,6 +152,19 @@ export class Database extends Construct {
     });
 
     const host = this.cluster.clusterEndpoint.hostname;
+
+    if (props.privateDnsName) {
+      const namespace = PrivateNamespace.getPrivateNamespace(
+        scope,
+        "private-namespace"
+      );
+      let service = namespace.createService(props.privateDnsName, {
+        dnsRecordType: DnsRecordType.CNAME,
+      });
+      service.registerCnameInstance(props.privateDnsName, {
+        instanceCname: host,
+      });
+    }
 
     this.hostOutput = withUniqueOutputExportName(
       new cdk.CfnOutput(this, "host-output", { value: host })

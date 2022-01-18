@@ -17,6 +17,17 @@ import { TAG_APP_NAME } from "@cloudcamp/aws-runtime/src/constants";
 import _ from "lodash";
 import { AWSClientConfig } from "./config";
 import { Netmask } from "netmask";
+import {
+  ServiceDiscoveryClient,
+  CreatePrivateDnsNamespaceCommand,
+  GetOperationCommand,
+  GetNamespaceCommand,
+} from "@aws-sdk/client-servicediscovery";
+import {
+  ParameterType,
+  PutParameterCommand,
+  SSMClient,
+} from "@aws-sdk/client-ssm";
 
 /**
  * Manage VPCs
@@ -237,5 +248,33 @@ export class VPC {
     const [publicNets, privateNets] = await VPC.createSubnets(vpcId, appName);
     await VPC.createRoutes(appName, vpcId, publicNets, privateNets);
     return vpcId;
+  }
+
+  static async createPrivateDnsNamespace(appName: string, vpcId: string) {
+    const client = new ServiceDiscoveryClient(AWSClientConfig);
+    const result = await client.send(
+      new CreatePrivateDnsNamespaceCommand({
+        Vpc: vpcId,
+        Name: _.kebabCase(appName) + ".local",
+      })
+    );
+
+    const operation = await client.send(
+      new GetOperationCommand({ OperationId: result.OperationId! })
+    );
+    let namespaceId = operation.Operation!.Targets!.ResourceId;
+    const namespace = await client.send(
+      new GetNamespaceCommand({ Id: namespaceId })
+    );
+
+    const ssm = new SSMClient(AWSClientConfig);
+    await ssm.send(
+      new PutParameterCommand({
+        Name: `/cloudcamp/${appName}/_/private-namespace`,
+        Type: ParameterType.STRING_LIST,
+        Value: `${namespace.Namespace!.Id!},${namespace.Namespace!
+          .Arn!},${namespace.Namespace!.Name!}`,
+      })
+    );
   }
 }

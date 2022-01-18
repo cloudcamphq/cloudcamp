@@ -47,6 +47,7 @@
     "@aws-sdk/client-ec2": "^3.33.0",
     "@aws-sdk/client-route-53": "^3.33.0",
     "@aws-sdk/client-secrets-manager": "^3.33.0",
+    "@aws-sdk/client-servicediscovery": "^3.47.0",
     "@aws-sdk/client-ssm": "^3.33.0",
     "@aws-sdk/client-sts": "^3.33.0",
     "@aws-sdk/credential-provider-ini": "^3.33.0",

@@ -18,6 +18,8 @@ import { ICertificate } from "aws-cdk-lib/aws-certificatemanager";
 import { Ref } from ".";
 import { Construct } from "constructs";
 import { CfnOutputVariable, Variable } from "./variable";
+import { PrivateNamespace } from "./namespace";
+import { DnsRecordType } from "aws-cdk-lib/aws-servicediscovery";
 // import * as secretsmanager from "aws-cdk-lib/aws-secretsmanager";
 
 export interface WebServiceVariables {
@@ -84,6 +86,7 @@ export interface WebServiceProps {
 
   readonly desiredCount?: number;
   readonly healthCheckPath?: string;
+  readonly privateDnsName?: string;
 }
 
 export interface AlarmConfiguration {
@@ -292,6 +295,20 @@ export class WebService extends Construct {
           },
         }
       );
+
+    if (props.privateDnsName) {
+      const namespace = PrivateNamespace.getPrivateNamespace(
+        scope,
+        "private-namespace"
+      );
+      let service = namespace.createService(props.privateDnsName, {
+        dnsRecordType: DnsRecordType.CNAME,
+        loadBalancer: true,
+      });
+      service.registerCnameInstance(props.privateDnsName, {
+        instanceCname: this.fargateService.loadBalancer.loadBalancerDnsName,
+      });
+    }
 
     if (props.healthCheckPath) {
       this.fargateService.targetGroup.configureHealthCheck({
