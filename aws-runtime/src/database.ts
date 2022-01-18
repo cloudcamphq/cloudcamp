@@ -42,13 +42,13 @@ export interface DatabaseProps {
 }
 
 export interface DatabaseVariables {
-  readonly databaseUrl: Variable;
-  readonly databaseName: string;
-  readonly databaseUsername: string;
-  readonly databasePassword: Variable;
-  readonly databasePort: string;
-  readonly databaseType: string;
-  readonly databaseHost: Variable;
+  readonly url: Variable;
+  readonly database: string;
+  readonly username: string;
+  readonly password: Variable;
+  readonly port: string;
+  readonly engine: string;
+  readonly host: Variable;
 }
 
 /**
@@ -164,17 +164,17 @@ export class Database extends Construct {
     );
 
     this.vars = {
-      databasePassword: new SecretVariable(
+      password: new SecretVariable(
         this,
         secretName,
         secret.secretValue.toString()
       ),
-      databaseName: databaseName,
-      databaseUsername: username,
-      databaseHost: new CfnOutputVariable(this.hostOutput, host),
-      databasePort: `${port}`,
-      databaseType: type,
-      databaseUrl: new DatabaseUrlVariable(
+      database: databaseName,
+      username: username,
+      host: new CfnOutputVariable(this.hostOutput, host),
+      port: `${port}`,
+      engine: type,
+      url: new DatabaseUrlVariable(
         this,
         props.engine || "postgres",
         username,
