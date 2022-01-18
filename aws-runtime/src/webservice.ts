@@ -13,12 +13,16 @@ import * as cloudwatch from "aws-cdk-lib/aws-cloudwatch";
 import * as cloudwatch_actions from "aws-cdk-lib/aws-cloudwatch-actions";
 import * as subscriptions from "aws-cdk-lib/aws-sns-subscriptions";
 import * as applicationautoscaling from "aws-cdk-lib/aws-applicationautoscaling";
-import { setDefaults } from "./utils";
+import { setDefaults, withUniqueOutputExportName } from "./utils";
 import { ICertificate } from "aws-cdk-lib/aws-certificatemanager";
 import { Ref } from ".";
 import { Construct } from "constructs";
-import { Variable } from "./variable";
+import { CfnOutputVariable, Variable } from "./variable";
 // import * as secretsmanager from "aws-cdk-lib/aws-secretsmanager";
+
+export interface WebServiceVariables {
+  readonly host: Variable;
+}
 
 // TODO add redirectHTTP
 // TODO add multiple domains https://jeremynagel.medium.com/adding-multiple-certificates-to-a-applicationloadbalancedfargateservice-with-cdk-adc877e2831d
@@ -295,7 +299,21 @@ export class WebService extends Construct {
         port: (props.port || 80).toString(),
       });
     }
+
+    let host = this.fargateService.loadBalancer.loadBalancerDnsName;
+
+    this.hostOutput = withUniqueOutputExportName(
+      new cdk.CfnOutput(this, "host-output", {
+        value: this.fargateService.loadBalancer.loadBalancerDnsName,
+      })
+    );
+
+    this.vars = { host: new CfnOutputVariable(this.hostOutput, host) };
   }
+
+  hostOutput: cdk.CfnOutput;
+
+  vars: WebServiceVariables;
 
   fargateService: ecs_patterns.ApplicationLoadBalancedFargateService;
 

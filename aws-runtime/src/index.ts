@@ -14,6 +14,7 @@ export {
   AlarmConfiguration,
   ScalingSchedule,
   SlackConfiguration,
+  WebServiceVariables,
 } from "./webservice";
 export { Ref, RefParameterProps } from "./ref";
 export {
