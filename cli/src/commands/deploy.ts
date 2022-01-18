@@ -145,6 +145,7 @@ export default class Deploy extends BaseCommand {
     } else {
       this.ux.start("Creating VPC");
       vpcId = await VPC.create(context[CONTEXT_KEY_NAME]);
+      await VPC.createPrivateDnsNamespace(context[CONTEXT_KEY_NAME], vpcId);
       this.ux.stop();
     }
 
