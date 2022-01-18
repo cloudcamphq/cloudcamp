@@ -109,7 +109,8 @@ export class Database extends Construct {
       );
     } else {
       const stack = cdk.Stack.of(scope);
-      secretName = _.camelCase(`${stack.artifactId}-${id}-secret`);
+      const appName = App.instance.configuration.name;
+      secretName = _.camelCase(`${appName}-${stack.artifactId}-${id}-secret`);
       secret = new secretsmanager.Secret(this, "cluster-secret", {
         generateSecretString: { excludePunctuation: true },
         secretName: secretName,

@@ -4,6 +4,7 @@ import * as path from "path";
 import * as fs from "fs";
 import * as cdk from "aws-cdk-lib";
 import * as crypto from "crypto";
+import { App } from "./app";
 
 export function setDefaults<T>(props: T | undefined, defaults: any): T {
   return _.defaultsDeep(props, defaults || {}) as T;
@@ -35,7 +36,8 @@ export function withUniqueOutputExportName(output: cdk.CfnOutput) {
   const stack = cdk.Stack.of(output);
   const stackId = limitIdentifierLength(stack.artifactId, 100);
   const outputName = stack.resolve(output.logicalId);
-  output.exportName = _.camelCase(`${stackId}.${outputName}`);
+  const appName = App.instance.configuration.name;
+  output.exportName = _.camelCase(`${appName}.${stackId}.${outputName}`);
   return output;
 }
 
