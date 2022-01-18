@@ -141,6 +141,7 @@ export default class Deploy extends BaseCommand {
     let vpcId: string;
     if (context[CONTEXT_KEY_VPC]) {
       vpcId = context[CONTEXT_KEY_VPC];
+      this.ux.log("Using VPC: " + vpcId);
     } else {
       this.ux.start("Creating VPC");
       vpcId = await VPC.create(context[CONTEXT_KEY_NAME]);
