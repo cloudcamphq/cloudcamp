@@ -6,17 +6,11 @@ import { Stack } from "./stack";
 import { Construct } from "constructs";
 import * as path from "path";
 import { Variable } from "./variable";
-// import * as crypto from "crypto";
-// import {
-//   BuildEnvironmentVariable,
-//   BuildEnvironmentVariableType,
-// } from "aws-cdk-lib/aws-codebuild";
 import * as _ from "lodash";
 import {
   BuildEnvironmentVariable,
   BuildEnvironmentVariableType,
 } from "aws-cdk-lib/aws-codebuild";
-// import * as secretsmanager from "aws-cdk-lib/aws-secretsmanager";
 
 export interface RunProps {
   readonly commands: string[];
@@ -142,74 +136,20 @@ export class Stage extends cdk.Stage {
       }
     }
 
-    // let secret = secretsmanager.Secret.fromSecretNameV2(
-    //   App.instance.pipelineStack,
-    //   "get-secret-by-namev2",
-    //   "databaseSecret"
-    // );
-
-    // let output = (props.environment!["DATABASE_URL"] as Variable).resolve();
-    // let stack = cdk.Stack.of(output);
-    // let stackId = limitIdentifierLength(stack.artifactId, 100);
-    // let outputName = stack.resolve(output.logicalId);
-    // let token = `#{${stackId}.${outputName}}`;
-
-    // let secret = secretsmanager.Secret.fromSecretNameV2(
-    //   App.instance.pipelineStack,
-    //   "get-the-secret",
-    //   token
-    // );
-
-    // let environmentVariables = Object.fromEntries(
-    //   Object.entries(props.environment || {})
-    //     .filter(([_, v]) => typeof v === "string")
-    //     .map(([k, v]) => [
-    //       k,
-    //       { type: BuildEnvironmentVariableType.PLAINTEXT, value: v },
-    //     ])
-    // );
-
+    const appName = App.instance.configuration.name;
     const step = new pipelines.CodeBuildStep(id, {
+      projectName: _.upperFirst(
+        _.camelCase(`${appName}.${this.stageName}.${id}`)
+      ),
       commands: props.commands,
       installCommands: installCommands,
       buildEnvironment: {
         buildImage: buildImage,
         environmentVariables: environmentVariables,
-        //  {
-        //   DATABASE_URL: {
-        //     type: BuildEnvironmentVariableType.SECRETS_MANAGER,
-        //     value: "databaseSecret",
-        //   },
       },
       envFromCfnOutputs: envFromCfnOutputs,
-      // envFromCfnOutputs: {
-      //   DATABASE_URL: (
-      //     props.environment!["DATABASE_URL"] as Variable
-      //   ).resolve(),
-      // },
-      // envFromCfnOutputs: Object.fromEntries(
-      //   Object.entries(props.environment || {})
-      //     .filter(([_, v]) => typeof v !== "string")
-      //     .map(([k, v]) => [k, (v as Variable).resolve()])
-      // ),
     });
 
     preOrPost == "pre" ? this.pre.push(step) : this.post.push(step);
   }
 }
-
-// function limitIdentifierLength(s: string, n: number): string {
-//   if (s.length <= n) {
-//     return s;
-//   }
-//   const h = hash(s).substr(0, 8);
-//   const mid = Math.floor((n - h.length) / 2);
-
-//   return s.substr(0, mid) + h + s.substr(s.length - mid);
-// }
-
-// function hash<A>(obj: A) {
-//   const d = crypto.createHash("sha256");
-//   d.update(JSON.stringify(obj));
-//   return d.digest("hex");
-// }
