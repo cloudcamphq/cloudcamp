@@ -23,7 +23,7 @@ export default class CreateCert extends BaseCommand {
 
   async run() {
     const { flags, args } = this.parse(CreateCert);
-    assumeAWSProfile(flags.profile);
+    await assumeAWSProfile(flags.profile);
 
     if (!(await CertificateManager.hasCert(args.domain))) {
       this.ux.start("Creating new certificate");

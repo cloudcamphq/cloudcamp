@@ -27,6 +27,7 @@ import {
   CONTEXT_KEY_REPOSITORY,
   CONTEXT_KEY_VPC,
   CONTEXT_REPOSITORY_TOKEN_SECRET,
+  DEFAULT_GITHUB_TOKEN_SECRET_NAME,
 } from "@cloudcamp/aws-runtime/src/constants";
 import { RepositoryHost } from "@cloudcamp/aws-runtime";
 import { resolveHome } from "../utils";
@@ -121,7 +122,7 @@ export default class Deploy extends BaseCommand {
       switch (parsedUrl.host) {
         case RepositoryHost.GITHUB:
           context[CONTEXT_REPOSITORY_TOKEN_SECRET] =
-            _.kebabCase(context[CONTEXT_KEY_NAME]) + "-github-repository-token";
+            DEFAULT_GITHUB_TOKEN_SECRET_NAME;
           break;
       }
     }
@@ -182,32 +183,19 @@ export default class Deploy extends BaseCommand {
     gitRepo: GitRepository,
     yesFlag: boolean
   ) {
-    let keep = true;
-
     const secretExists = await SecretsManager.exists(tokenName);
-    if (yesFlag && secretExists) {
-      keep = true;
-    } else if (secretExists) {
-      this.log("");
-      this.log(` ${chalk.green("›")} Existing GitHub token found.`);
-      this.log("");
 
-      keep = await this.ux.confirm({
-        message: "Keep current GitHub token?",
-        default: true,
-      });
-    }
-
-    if (!secretExists && yesFlag) {
-      throw new Error(
-        "Github token not found.\n\n" +
-          "To setup your GitHub token, either:\n" +
-          " * Run `camp deploy` without --yes\n" +
-          " * Set the token name via `camp configure:github-token`"
-      );
-    }
-
-    if (!secretExists || !keep) {
+    if (secretExists) {
+      this.log(`Using existing GitHub token.`);
+    } else {
+      if (yesFlag) {
+        throw new Error(
+          "No Github token found.\n\n" +
+            "To setup your GitHub token, either:\n" +
+            " * Run `camp deploy` without --yes\n" +
+            " * Set the token name via `camp configure:github-token`"
+        );
+      }
       const auth = gitRepo.oauthVerify((verification) => {
         this.log("Authorizing GitHub access...");
         this.log("");

@@ -27,8 +27,8 @@ export function setAWSRegion(region: AwsRegion) {
 /**
  * Generic setup function for commands
  */
-export function setupAWS(home: string, profile?: string) {
-  assumeAWSProfile(profile);
+export async function setupAWS(home: string, profile?: string) {
+  await assumeAWSProfile(profile);
 
   const context = getCdkJsonContext(home);
   if (!context[CONTEXT_KEY_REGION]) {

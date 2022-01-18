@@ -7,7 +7,7 @@ import { createOAuthDeviceAuth } from "@octokit/auth-oauth-device";
 /**
  * The client ID used to connect with GitHub
  */
-const GITHUB_CLIENT_ID = "8ab28bf9d00265885e6a";
+const GITHUB_CLIENT_ID = "9b63076cfdcf34009656";
 
 /**
  * Handle git repos

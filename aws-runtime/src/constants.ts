@@ -62,3 +62,8 @@ export const CONTEXT_KEY_PROVIDER = "@cloudcamp/provider";
 export enum CloudCampProvider {
   AwsCdk = "aws-cdk",
 }
+
+/**
+ * The default name of the secret holding the github token
+ */
+export const DEFAULT_GITHUB_TOKEN_SECRET_NAME = "github-token";

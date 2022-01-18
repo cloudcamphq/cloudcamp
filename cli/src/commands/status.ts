@@ -65,7 +65,7 @@ export default class ShowStatus extends BaseCommand {
   private async trace() {
     const { flags } = this.parse(ShowStatus);
     const home = resolveHome(flags.home);
-    setupAWS(home, flags.profile);
+    await setupAWS(home, flags.profile);
 
     const appName = getCdkJsonContext(home)[CONTEXT_KEY_NAME];
     const status = await CloudFormation.getDeploymentStatus(appName);
@@ -144,7 +144,7 @@ export default class ShowStatus extends BaseCommand {
   private async status() {
     const { flags } = this.parse(ShowStatus);
     const home = resolveHome(flags.home);
-    setupAWS(home, flags.profile);
+    await setupAWS(home, flags.profile);
     const appName = getCdkJsonContext(home)[CONTEXT_KEY_NAME];
 
     const form = (label: string, data: string) => {

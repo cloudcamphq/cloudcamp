@@ -21,7 +21,7 @@ export default class ListDomain extends BaseCommand {
 
   async run() {
     const { flags } = this.parse(ListDomain);
-    assumeAWSProfile(flags.profile);
+    await assumeAWSProfile(flags.profile);
 
     const domains = await Route53.list();
     if (domains.length == 0) {

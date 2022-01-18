@@ -23,7 +23,7 @@ export default class DeleteCert extends BaseCommand {
 
   async run() {
     const { flags, args } = this.parse(DeleteCert);
-    assumeAWSProfile(flags.profile);
+    await assumeAWSProfile(flags.profile);
 
     await CertificateManager.remove(args.domain);
     this.ux.logSuccess("Certificate deleted:", args.domain);

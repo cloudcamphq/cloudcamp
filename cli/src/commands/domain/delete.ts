@@ -19,7 +19,7 @@ export default class DeleteDomain extends BaseCommand {
 
   async run() {
     const { flags, args } = this.parse(DeleteDomain);
-    assumeAWSProfile(flags.profile);
+    await assumeAWSProfile(flags.profile);
     // TODO check if the record exists
 
     const records = await Route53.listRecords(args.domain);
