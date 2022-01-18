@@ -131,10 +131,10 @@ class DeployProgress {
 
   private splitLine(line: string): [number, number, string] | undefined {
     const parts = line.split("|").map((c) => c.trim());
-    if (parts.length != 5) {
+    if (parts.length != 6) {
       return undefined;
     }
-    const progParts = parts[0].split("/");
+    const progParts = parts[1].split("/");
     if (progParts.length != 2) {
       return undefined;
     }
