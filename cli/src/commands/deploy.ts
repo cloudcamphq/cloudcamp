@@ -145,6 +145,11 @@ export default class Deploy extends BaseCommand {
     } else {
       this.ux.start("Creating VPC");
       vpcId = await VPC.create(context[CONTEXT_KEY_NAME]);
+      await VPC.createPrivateHostedZone(
+        vpcId,
+        region.value,
+        context[CONTEXT_KEY_NAME]
+      );
       this.ux.stop();
     }
 

@@ -77,6 +77,10 @@ This is a list of all SSM keys used internally by CloudCamp.
   <td class="p-2 border"><code>/cloudcamp/global/certificate/${domainname}</code></td>
   <td class="p-2 border">Storing the ARN of a certificate.</td>
 </tr>
+<tr>
+  <td class="p-2 border"><code>/cloudcamp/${appname}/_/private-hosted-zone</code></td>
+  <td class="p-2 border">Accessing the private DNS hosted zone.</td>
+</tr>
 </tbody>
 </table>
 

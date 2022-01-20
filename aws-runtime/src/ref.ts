@@ -1,8 +1,8 @@
 import * as ssm from "aws-cdk-lib/aws-ssm";
 import * as route53 from "aws-cdk-lib/aws-route53";
 import * as certificatemanager from "aws-cdk-lib/aws-certificatemanager";
-import * as rds from "aws-cdk-lib/aws-rds";
 import { Construct } from "constructs";
+import { App } from ".";
 
 /**
  * AWS Systems Manager functions. Used to communicate IDs between stages and apps.
@@ -10,19 +10,6 @@ import { Construct } from "constructs";
  * @order 7
  * @ignore
  */
-class SSM {
-  /**
-   * Return the parameter name
-   */
-  static parameter(
-    type: string,
-    id: string,
-    appName?: string,
-    name?: string
-  ): string {
-    return `/cloudcamp/${appName || "global"}/${type}/${name || id}`;
-  }
-}
 
 export interface RefParameterProps {
   readonly appName?: string;
@@ -37,21 +24,32 @@ export class Ref extends Construct {
     super(scope, id);
   }
 
-  static addHostedZone(
-    scope: Construct,
+  /**
+   * Return the parameter name
+   */
+  private static parameter(
+    type: string,
     id: string,
-    hostedZone: route53.IHostedZone,
-    props?: RefParameterProps
-  ) {
+    appName?: string,
+    name?: string
+  ): string {
+    return `/cloudcamp/${appName || "global"}/${type}/${name || id}`;
+  }
+
+  static getPrivateHostedZone(
+    scope: Construct,
+    id: string
+  ): route53.IHostedZone {
+    let appName = App.instance.configuration.name;
     const global = new Ref(scope, id);
-    new ssm.StringParameter(global, "parameter", {
-      parameterName: SSM.parameter(
-        "hosted-zone",
-        id,
-        props?.appName,
-        props?.name
-      ),
-      stringValue: hostedZone.hostedZoneId,
+    const hostedZoneId = ssm.StringParameter.fromStringParameterName(
+      global,
+      "parameter",
+      `/cloudcamp/${appName}/_/private-hosted-zone`
+    ).stringValue;
+    return route53.HostedZone.fromHostedZoneAttributes(global, "construct", {
+      hostedZoneId: hostedZoneId,
+      zoneName: "local",
     });
   }
 
@@ -64,31 +62,13 @@ export class Ref extends Construct {
     const hostedZoneId = ssm.StringParameter.fromStringParameterName(
       global,
       "parameter",
-      SSM.parameter("hosted-zone", id, props?.appName, props?.name)
+      Ref.parameter("hosted-zone", id, props?.appName, props?.name)
     ).stringValue;
     return route53.HostedZone.fromHostedZoneId(
       global,
       "construct",
       hostedZoneId
     );
-  }
-
-  static addCertificate(
-    scope: Construct,
-    id: string,
-    certificate: certificatemanager.ICertificate,
-    props?: RefParameterProps
-  ) {
-    const global = new Ref(scope, id);
-    new ssm.StringParameter(global, "parameter", {
-      parameterName: SSM.parameter(
-        "certificate",
-        id,
-        props?.appName,
-        props?.name
-      ),
-      stringValue: certificate.certificateArn,
-    });
   }
 
   static getCertificate(
@@ -100,48 +80,12 @@ export class Ref extends Construct {
     const certificateArn = ssm.StringParameter.fromStringParameterName(
       global,
       "parameter",
-      SSM.parameter("certificate", id, props?.appName, props?.name)
+      Ref.parameter("certificate", id, props?.appName, props?.name)
     ).stringValue;
     return certificatemanager.Certificate.fromCertificateArn(
       global,
       "construct",
       certificateArn
-    );
-  }
-
-  static addServerlessCluster(
-    scope: Construct,
-    id: string,
-    serverlessCluster: rds.IServerlessCluster,
-    props?: RefParameterProps
-  ) {
-    const global = new Ref(scope, id);
-    new ssm.StringParameter(global, "parameter", {
-      parameterName: SSM.parameter(
-        "serverless-cluster",
-        id,
-        props?.appName,
-        props?.name
-      ),
-      stringValue: serverlessCluster.clusterIdentifier,
-    });
-  }
-
-  static getServerlessCluster(
-    scope: Construct,
-    id: string,
-    props?: RefParameterProps
-  ): rds.IServerlessCluster {
-    const global = new Ref(scope, id);
-    const clusterIdentifier = ssm.StringParameter.fromStringParameterName(
-      global,
-      "parameter",
-      SSM.parameter("serverless-cluster", id, props?.appName, props?.name)
-    ).stringValue;
-    return rds.ServerlessCluster.fromServerlessClusterAttributes(
-      global,
-      "construct",
-      { clusterIdentifier: clusterIdentifier }
     );
   }
 }

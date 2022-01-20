@@ -18,6 +18,9 @@ import {
 import { Construct } from "constructs";
 import * as _ from "lodash";
 import { withUniqueOutputExportName } from "./utils";
+import { Ref } from "./ref";
+import * as route53 from "aws-cdk-lib/aws-route53";
+
 // TODO logs
 // TODO alerts
 // TODO how to change password?
@@ -39,6 +42,7 @@ export interface DatabaseProps {
   readonly autoPause?: number;
   readonly minCapacity?: DatabaseCapacity;
   readonly maxCapacity?: DatabaseCapacity;
+  readonly privateDnsName?: string;
 }
 
 export interface DatabaseVariables {
@@ -152,6 +156,18 @@ export class Database extends Construct {
     });
 
     const host = this.cluster.clusterEndpoint.hostname;
+
+    if (props.privateDnsName) {
+      let privateHostedZone = Ref.getPrivateHostedZone(
+        this,
+        "private-hosted-zone"
+      );
+      new route53.CnameRecord(this, "private-cname-record", {
+        recordName: props.privateDnsName,
+        domainName: host,
+        zone: privateHostedZone,
+      });
+    }
 
     this.hostOutput = withUniqueOutputExportName(
       new cdk.CfnOutput(this, "host-output", { value: host })

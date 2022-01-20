@@ -17,6 +17,12 @@ import { TAG_APP_NAME } from "@cloudcamp/aws-runtime/src/constants";
 import _ from "lodash";
 import { AWSClientConfig } from "./config";
 import { Netmask } from "netmask";
+import {
+  CreateHostedZoneCommand,
+  Route53Client,
+} from "@aws-sdk/client-route-53";
+import { PutParameterCommand, SSMClient } from "@aws-sdk/client-ssm";
+import { v4 as uuidv4 } from "uuid";
 
 /**
  * Manage VPCs
@@ -237,5 +243,31 @@ export class VPC {
     const [publicNets, privateNets] = await VPC.createSubnets(vpcId, appName);
     await VPC.createRoutes(appName, vpcId, publicNets, privateNets);
     return vpcId;
+  }
+
+  static async createPrivateHostedZone(
+    vpcId: string,
+    region: string,
+    appName: string
+  ): Promise<void> {
+    const route53 = new Route53Client(AWSClientConfig);
+    const result = await route53.send(
+      new CreateHostedZoneCommand({
+        Name: "local",
+        CallerReference: uuidv4(),
+        VPC: { VPCId: vpcId, VPCRegion: region },
+        HostedZoneConfig: { PrivateZone: true },
+      })
+    );
+
+    const ssm = new SSMClient(AWSClientConfig);
+    await ssm.send(
+      new PutParameterCommand({
+        Name: `/cloudcamp/${appName}/_/private-hosted-zone`,
+        Value: result.HostedZone!.Id!,
+        Type: "String",
+        Overwrite: true,
+      })
+    );
   }
 }

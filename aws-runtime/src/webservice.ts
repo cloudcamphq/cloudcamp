@@ -18,6 +18,8 @@ import { ICertificate } from "aws-cdk-lib/aws-certificatemanager";
 import { Ref } from ".";
 import { Construct } from "constructs";
 import { CfnOutputVariable, Variable } from "./variable";
+import * as route53 from "aws-cdk-lib/aws-route53";
+
 // import * as secretsmanager from "aws-cdk-lib/aws-secretsmanager";
 
 export interface WebServiceVariables {
@@ -84,6 +86,8 @@ export interface WebServiceProps {
 
   readonly desiredCount?: number;
   readonly healthCheckPath?: string;
+
+  readonly privateDnsName?: string;
 }
 
 export interface AlarmConfiguration {
@@ -301,6 +305,18 @@ export class WebService extends Construct {
     }
 
     let host = this.fargateService.loadBalancer.loadBalancerDnsName;
+
+    if (props.privateDnsName) {
+      let privateHostedZone = Ref.getPrivateHostedZone(
+        this,
+        "private-hosted-zone"
+      );
+      new route53.CnameRecord(this, "private-cname-record", {
+        recordName: props.privateDnsName,
+        domainName: host,
+        zone: privateHostedZone,
+      });
+    }
 
     this.hostOutput = withUniqueOutputExportName(
       new cdk.CfnOutput(this, "host-output", {
