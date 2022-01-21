@@ -1,5 +1,6 @@
 import * as cdk from "aws-cdk-lib";
 import * as pipelines from "aws-cdk-lib/pipelines";
+import * as secretsmanager from "aws-cdk-lib/aws-secretsmanager";
 import * as codepipeline_actions from "aws-cdk-lib/aws-codepipeline-actions";
 import * as _ from "lodash";
 import * as fs from "fs";
@@ -41,7 +42,20 @@ export class PipelineStack extends cdk.Stack {
     const { installCommands, buildCommands, synthCommands } =
       this.getPipelineCommands(home);
 
+    let dockerCredentials: pipelines.DockerCredential[] | undefined;
+    if (App.instance.configuration.dockerHubSecret) {
+      const dockerHubSecret = secretsmanager.Secret.fromSecretNameV2(
+        this,
+        "dockerhub-secret",
+        App.instance.configuration.dockerHubSecret
+      );
+      dockerCredentials = [
+        pipelines.DockerCredential.dockerHub(dockerHubSecret),
+      ];
+    }
+
     this.pipeline = new pipelines.CodePipeline(this, "cdk-pipeline", {
+      dockerCredentials: dockerCredentials,
       selfMutation: true,
       dockerEnabledForSelfMutation: true,
       pipelineName: this.pipelineName,

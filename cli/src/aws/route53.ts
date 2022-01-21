@@ -29,7 +29,9 @@ export class Route53 {
     const acm = new ACMClient(AWSClientConfig);
 
     const ssmData = await ssm.send(
-      new GetParametersByPathCommand({ Path: makeSsmPath("global", "certificate"),
+      new GetParametersByPathCommand({
+        Path: makeSsmPath("global", "certificate"),
+      })
     );
     const params = domainName ? { DNSName: domainName + "." } : {};
     const data = await route53.send(new ListHostedZonesByNameCommand(params));

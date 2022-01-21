@@ -10,5 +10,5 @@ const productionDb = new Database(app.production, "production-db", {
 new WebService(app.production, "production-web", {
   dockerfile: __vars__.dockerfile,
   port: __vars__.port,
-  environment: { DATABASE_URL: productionDb.vars.databaseUrl },
+  environment: { DATABASE_URL: productionDb.vars.url },
 });

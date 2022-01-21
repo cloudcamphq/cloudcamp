@@ -50,6 +50,11 @@ export const CONTEXT_REPOSITORY_TOKEN_SECRET =
   "@cloudcamp/repository-token-secret";
 
 /**
+ * The default name of the secret holding the github token
+ */
+export const DEFAULT_GITHUB_TOKEN_SECRET_NAME = "github-token";
+
+/**
  * CDK context key - CloudCamp version
  */
 export const CONTEXT_KEY_CLOUDCAMP_VERSION = "@cloudcamp/cloudcamp-version";
@@ -64,6 +69,13 @@ export enum CloudCampProvider {
 }
 
 /**
- * The default name of the secret holding the github token
+ * The default name of the secret holding the dockerhub credentials
  */
-export const DEFAULT_GITHUB_TOKEN_SECRET_NAME = "github-token";
+export const CONTEXT_KEY_DOCKERHUB_CREDENTIALS =
+  "@cloudcamp/dockerhub-credentials";
+
+/**
+ * The default name of the secret holding the Dockerhub credentials
+ */
+export const DEFAULT_DOCKERHUB_CREDENTIALS_SECRET_NAME =
+  "dockerhub-credentials";

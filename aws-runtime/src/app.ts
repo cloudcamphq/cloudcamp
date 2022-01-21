@@ -6,6 +6,7 @@ import { makeSsmPath, parseRepositoryUrl } from "./utils";
 import {
   CONTEXT_KEY_ACCOUNT,
   CONTEXT_KEY_BRANCH,
+  CONTEXT_KEY_DOCKERHUB_CREDENTIALS,
   CONTEXT_KEY_NAME,
   CONTEXT_KEY_REGION,
   CONTEXT_KEY_REPOSITORY,
@@ -27,6 +28,7 @@ export interface Configuration {
   readonly branch: string;
   readonly vpcId: string;
   readonly repositoryTokenSecret: string;
+  readonly dockerHubSecret?: string;
 }
 
 /**
@@ -85,6 +87,8 @@ export class App extends cdk.App {
       repositoryTokenSecret: this.getContextOrThrow(
         CONTEXT_REPOSITORY_TOKEN_SECRET
       ),
+      dockerHubSecret:
+        this.node.tryGetContext(CONTEXT_KEY_DOCKERHUB_CREDENTIALS) || undefined,
     };
 
     cdk.Tags.of(this).add(TAG_APP_NAME, this.configuration.name);

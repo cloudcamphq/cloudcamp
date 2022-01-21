@@ -1,7 +1,11 @@
 import { flags } from "@oclif/command";
 import { assumeAWSProfile, SecretsManager } from "../../aws";
 import { BaseCommand } from "../../command";
-import { getCdkJsonContext, resolveHome } from "../../utils";
+import {
+  getCdkJsonContext,
+  resolveHome,
+  updateCdkJsonContext,
+} from "../../utils";
 import {
   CONTEXT_KEY_NAME,
   CONTEXT_REPOSITORY_TOKEN_SECRET,
@@ -24,12 +28,10 @@ export default class ConfigureGitHubToken extends BaseCommand {
       description: "The name of the AWS profile.",
     }),
     home: flags.string({ description: "The home directory of your app." }),
-    name: flags.string({
-      char: "n",
+    secret: flags.string({
       description: "The name of the GitHub token.",
     }),
     token: flags.string({
-      char: "t",
       description: "The GitHub token.",
     }),
   };
@@ -42,14 +44,14 @@ export default class ConfigureGitHubToken extends BaseCommand {
     const context = getCdkJsonContext(home);
     await assumeAWSProfile(flags.profile);
 
-    let name: string;
-    if (!flags.name) {
-      name = await this.ux.input({
+    let secret: string;
+    if (!flags.secret) {
+      secret = await this.ux.input({
         message: "GitHub secret name",
         default: DEFAULT_GITHUB_TOKEN_SECRET_NAME,
       });
     } else {
-      name = flags.name;
+      secret = flags.secret;
     }
 
     let token: string | undefined;
@@ -62,11 +64,12 @@ export default class ConfigureGitHubToken extends BaseCommand {
       token = flags.token;
     }
 
-    context[CONTEXT_REPOSITORY_TOKEN_SECRET] = name;
+    context[CONTEXT_REPOSITORY_TOKEN_SECRET] = secret;
+    updateCdkJsonContext(home, context);
 
     if (token) {
       this.ux.start("Storing GitHub token");
-      await SecretsManager.upsert(name, token, context[CONTEXT_KEY_NAME]);
+      await SecretsManager.upsert(secret, token, context[CONTEXT_KEY_NAME]);
       this.ux.stop();
     }
   }

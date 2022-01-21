@@ -1,30 +1,30 @@
 import * as __vars__ from "../../src/vars";
-import { App, Database, WebService } from "@cloudcamp/aws-runtime";
+import { App, WebService } from "@cloudcamp/aws-runtime";
 
 const app = new App();
 
 const dockerfile = __vars__.dockerfile;
-const db = new Database(app.staging, "db");
+// const db = new Database(app.staging, "db");
 
 new WebService(app.production, "web", {
   dockerfile: dockerfile,
   port: __vars__.port,
-  environment: {
-    DATABASE_HOST: db.vars.host,
-    DATABASE_PASSWORD: db.vars.password,
-    DATABASE_URL: db.vars.url,
-  },
+  // environment: {
+  //   DATABASE_HOST: db.vars.host,
+  //   DATABASE_PASSWORD: db.vars.password,
+  //   DATABASE_URL: db.vars.url,
+  // },
 });
 
-new WebService(app.staging, "web", {
-  dockerfile: dockerfile,
-  port: __vars__.port,
-  environment: {
-    DATABASE_HOST: db.vars.host,
-    DATABASE_PASSWORD: db.vars.password,
-    DATABASE_URL: db.vars.url,
-  },
-});
+// new WebService(app.staging, "web", {
+//   dockerfile: dockerfile,
+//   port: __vars__.port,
+//   environment: {
+//     DATABASE_HOST: db.vars.host,
+//     DATABASE_PASSWORD: db.vars.password,
+//     DATABASE_URL: db.vars.url,
+//   },
+// });
 
 // things to try:
 

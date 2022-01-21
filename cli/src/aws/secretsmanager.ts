@@ -2,6 +2,7 @@ import {
   CreateSecretCommand,
   DeleteSecretCommand,
   DescribeSecretCommand,
+  GetSecretValueCommand,
   RestoreSecretCommand,
   SecretsManagerClient,
   UpdateSecretCommand,
@@ -29,6 +30,18 @@ export class SecretsManager {
     } catch (_err) {
       return false;
     }
+  }
+
+  /**
+   * Return the contents of a secret
+   */
+  static async get(name: string): Promise<string> {
+    const secretsmanager = new SecretsManagerClient(AWSClientConfig);
+
+    let result = await secretsmanager.send(
+      new GetSecretValueCommand({ SecretId: name })
+    );
+    return result.SecretString!;
   }
 
   /**

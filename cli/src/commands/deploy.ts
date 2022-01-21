@@ -22,16 +22,19 @@ import chalk from "chalk";
 import {
   CONTEXT_KEY_ACCOUNT,
   CONTEXT_KEY_BRANCH,
+  CONTEXT_KEY_DOCKERHUB_CREDENTIALS,
   CONTEXT_KEY_NAME,
   CONTEXT_KEY_REGION,
   CONTEXT_KEY_REPOSITORY,
   CONTEXT_KEY_VPC,
   CONTEXT_REPOSITORY_TOKEN_SECRET,
+  DEFAULT_DOCKERHUB_CREDENTIALS_SECRET_NAME,
   DEFAULT_GITHUB_TOKEN_SECRET_NAME,
 } from "@cloudcamp/aws-runtime/src/constants";
 import { RepositoryHost } from "@cloudcamp/aws-runtime";
 import { resolveHome } from "../utils";
 import { AwsRegion } from "@cloudcamp/aws-runtime/src/types";
+import { DockerHub } from "../dockerhub";
 
 /**
  * Deploy a CloudCamp app to AWS.
@@ -136,6 +139,19 @@ export default class Deploy extends BaseCommand {
       gitRepo,
       flags.yes
     );
+
+    const shouldWriteKey = await DockerHub.setupDockerHubCredentials(
+      this.ux,
+      context[CONTEXT_KEY_NAME],
+      DEFAULT_DOCKERHUB_CREDENTIALS_SECRET_NAME,
+      true,
+      flags.yes
+    );
+
+    if (shouldWriteKey) {
+      context[CONTEXT_KEY_DOCKERHUB_CREDENTIALS] =
+        DEFAULT_DOCKERHUB_CREDENTIALS_SECRET_NAME;
+    }
 
     // Set up vpc
     let vpcId: string;
