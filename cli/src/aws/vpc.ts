@@ -23,6 +23,7 @@ import {
 } from "@aws-sdk/client-route-53";
 import { PutParameterCommand, SSMClient } from "@aws-sdk/client-ssm";
 import { v4 as uuidv4 } from "uuid";
+import { makeSsmPath } from "@cloudcamp/aws-runtime/src/utils";
 
 /**
  * Manage VPCs
@@ -263,7 +264,7 @@ export class VPC {
     const ssm = new SSMClient(AWSClientConfig);
     await ssm.send(
       new PutParameterCommand({
-        Name: `/cloudcamp/${appName}/_/private-hosted-zone`,
+        Name: makeSsmPath(appName, "private-hosted-zone"),
         Value: result.HostedZone!.Id!,
         Type: "String",
         Overwrite: true,

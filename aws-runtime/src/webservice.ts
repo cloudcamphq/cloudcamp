@@ -239,10 +239,7 @@ export class WebService extends Construct {
     let certificate: ICertificate | undefined = undefined;
 
     if (props.domain) {
-      certificate = Ref.getCertificate(this, props.domain! + "-certificate", {
-        appName: App.instance.configuration.name,
-        name: props.domain!,
-      });
+      certificate = Ref.getCertificate(this, "certificate", props.domain);
     }
 
     const environment: Record<string, string> = {};

@@ -56,3 +56,17 @@ function hash<A>(obj: A) {
   d.update(JSON.stringify(obj));
   return d.digest("hex");
 }
+
+export function makeSsmPath(
+  appNameOrGlobal: string,
+  topic: string,
+  item?: string
+) {
+  if (item) {
+    return `/cloudcamp/${_.kebabCase(appNameOrGlobal)}/_/${_.kebabCase(
+      topic
+    )}/${_.kebabCase(item)}`;
+  } else {
+    return `/cloudcamp/${_.kebabCase(appNameOrGlobal)}/_/${_.kebabCase(topic)}`;
+  }
+}

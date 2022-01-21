@@ -9,6 +9,7 @@ import {
   Route53Client,
 } from "@aws-sdk/client-route-53";
 import { GetParametersByPathCommand, SSMClient } from "@aws-sdk/client-ssm";
+import { makeSsmPath } from "@cloudcamp/aws-runtime/src/utils";
 import _ from "lodash";
 import { CertificateManager } from "./certificatemanager";
 import { AWSClientConfig } from "./config";
@@ -28,7 +29,7 @@ export class Route53 {
     const acm = new ACMClient(AWSClientConfig);
 
     const ssmData = await ssm.send(
-      new GetParametersByPathCommand({ Path: "/cloudcamp/global/certificate" })
+      new GetParametersByPathCommand({ Path: makeSsmPath("global", "certificate"),
     );
     const params = domainName ? { DNSName: domainName + "." } : {};
     const data = await route53.send(new ListHostedZonesByNameCommand(params));

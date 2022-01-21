@@ -22,6 +22,7 @@ import {
   CloudFormationClient,
   DescribeStackEventsCommand,
 } from "@aws-sdk/client-cloudformation";
+import { makeSsmPath } from "@cloudcamp/aws-runtime/src/utils";
 
 export class CodePipeline {
   static async getLatestPipelineExecution(pipelineName: string): Promise<
@@ -301,7 +302,7 @@ export class CodePipeline {
     try {
       ssmResult = await new SSMClient(AWSClientConfig).send(
         new GetParameterCommand({
-          Name: `/cloudcamp/${appName}/_/codepipeline`,
+          Name: makeSsmPath(appName, "codepipeline"),
         })
       );
     } catch (_e) {

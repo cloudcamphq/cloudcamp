@@ -47,9 +47,7 @@ export class Domain extends Construct {
   constructor(scope: Construct, id: string, props: DomainProps) {
     super(scope, id);
 
-    this.hostedZone = Ref.getHostedZone(this, "hosted-zone", {
-      name: props.domain,
-    });
+    this.hostedZone = Ref.getHostedZone(this, "hosted-zone", props.domain);
   }
 
   mxRecord(id: string, props: MxRecordProps) {

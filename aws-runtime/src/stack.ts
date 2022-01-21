@@ -4,6 +4,7 @@ import { App } from "./app";
 import { Stage } from "./stage";
 import * as _ from "lodash";
 import { Construct } from "constructs";
+import { makeSsmPath } from "./utils";
 
 /**
  * Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus in convallis
@@ -29,9 +30,11 @@ export class Stack extends cdk.Stack {
     }
 
     new ssm.StringParameter(this, "ssm-stack", {
-      parameterName: `/cloudcamp/${
-        App.instance.configuration.name
-      }/_/stack/${_.kebabCase(stackName)}`,
+      parameterName: makeSsmPath(
+        App.instance.configuration.name,
+        "stack",
+        stackName
+      ),
       stringValue: stackName,
     });
 

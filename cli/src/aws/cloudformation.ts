@@ -11,6 +11,7 @@ import {
   GetParametersByPathCommand,
   SSMClient,
 } from "@aws-sdk/client-ssm";
+import { makeSsmPath } from "@cloudcamp/aws-runtime/src/utils";
 
 /**
  * Query Cloudformation stacks
@@ -52,7 +53,7 @@ export class CloudFormation {
     try {
       ssmResult = await new SSMClient(AWSClientConfig).send(
         new GetParameterCommand({
-          Name: `/cloudcamp/${appName}/_/pipeline-stack`,
+          Name: makeSsmPath(appName, "pipeline-stack"),
         })
       );
     } catch (_e) {
@@ -80,7 +81,7 @@ export class CloudFormation {
     try {
       ssmResult = await new SSMClient(AWSClientConfig).send(
         new GetParametersByPathCommand({
-          Path: `/cloudcamp/${appName}/_/stack`,
+          Path: makeSsmPath(appName, "stack"),
         })
       );
     } catch (_e) {

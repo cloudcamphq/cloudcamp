@@ -3,6 +3,7 @@ import * as route53 from "aws-cdk-lib/aws-route53";
 import * as certificatemanager from "aws-cdk-lib/aws-certificatemanager";
 import { Construct } from "constructs";
 import { App } from ".";
+import { makeSsmPath } from "./utils";
 
 /**
  * AWS Systems Manager functions. Used to communicate IDs between stages and apps.
@@ -24,18 +25,6 @@ export class Ref extends Construct {
     super(scope, id);
   }
 
-  /**
-   * Return the parameter name
-   */
-  private static parameter(
-    type: string,
-    id: string,
-    appName?: string,
-    name?: string
-  ): string {
-    return `/cloudcamp/${appName || "global"}/${type}/${name || id}`;
-  }
-
   static getPrivateHostedZone(
     scope: Construct,
     id: string
@@ -45,7 +34,7 @@ export class Ref extends Construct {
     const hostedZoneId = ssm.StringParameter.fromStringParameterName(
       global,
       "parameter",
-      `/cloudcamp/${appName}/_/private-hosted-zone`
+      makeSsmPath(appName, "private-hosted-zone")
     ).stringValue;
     return route53.HostedZone.fromHostedZoneAttributes(global, "construct", {
       hostedZoneId: hostedZoneId,
@@ -56,31 +45,30 @@ export class Ref extends Construct {
   static getHostedZone(
     scope: Construct,
     id: string,
-    props?: RefParameterProps
+    domain: string
   ): route53.IHostedZone {
     const global = new Ref(scope, id);
     const hostedZoneId = ssm.StringParameter.fromStringParameterName(
       global,
       "parameter",
-      Ref.parameter("hosted-zone", id, props?.appName, props?.name)
+      makeSsmPath("global", "hosted-zone", domain)
     ).stringValue;
-    return route53.HostedZone.fromHostedZoneId(
-      global,
-      "construct",
-      hostedZoneId
-    );
+    return route53.HostedZone.fromHostedZoneAttributes(global, "construct", {
+      hostedZoneId: hostedZoneId,
+      zoneName: domain,
+    });
   }
 
   static getCertificate(
     scope: Construct,
     id: string,
-    props?: RefParameterProps
+    domain: string
   ): certificatemanager.ICertificate {
     const global = new Ref(scope, id);
     const certificateArn = ssm.StringParameter.fromStringParameterName(
       global,
       "parameter",
-      Ref.parameter("certificate", id, props?.appName, props?.name)
+      makeSsmPath("global", "certificate", domain)
     ).stringValue;
     return certificatemanager.Certificate.fromCertificateArn(
       global,

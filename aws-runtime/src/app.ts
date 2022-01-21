@@ -2,7 +2,7 @@ import * as cdk from "aws-cdk-lib";
 import * as _ from "lodash";
 import { PipelineStack } from "./pipeline";
 import { Stage } from "./stage";
-import { parseRepositoryUrl } from "./utils";
+import { makeSsmPath, parseRepositoryUrl } from "./utils";
 import {
   CONTEXT_KEY_ACCOUNT,
   CONTEXT_KEY_BRANCH,
@@ -92,21 +92,23 @@ export class App extends cdk.App {
 
     //add pipelineStack to our global list of stacks
     new ssm.StringParameter(this.pipelineStack, "ssm-stack", {
-      parameterName: `/cloudcamp/${
-        App.instance.configuration.name
-      }/_/stack/${_.kebabCase(this.pipelineStack.stackName)}`,
+      parameterName: makeSsmPath(
+        this.configuration.name,
+        "stack",
+        this.pipelineStack.stackName
+      ),
       stringValue: this.pipelineStack.stackName,
     });
 
     // We need the name of the codepipeline for later use
     new ssm.StringParameter(this.pipelineStack, "ssm-codepipeline", {
-      parameterName: `/cloudcamp/${this.configuration.name}/_/codepipeline`,
+      parameterName: makeSsmPath(this.configuration.name, "codepipeline"),
       stringValue: this.pipelineStack.pipelineName,
     });
 
     // Also, we need to identify the pipeline stack
     new ssm.StringParameter(this.pipelineStack, "ssm-pipeline-stack", {
-      parameterName: `/cloudcamp/${this.configuration.name}/_/pipeline-stack`,
+      parameterName: makeSsmPath(this.configuration.name, "pipeline-stack"),
       stringValue: this.pipelineStack.stackName,
     });
   }

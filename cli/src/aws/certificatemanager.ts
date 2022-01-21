@@ -16,6 +16,7 @@ import {
   PutParameterCommand,
   SSMClient,
 } from "@aws-sdk/client-ssm";
+import { makeSsmPath } from "@cloudcamp/aws-runtime/src/utils";
 import { AWSClientConfig } from "./config";
 
 export class CertificateManager {
@@ -92,7 +93,7 @@ export class CertificateManager {
     // Finally, safe cert ARN in SSM
     await ssm.send(
       new PutParameterCommand({
-        Name: `/cloudcamp/global/certificate/${domainName}`,
+        Name: makeSsmPath("global", "certificate", domainName),
         Value: reqData.CertificateArn!,
         Type: "String",
       })
@@ -107,7 +108,7 @@ export class CertificateManager {
 
     const certData = await ssm.send(
       new GetParameterCommand({
-        Name: `/cloudcamp/global/certificate/${domainName}`,
+        Name: makeSsmPath("global", "certificate", domainName),
       })
     );
 
@@ -122,7 +123,7 @@ export class CertificateManager {
 
     const acm = new ACMClient(AWSClientConfig);
     const ssm = new SSMClient(AWSClientConfig);
-    const ssmParam = `/cloudcamp/global/certificate/${domainName}`;
+    const ssmParam = makeSsmPath("global", "certificate", domainName);
 
     const data = await ssm.send(new GetParameterCommand({ Name: ssmParam }));
     await acm.send(
@@ -135,7 +136,7 @@ export class CertificateManager {
     domainName = domainName.toLowerCase();
     const ssm = new SSMClient(AWSClientConfig);
 
-    const ssmParam = `/cloudcamp/global/certificate/${domainName}`;
+    const ssmParam = makeSsmPath("global", domainName);
     try {
       await ssm.send(new GetParameterCommand({ Name: ssmParam }));
       return true;
