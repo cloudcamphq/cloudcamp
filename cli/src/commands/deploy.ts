@@ -10,7 +10,10 @@ import {
   CDK,
   VPC,
 } from "../aws";
-import { parseRepositoryUrl } from "@cloudcamp/aws-runtime/src/utils";
+import {
+  makeSsmPath,
+  parseRepositoryUrl,
+} from "@cloudcamp/aws-runtime/src/utils";
 import { STS } from "../aws";
 import { CredentialsInput } from "../options/credentials";
 import { RegionChoice } from "../options/region";
@@ -24,6 +27,7 @@ import {
   CONTEXT_KEY_BRANCH,
   CONTEXT_KEY_DOCKERHUB_CREDENTIALS,
   CONTEXT_KEY_NAME,
+  CONTEXT_KEY_NEW_APP,
   CONTEXT_KEY_REGION,
   CONTEXT_KEY_REPOSITORY,
   CONTEXT_KEY_VPC,
@@ -35,6 +39,8 @@ import { RepositoryHost } from "@cloudcamp/aws-runtime";
 import { resolveHome } from "../utils";
 import { AwsRegion } from "@cloudcamp/aws-runtime/src/types";
 import { DockerHub } from "../dockerhub";
+import { GetParameterCommand, SSMClient } from "@aws-sdk/client-ssm";
+import { AWSClientConfig } from "../aws/config";
 
 /**
  * Deploy a CloudCamp app to AWS.
@@ -116,6 +122,29 @@ export default class Deploy extends BaseCommand {
       if (!shouldContinue) {
         this.exit(0);
       }
+    }
+
+    // check if app exists
+    if (context[CONTEXT_KEY_NEW_APP]) {
+      const ssm = new SSMClient(AWSClientConfig);
+      let didThrow = false;
+      try {
+        await ssm.send(
+          new GetParameterCommand({
+            Name: makeSsmPath(context[CONTEXT_KEY_NAME], "codepipeline"),
+          })
+        );
+      } catch (e: any) {
+        if (e.name == "ParameterNotFound") {
+          didThrow = true;
+        }
+      }
+      if (!didThrow) {
+        throw new Error(
+          `App already exists: ${context[CONTEXT_KEY_NAME]}\nPlease choose a different name.`
+        );
+      }
+      context[CONTEXT_KEY_NEW_APP] = false;
     }
 
     // Get the GitHub token name

@@ -5,6 +5,7 @@ import {
   CloudCampProvider,
   CONTEXT_KEY_CLOUDCAMP_VERSION,
   CONTEXT_KEY_NAME,
+  CONTEXT_KEY_NEW_APP,
   CONTEXT_KEY_PROVIDER,
 } from "@cloudcamp/aws-runtime/src/constants";
 import { exec } from "child_process";
@@ -153,6 +154,7 @@ export class Generator {
             [CONTEXT_KEY_NAME]: this.name,
             [CONTEXT_KEY_CLOUDCAMP_VERSION]: version(),
             [CONTEXT_KEY_PROVIDER]: CloudCampProvider.AwsCdk,
+            [CONTEXT_KEY_NEW_APP]: true,
           },
         },
         null,

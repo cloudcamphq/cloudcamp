@@ -79,3 +79,8 @@ export const CONTEXT_KEY_DOCKERHUB_CREDENTIALS =
  */
 export const DEFAULT_DOCKERHUB_CREDENTIALS_SECRET_NAME =
   "dockerhub-credentials";
+
+/**
+ * CDK context key - set for new apps
+ */
+export const CONTEXT_KEY_NEW_APP = "@cloudcamp/new-app";

@@ -1,4 +1,7 @@
-import { CAMP_HOME_DIR } from "@cloudcamp/aws-runtime/src/constants";
+import {
+  CAMP_HOME_DIR,
+  CONTEXT_KEY_NEW_APP,
+} from "@cloudcamp/aws-runtime/src/constants";
 import chalk from "chalk";
 import * as fs from "fs";
 import * as path from "path";
@@ -64,6 +67,9 @@ export function updateCdkJsonContext(home: string, context: any) {
   const cdkJsonFile = path.join(home, "cdk.json");
   const cdkJson = JSON.parse(fs.readFileSync(cdkJsonFile).toString());
   _.assign(cdkJson.context, context);
+  if (context[CONTEXT_KEY_NEW_APP] == false) {
+    delete cdkJson.context[CONTEXT_KEY_NEW_APP];
+  }
   fs.writeFileSync(path.join(cdkJsonFile), JSON.stringify(cdkJson, null, 2));
 }
 
