@@ -126,7 +126,7 @@ function ApiProperty(props: { klass: string; property: jsiispec.Property }) {
     return null;
   }
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pb-6">
       {props.property.docs.custom.topic && (
         <H2Link title={props.property.docs.custom.topic}>
           {props.property.docs.custom.topic}
@@ -143,13 +143,13 @@ function ApiProperty(props: { klass: string; property: jsiispec.Property }) {
         <h3 id={_.kebabCase(props.property.name)}>
           <a
             href={`#${_.kebabCase(props.property.name)}`}
-            className="inline-flex"
+            className="inline-flex items-center"
           >
             <span className="table w-6 h-6 flex-none text-center rounded-md mr-3 text-white bg-green-500">
-              <span className="table-cell align-middle font-bold">P</span>
+              <span className="table-cell align-middle text-sm">P</span>
             </span>
             <HtmlWithCode
-              className="inline text-purple-900 font-bold"
+              className="inline text-purple-900 font-semibold"
               html={props.property.docs.custom.signature}
             />
           </a>
@@ -190,7 +190,7 @@ function ApiMethod(props: { className: string; meth: jsiispec.Method }) {
   const [context] = useContext(Context);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pb-6">
       {props.meth.docs.custom.topic && (
         <H2Link title={props.meth.docs.custom.topic}>
           {props.meth.docs.custom.topic}
@@ -208,7 +208,7 @@ function ApiMethod(props: { className: string; meth: jsiispec.Method }) {
             href={`#${_.kebabCase(
               props.meth.name ? props.meth.name : "constructor"
             )}`}
-            className="inline-flex"
+            className="inline-flex items-center"
           >
             <span
               className={
@@ -216,12 +216,12 @@ function ApiMethod(props: { className: string; meth: jsiispec.Method }) {
                 cssMarkerColor
               }
             >
-              <span className="table-cell align-middle font-bold">
+              <span className="table-cell align-middle text-sm">
                 {markerSymbol}
               </span>
             </span>
             <HtmlWithCode
-              className="inline text-purple-900 font-bold"
+              className="inline text-purple-900 font-semibold"
               html={props.meth.docs.custom.signature}
             />
           </a>
@@ -264,7 +264,7 @@ function ApiArgument(props: { param: jsiispec.Parameter }) {
     <li>
       <span>
         <span
-          className="font-mono font-semibold text-sm whitespace-nowrap mr-3"
+          className="font-mono font-normal text-sm whitespace-nowrap mr-3"
           style={{
             color: "rgb(214, 50, 0)",
           }}

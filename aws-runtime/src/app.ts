@@ -126,9 +126,8 @@ export class App extends cdk.App {
   }
 
   /**
-   * Returns the global App singleton instance.
-   *
-   * Throws an exception if App has not been instantiated yet.
+   * The global App singleton instance. Accessing this property before
+   * the app is instantiated throws an exception.
    */
   public static get instance(): App {
     if (!App.INSTANCE) {
