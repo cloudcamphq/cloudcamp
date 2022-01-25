@@ -3099,7 +3099,7 @@
           },
           "locationInModule": {
             "filename": "src/app.ts",
-            "line": 185
+            "line": 184
           },
           "name": "getStack",
           "parameters": [
@@ -3131,7 +3131,7 @@
           },
           "locationInModule": {
             "filename": "src/app.ts",
-            "line": 256
+            "line": 255
           },
           "name": "getStage",
           "parameters": [
@@ -3159,7 +3159,7 @@
           },
           "locationInModule": {
             "filename": "src/app.ts",
-            "line": 214
+            "line": 213
           },
           "name": "stack",
           "parameters": [
@@ -3187,7 +3187,7 @@
           },
           "locationInModule": {
             "filename": "src/app.ts",
-            "line": 299
+            "line": 298
           },
           "name": "stage",
           "parameters": [
@@ -3229,7 +3229,7 @@
           },
           "locationInModule": {
             "filename": "src/app.ts",
-            "line": 347
+            "line": 343
           },
           "name": "synth",
           "overrides": "aws-cdk-lib.Stage",
@@ -3253,14 +3253,13 @@
       "properties": [
         {
           "docs": {
-            "remarks": "Accessing this property before\nthe app is instantiated throws an exception.",
             "stability": "experimental",
             "summary": "The global App singleton instance."
           },
           "immutable": true,
           "locationInModule": {
             "filename": "src/app.ts",
-            "line": 132
+            "line": 131
           },
           "name": "instance",
           "static": true,
@@ -3280,7 +3279,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/app.ts",
-            "line": 149
+            "line": 148
           },
           "name": "network",
           "type": {
@@ -3297,7 +3296,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/app.ts",
-            "line": 321
+            "line": 317
           },
           "name": "pipeline",
           "type": {
@@ -3312,7 +3311,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/app.ts",
-            "line": 164
+            "line": 163
           },
           "name": "production",
           "type": {
@@ -3327,7 +3326,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/app.ts",
-            "line": 157
+            "line": 156
           },
           "name": "staging",
           "type": {
@@ -3336,14 +3335,11 @@
         },
         {
           "docs": {
-            "custom": {
-              "ignore": "true"
-            },
             "stability": "experimental"
           },
           "locationInModule": {
             "filename": "src/app.ts",
-            "line": 313
+            "line": 309
           },
           "name": "configuration",
           "type": {
@@ -3359,7 +3355,7 @@
           },
           "locationInModule": {
             "filename": "src/app.ts",
-            "line": 317
+            "line": 313
           },
           "name": "pipelineStack",
           "type": {
@@ -3374,7 +3370,7 @@
           },
           "locationInModule": {
             "filename": "src/app.ts",
-            "line": 173
+            "line": 172
           },
           "name": "stageOrder",
           "type": {
@@ -6158,5 +6154,5 @@
     }
   },
   "version": "0.0.1",
-  "fingerprint": "B8+Ke5Q3/Md6pqmnWeYN5opEoBlw/efykiyOjyV3gSQ="
+  "fingerprint": "ReMv/30iaDqCU9oEDrOnqBalK1jwUlJzxiDLwdFWPyU="
 }

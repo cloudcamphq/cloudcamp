@@ -139,7 +139,7 @@ function ApiProperty(props: { klass: string; property: jsiispec.Property }) {
             html={props.property.docs.custom.remarks}
           />
         )}
-      <div className="font-mono flex items-center">
+      <div className="font-mono flex items-center pt-6">
         <h3 id={_.kebabCase(props.property.name)}>
           <a
             href={`#${_.kebabCase(props.property.name)}`}
@@ -202,7 +202,7 @@ function ApiMethod(props: { className: string; meth: jsiispec.Method }) {
           html={props.meth.docs.custom.remarks}
         />
       )}
-      <div className="font-mono flex items-center whitespace-nowrap overflow-x-auto">
+      <div className="font-mono flex items-center whitespace-nowrap overflow-x-auto pt-6">
         <h3 id={_.kebabCase(props.meth.name ? props.meth.name : "constructor")}>
           <a
             href={`#${_.kebabCase(

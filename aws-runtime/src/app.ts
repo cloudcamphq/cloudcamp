@@ -126,8 +126,7 @@ export class App extends cdk.App {
   }
 
   /**
-   * The global App singleton instance. Accessing this property before
-   * the app is instantiated throws an exception.
+   * The global App singleton instance.
    */
   public static get instance(): App {
     if (!App.INSTANCE) {
@@ -307,9 +306,6 @@ export class App extends cdk.App {
     return stage;
   }
 
-  /**
-   * @ignore
-   */
   configuration: Configuration;
   /**
    * @ignore
