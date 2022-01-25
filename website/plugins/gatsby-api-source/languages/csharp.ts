@@ -78,6 +78,22 @@ export class CSharp extends Language {
       })
     ) {
       return "string[]";
+    } else if (
+      _.isEqual(type, {
+        collection: {
+          elementtype: {
+            union: {
+              types: [
+                { primitive: "string" },
+                { fqn: "@cloudcamp/aws-runtime.Variable" },
+              ],
+            },
+          },
+          kind: "map",
+        },
+      })
+    ) {
+      return "Dictionary&lt;string, Object&gt;";
     }
     return "";
   }

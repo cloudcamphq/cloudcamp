@@ -75,6 +75,22 @@ export class Python extends Language {
       })
     ) {
       return "list[str]";
+    } else if (
+      _.isEqual(type, {
+        collection: {
+          elementtype: {
+            union: {
+              types: [
+                { primitive: "string" },
+                { fqn: "@cloudcamp/aws-runtime.Variable" },
+              ],
+            },
+          },
+          kind: "map",
+        },
+      })
+    ) {
+      return "Dict[str, Union[Variable, str]]";
     }
     return "";
   }

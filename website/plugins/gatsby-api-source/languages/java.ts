@@ -168,6 +168,22 @@ export class Java extends Language {
       })
     ) {
       return "String[]";
+    } else if (
+      _.isEqual(type, {
+        collection: {
+          elementtype: {
+            union: {
+              types: [
+                { primitive: "string" },
+                { fqn: "@cloudcamp/aws-runtime.Variable" },
+              ],
+            },
+          },
+          kind: "map",
+        },
+      })
+    ) {
+      return "Map&lt;String, Object&gt;";
     }
     return "";
   }

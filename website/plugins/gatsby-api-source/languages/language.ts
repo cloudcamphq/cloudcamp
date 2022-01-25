@@ -81,8 +81,24 @@ export abstract class Language {
       })
     ) {
       return "string[]";
+    } else if (
+      _.isEqual(type, {
+        collection: {
+          elementtype: {
+            union: {
+              types: [
+                { primitive: "string" },
+                { fqn: "@cloudcamp/aws-runtime.Variable" },
+              ],
+            },
+          },
+          kind: "map",
+        },
+      })
+    ) {
+      return "[key: string]: Variable | string";
     } else {
-      console.log("unknown", type);
+      console.log("unknown", methodName, JSON.stringify(type));
     }
     return "";
   }
