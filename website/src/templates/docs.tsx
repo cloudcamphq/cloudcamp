@@ -57,7 +57,7 @@ export default function Docs({
         <div id="algolia-lvl0">{lvl0}</div>
         <HtmlWithCode className="space-y-6 leading-7" html={html} />
         {data.markdownRemark.frontmatter.slug == "index" && (
-          <>
+          <span className="algolia-hide">
             <h2
               className="text-2xl font-bold pt-7 font-display"
               id="table-of-contents"
@@ -138,10 +138,10 @@ export default function Docs({
                 </ul>
               </li>
             </ul>
-          </>
+          </span>
         )}
         {data.markdownRemark.frontmatter.slug == "guide/index" && (
-          <>
+          <span className="algolia-hide">
             <h2 className="text-2xl font-bold pt-7 font-display" id="guide-toc">
               <a href="#table-of-contents">Table of contents</a>
             </h2>
@@ -164,10 +164,10 @@ export default function Docs({
                 </ul>
               </li>
             </ul>
-          </>
+          </span>
         )}
         {data.markdownRemark.frontmatter.slug == "api/index" && (
-          <>
+          <span className="algolia-hide">
             <h2
               className="text-2xl font-bold pt-7 font-display"
               id="table-of-contents"
@@ -193,10 +193,10 @@ export default function Docs({
                 </ul>
               </li>
             </ul>
-          </>
+          </span>
         )}
         {data.markdownRemark.frontmatter.slug == "command/index" && (
-          <>
+          <span className="algolia-hide">
             <h2
               className="text-2xl font-bold pt-7 font-display"
               id="table-of-contents"
@@ -222,7 +222,7 @@ export default function Docs({
                 </ul>
               </li>
             </ul>
-          </>
+          </span>
         )}
         <Footer links={pageContext.links} />
       </Main>
