@@ -60,7 +60,7 @@ function ApiType(props: { type: jsiispec.ClassType }) {
       <div id="algolia-lvl0">API Reference</div>
       <H1Link title={props.type.name}>
         <span>{props.type.name}</span>
-        <div className="text-white bg-blue-500 inline-block ml-4 text-base font-bold font-mono p-0.5 rounded-md pr-2 pl-2 uppercase">
+        <div className="text-white bg-blue-500 inline-block ml-4 text-base font-bold font-mono p-0.5 rounded-md pr-2 pl-2 uppercase algolia-hide">
           {props.type.kind}
         </div>
       </H1Link>
@@ -146,7 +146,7 @@ function ApiProperty(props: { klass: string; property: jsiispec.Property }) {
             href={`#${_.kebabCase(props.property.name)}`}
             className="inline-flex items-center"
           >
-            <span className="table w-6 h-6 flex-none text-center rounded-md mr-3 text-white bg-green-500">
+            <span className="table w-6 h-6 flex-none text-center rounded-md mr-3 text-white bg-green-500 algolia-hide">
               <span className="table-cell align-middle text-sm">P</span>
             </span>
             <HtmlWithCode
@@ -223,7 +223,7 @@ function ApiMethod(props: { className: string; meth: jsiispec.Method }) {
           >
             <span
               className={
-                "table w-6 h-6 text-center rounded-md mr-3 flex-none text-white " +
+                "table w-6 h-6 text-center rounded-md mr-3 flex-none text-white algolia-hide " +
                 cssMarkerColor
               }
             >
