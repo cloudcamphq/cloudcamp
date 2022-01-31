@@ -3,7 +3,6 @@ import LanguageMenu from "./LanguageMenu";
 import { Store } from "./Store";
 import SearchButton from "./SearchButton";
 import Social from "./Social";
-import Search from "./Search";
 // @ts-ignore
 import logoText from "../images/logo-text.svg";
 // @ts-ignore

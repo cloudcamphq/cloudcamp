@@ -28,7 +28,7 @@ export default function Command({
   return (
     <>
       <Header
-        title={pageContext.name + " command"}
+        title={"Command Reference: " + pageContext.name}
         canonical={"/docs/" + _.kebabCase(pageContext.name)}
       />
       <Main>

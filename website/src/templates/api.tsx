@@ -37,7 +37,7 @@ export default function Api({
   return (
     <>
       <Header
-        title={data.apiDocs.name + " API docs"}
+        title={"API Reference: " + data.apiDocs.name}
         canonical={"/docs/api/" + _.kebabCase(data.apiDocs.name)}
       />
       <Main>

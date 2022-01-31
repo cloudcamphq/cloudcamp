@@ -1,7 +1,7 @@
 ---
 slug: "api/index"
 order: 1
-title: "API Documentation"
+title: "API Reference"
 category: "api"
 ---
 

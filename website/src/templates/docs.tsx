@@ -40,14 +40,26 @@ export default function Docs({
   html = html.replace(/<ul>/gm, `<ul class="list-disc list-inside">`);
   html = html.replace(/<li>/gm, `<li class="py-1">`);
 
-  const lvl0 = data.markdownRemark.frontmatter.slug.startsWith("/guide")
-    ? "Using CloudCamp"
-    : "Getting Started";
+  let lvl0: string;
+  let title = data.markdownRemark.frontmatter.title;
+  if (data.markdownRemark.frontmatter.slug.startsWith("guide/")) {
+    lvl0 = "Using CloudCamp";
+  } else if (data.markdownRemark.frontmatter.slug.startsWith("api/")) {
+    lvl0 = "API Reference";
+  } else if (data.markdownRemark.frontmatter.slug.startsWith("command/")) {
+    lvl0 = "Command Reference";
+  } else {
+    lvl0 = "Getting Started";
+  }
+
+  if (!data.markdownRemark.frontmatter.slug.endsWith("index")) {
+    title = lvl0 + ": " + data.markdownRemark.frontmatter.title;
+  }
 
   return (
     <>
       <Header
-        title={data.markdownRemark.frontmatter.title}
+        title={title}
         canonical={"/docs/" + data.markdownRemark.frontmatter.slug}
       />
       <Main>

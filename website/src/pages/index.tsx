@@ -6,7 +6,6 @@ import { DuplicateIcon } from "@heroicons/react/outline";
 import Header from "../components/Header";
 import Main from "../components/Main";
 import SearchButton from "../components/SearchButton";
-import Search from "../components/Search";
 import { Store } from "../components/Store";
 import Social from "../components/Social";
 
@@ -17,7 +16,6 @@ export default function Index({}) {
     <>
       <Store>
         <Header title="infrastructure as few lines of code" canonical="/" />
-        <Search />
 
         <div className="h-16 border-b bg-white items-center flex flex-none max-w-screen-lg mx-auto">
           <SearchButton noml={false} />
