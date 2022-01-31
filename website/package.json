@@ -30,7 +30,6 @@
     "@types/dom-parser": "^0.1.1",
     "@types/js-cookie": "^2.2.7",
     "autoprefixer": "^10.3.4",
-    "detect-browser": "^5.2.1",
     "dom-parser": "^0.1.6",
     "gatsby": "^4.0.2",
     "gatsby-plugin-catch-links": "^4.0.0",

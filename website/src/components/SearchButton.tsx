@@ -1,27 +1,7 @@
 import React from "react";
-import { detect } from "detect-browser";
 import { DocSearch } from "@docsearch/react";
 
 export default function SearchButton(props?: { noml?: boolean }) {
-  const browser = detect();
-
-  let shortcut: string | undefined = undefined;
-
-  switch (browser.os) {
-    case "iOS":
-    case "android":
-    case "Android OS":
-      break;
-
-    case "Mac OS":
-      shortcut = "⌘K";
-      break;
-
-    default:
-      shortcut = "Ctrl K";
-      break;
-  }
-
   let ml = "ml-3";
   if (props?.noml === false) {
     ml = "";
