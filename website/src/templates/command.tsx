@@ -84,9 +84,9 @@ function CommandItem(props: { command: CommandDefinition }) {
   }
   return (
     <div className="space-y-6 leading-7">
-      <h2 className="font-display text-4xl font-bold flex items-center" id={id}>
+      <h1 className="font-display text-4xl font-bold flex items-center" id={id}>
         <Link to={`#${id}`}>camp {name}</Link>
-      </h2>
+      </h1>
       <p className="border-b pb-5 border-gray-200">{command.summary}</p>
       <div className="space-y-6">
         <H2Link title="Usage" id={id + "-usage"}>
