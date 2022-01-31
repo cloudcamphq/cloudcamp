@@ -191,7 +191,9 @@ export default class ApiSource {
     return [
       ...this.languages.map(
         (lang) =>
-          `<span data-language="${lang.languageCode}">` +
+          `<span data-language="${lang.languageCode}" class="${
+            lang.languageCode != "ts" ? "algolia-hide" : ""
+          }">` +
           lang.methodSignature(className, method) +
           "</span>"
       ),
@@ -205,7 +207,9 @@ export default class ApiSource {
     return [
       ...this.languages.map(
         (lang) =>
-          `<span data-language="${lang.languageCode}">` +
+          `<span data-language="${lang.languageCode}" class="${
+            lang.languageCode != "ts" ? "algolia-hide" : ""
+          }">` +
           lang.simpleMethodSignature(className, method) +
           "</span>"
       ),
