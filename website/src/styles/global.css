@@ -207,3 +207,7 @@ li p {
 .DocSearch-Modal {
   background: white !important;
 }
+
+#algolia-lvl0 {
+  display: none;
+}

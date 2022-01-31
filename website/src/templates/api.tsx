@@ -57,6 +57,7 @@ function ApiType(props: { type: jsiispec.ClassType }) {
 
   return (
     <div className="space-y-6 relative api">
+      <div id="algolia-lvl0">API Reference</div>
       <H1Link title={props.type.name}>
         <span>{props.type.name}</span>
         <div className="text-white bg-blue-500 inline-block ml-4 text-base font-bold font-mono p-0.5 rounded-md pr-2 pl-2 uppercase">

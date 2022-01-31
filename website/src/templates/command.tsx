@@ -32,6 +32,7 @@ export default function Command({
         canonical={"/docs/" + _.kebabCase(pageContext.name)}
       />
       <Main>
+        <div id="algolia-lvl0">Command Reference</div>
         <div className="space-y-20 leading-7">
           {nodes.map((node) => (
             <CommandItem command={node} key={node.name} />

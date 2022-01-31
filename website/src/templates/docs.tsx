@@ -40,13 +40,18 @@ export default function Docs({
   html = html.replace(/<ul>/gm, `<ul class="list-disc list-inside">`);
   html = html.replace(/<li>/gm, `<li class="py-1">`);
 
+  const lvl0 = data.markdownRemark.frontmatter.slug.startsWith("/guide")
+    ? "Using CloudCamp"
+    : "Getting Started";
+
   return (
     <>
       <Header
         title={data.markdownRemark.frontmatter.title}
-        canonical={"/docs/api/" + data.markdownRemark.frontmatter.slug}
+        canonical={"/docs/" + data.markdownRemark.frontmatter.slug}
       />
       <Main>
+        <div id="algolia-lvl0">{lvl0}</div>
         <h1 className="font-display text-4xl font-bold flex items-center">
           {data.markdownRemark.frontmatter.title}
         </h1>
