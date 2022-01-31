@@ -32,12 +32,12 @@ export default function Search() {
       break;
   }
 
-  if (shortcut) {
-    useHotkeys(shortcut, () => {
-      document.getElementById("global-search-button").focus();
-      setOpen(true);
-    });
-  }
+  // if (shortcut) {
+  //   useHotkeys(shortcut, () => {
+  //     document.getElementById("global-search-button").focus();
+  //     setOpen(true);
+  //   });
+  // }
 
   return (
     <Transition.Root show={open} as={Fragment}>

@@ -3063,45 +3063,46 @@
         "custom": {
           "order": "1"
         },
-        "remarks": "An app can be as big or small as you like - from a single webserver to\ndozens of load-balanced instances serving different parts of your\napplication.\n\nThis example adds a ``{@link WebService | WebService}`` to the\n``{@link App.production | production}`` stack:\n\n```ts\nimport { App, WebService } from \"@cloudcamp/aws-runtime\";\n\nconst app = new App();\n\nnew WebService(app.production, \"prod-web\", {\n  dockerfile: \"../Dockerfile\"\n});\n```",
+        "remarks": "Apps can be as big or small as you like - from a single webserver to dozens\nof load-balanced instances serving different parts of your application.\n\nThis example illustrates how to run a simple app that contains a webservice\ncreated from a ``Dockerfile``. We make a new ``App`` instance, then we add a\n``{@link WebService | WebService}`` to the\n``{@link App.production | production}`` stack:\n\n```ts\nimport { App, WebService } from \"@cloudcamp/aws-runtime\";\n\nconst app = new App();\n\nnew WebService(app.production, \"prod-web\", {\n  dockerfile: \"../Dockerfile\"\n});\n```",
         "stability": "experimental",
-        "summary": "App represents your application running in the cloud․ Every app contains one or more ``{@link Stack | Stacks}``, which you can use to add your own resources, like a ``{@link WebService | WebService}`` or a ``{@link Database | Database}``."
+        "summary": "App serves as an entry point to your CloudCamp application․ It's typically instantiated in the beginning of your program and sets up your application's ``{@link \"api/app#configuration\" | configuration}`` and build pipeline․ An ``App`` instance contains one or more ``{@link Stack | Stacks}``, which you can use to add your own resources, for example  a ``{@link WebService | WebService}`` or a ``{@link Database | Database}``."
       },
       "fqn": "@cloudcamp/aws-runtime.App",
       "initializer": {
         "docs": {
           "custom": {
-            "remarks": "App is a singleton class - it is instantiated exactly once, before\nany other resources are created.",
+            "remarks": "To create a CloudCamp application, instantiate an ``App`` object.\n``App`` is a singleton - i.e. there can only be a single instance at a\ntime.",
             "topic": "Initialization"
           },
           "stability": "experimental",
-          "summary": "Initialize your cloudcamp application."
+          "summary": "Create a CloudCamp application."
         },
         "locationInModule": {
           "filename": "src/app.ts",
-          "line": 71
+          "line": 103
         }
       },
       "kind": "class",
       "locationInModule": {
         "filename": "src/app.ts",
-        "line": 59
+        "line": 90
       },
       "methods": [
         {
           "docs": {
             "custom": {
-              "remarks": "In addition to the default stacks provided by cloudcamp, you can\ncreate your own stacks.",
+              "remarks": "In addition to the default stacks provided by CloudCamp, you can\ncreate your own stacks.",
               "topic": "Adding custom stacks"
             },
+            "remarks": "Pass a stack name to create a new, empty stack. If the stack does not exist\nalready, a new one will be created.\n\n```ts\nvoid 0;\nimport { App, WebService, Stack} from \"@cloudcamp/aws-runtime\";\nconst app = new App();\nvoid 'show';\nconst devStack = app.stack(\"development\");\n```",
             "stability": "experimental",
-            "summary": "Get an existing stack by name."
+            "summary": "Add a new stack or access an existing one."
           },
           "locationInModule": {
             "filename": "src/app.ts",
-            "line": 184
+            "line": 233
           },
-          "name": "getStack",
+          "name": "stack",
           "parameters": [
             {
               "docs": {
@@ -3125,69 +3126,13 @@
               "remarks": "Stages are responsible for building your stacks. By default,\nCloudCamp creates a stage for each stack and gives it the same name. You\ncan customize this behaviour by adding your own stages.",
               "topic": "Stages"
             },
-            "remarks": "Stages can be obtained by their name to modify their attributes. A common\nuse case is to require manual approval to deploy to the production stage:\n\n```ts\nconst stage = app.getStage(\"production\");\nstage.needsManualApproval = true;\n```",
+            "remarks": "Stages can be obtained by their name to modify their attributes. A common\nuse case is to require manual approval to deploy to the production stage:\n\n```ts\nconst stage = app.getStage(\"production\");\nstage.needsManualApproval = true;\n```\n\nYou can also add a stage with a custom ``Stack`` subclass:\n```ts\nimport { App, WebService, Stack } from \"@cloudcamp/aws-runtime\";\n\nclass CustomStack extends Stack {\n   constructor(scope: cdk.Construct, id: string, props: cdk.StackProps) {\n      super(scope, id, props);\n      new WebService(this, \"web\", {\n        dockerfile: \"../Dockerfile\"\n      });\n   }\n}\n\n// later in the code...\nconst app = new App();\nconst stage = app.stage(\"dev\");\nconst stack = new CustomStack(stage, \"dev\");\n\n// stack is automatically set to the new stack we created\nif (stage.stack == stack) {\n   // outputs \"True!\"\n   console.log(\"True!\");\n}\n```",
             "stability": "experimental",
-            "summary": "Get an existing stage by name."
+            "summary": "Add a new stage or access an existing one."
           },
           "locationInModule": {
             "filename": "src/app.ts",
-            "line": 255
-          },
-          "name": "getStage",
-          "parameters": [
-            {
-              "docs": {
-                "summary": "The name of the stage."
-              },
-              "name": "name",
-              "type": {
-                "primitive": "string"
-              }
-            }
-          ],
-          "returns": {
-            "type": {
-              "fqn": "@cloudcamp/aws-runtime.Stage"
-            }
-          }
-        },
-        {
-          "docs": {
-            "remarks": "Pass a stack name to create a new, empty stack:\n\n```ts\nvoid 0;\nimport { App, WebService, Stack} from \"@cloudcamp/aws-runtime\";\nconst app = new App();\nvoid 'show';\nconst devStack = app.stack(\"development\");\n```",
-            "stability": "experimental",
-            "summary": "Add a new stack to your application."
-          },
-          "locationInModule": {
-            "filename": "src/app.ts",
-            "line": 213
-          },
-          "name": "stack",
-          "parameters": [
-            {
-              "docs": {
-                "summary": "The name of the stack."
-              },
-              "name": "name",
-              "type": {
-                "primitive": "string"
-              }
-            }
-          ],
-          "returns": {
-            "type": {
-              "fqn": "@cloudcamp/aws-runtime.Stack"
-            }
-          }
-        },
-        {
-          "docs": {
-            "remarks": "This method can be used to add a stage with a custom ``Stack`` subclass.\n```ts\nimport { App, WebService, Stack } from \"@cloudcamp/aws-runtime\";\n\nclass CustomStack extends Stack {\n   constructor(scope: cdk.Construct, id: string, props: cdk.StackProps) {\n      super(scope, id, props);\n      new WebService(this, \"web\", {\n        dockerfile: \"../Dockerfile\"\n      });\n   }\n}\n\n// later in the code...\nconst app = new App();\nconst stage = app.stage(\"dev\");\nconst stack = new CustomStack(stage, \"dev\");\n\n// stack is automatically set to the new stack we created\nif (stage.stack == stack) {\n   // outputs \"True!\"\n   console.log(\"True!\");\n}\n```",
-            "stability": "experimental",
-            "summary": "Add a new stage."
-          },
-          "locationInModule": {
-            "filename": "src/app.ts",
-            "line": 298
+            "line": 288
           },
           "name": "stage",
           "parameters": [
@@ -3229,7 +3174,7 @@
           },
           "locationInModule": {
             "filename": "src/app.ts",
-            "line": 343
+            "line": 353
           },
           "name": "synth",
           "overrides": "aws-cdk-lib.Stage",
@@ -3254,12 +3199,12 @@
         {
           "docs": {
             "stability": "experimental",
-            "summary": "The global App singleton instance."
+            "summary": "Access the global singleton instance."
           },
           "immutable": true,
           "locationInModule": {
             "filename": "src/app.ts",
-            "line": 131
+            "line": 163
           },
           "name": "instance",
           "static": true,
@@ -3270,16 +3215,16 @@
         {
           "docs": {
             "custom": {
-              "remarks": "To deploy resources to the cloud, they are added to a ``Stack``.\nCloudCamp comes with three default stacks:",
+              "remarks": "To deploy resources to the cloud, they are added to a ``Stack``.\nStacks come in handy to isolate different environments from each other. For\nexample, you might have a stack for testing your application and another\none for the production version.\n\nCloudCamp comes with three default stacks:",
               "topic": "Stacks"
             },
             "stability": "experimental",
-            "summary": "Use this stack for anything related to the network, for example DNS entries."
+            "summary": "Use this stack for anything related to the network, for example to set up DNS entries."
           },
           "immutable": true,
           "locationInModule": {
             "filename": "src/app.ts",
-            "line": 148
+            "line": 192
           },
           "name": "network",
           "type": {
@@ -3296,7 +3241,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/app.ts",
-            "line": 317
+            "line": 327
           },
           "name": "pipeline",
           "type": {
@@ -3311,7 +3256,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/app.ts",
-            "line": 163
+            "line": 207
           },
           "name": "production",
           "type": {
@@ -3321,12 +3266,12 @@
         {
           "docs": {
             "stability": "experimental",
-            "summary": "This stack can be used to create an environment for testing changes before deploying to production."
+            "summary": "Use this stack to create an environment for testing changes before deploying to production."
           },
           "immutable": true,
           "locationInModule": {
             "filename": "src/app.ts",
-            "line": 156
+            "line": 200
           },
           "name": "staging",
           "type": {
@@ -3335,11 +3280,15 @@
         },
         {
           "docs": {
-            "stability": "experimental"
+            "custom": {
+              "inline": "true"
+            },
+            "stability": "experimental",
+            "summary": "The app's configuration parameters as specified in the config file ``cdk.json`` in your app's home directory."
           },
           "locationInModule": {
             "filename": "src/app.ts",
-            "line": 309
+            "line": 177
           },
           "name": "configuration",
           "type": {
@@ -3355,7 +3304,7 @@
           },
           "locationInModule": {
             "filename": "src/app.ts",
-            "line": 313
+            "line": 323
           },
           "name": "pipelineStack",
           "type": {
@@ -3365,12 +3314,13 @@
         {
           "docs": {
             "default": "[\"network\", \"staging\", \"production\"]",
+            "remarks": "```ts\nvoid 0;\nimport { App, WebService, Stack} from \"@cloudcamp/aws-runtime\";\nconst app = new App();\nvoid 'show';\napp.stageOrder = [\"development\", \"production\"];\n```",
             "stability": "experimental",
-            "summary": "The order in which stages are created."
+            "summary": "The order in which stages are executed. For example, to ensure the custom stage ``\"development\"`` is always executed before production:."
           },
           "locationInModule": {
             "filename": "src/app.ts",
-            "line": 172
+            "line": 318
           },
           "name": "stageOrder",
           "type": {
@@ -3465,12 +3415,13 @@
         {
           "abstract": true,
           "docs": {
-            "stability": "experimental"
+            "stability": "experimental",
+            "summary": "AWS account ID."
           },
           "immutable": true,
           "locationInModule": {
             "filename": "src/app.ts",
-            "line": 26
+            "line": 39
           },
           "name": "account",
           "type": {
@@ -3480,12 +3431,13 @@
         {
           "abstract": true,
           "docs": {
-            "stability": "experimental"
+            "stability": "experimental",
+            "summary": "The name of the branch to use for deployments."
           },
           "immutable": true,
           "locationInModule": {
             "filename": "src/app.ts",
-            "line": 28
+            "line": 35
           },
           "name": "branch",
           "type": {
@@ -3495,12 +3447,13 @@
         {
           "abstract": true,
           "docs": {
-            "stability": "experimental"
+            "stability": "experimental",
+            "summary": "The unique name of the app."
           },
           "immutable": true,
           "locationInModule": {
             "filename": "src/app.ts",
-            "line": 24
+            "line": 27
           },
           "name": "name",
           "type": {
@@ -3510,12 +3463,13 @@
         {
           "abstract": true,
           "docs": {
-            "stability": "experimental"
+            "stability": "experimental",
+            "summary": "AWS region code."
           },
           "immutable": true,
           "locationInModule": {
             "filename": "src/app.ts",
-            "line": 27
+            "line": 43
           },
           "name": "region",
           "type": {
@@ -3525,12 +3479,13 @@
         {
           "abstract": true,
           "docs": {
-            "stability": "experimental"
+            "stability": "experimental",
+            "summary": "URL of the git source repository."
           },
           "immutable": true,
           "locationInModule": {
             "filename": "src/app.ts",
-            "line": 25
+            "line": 31
           },
           "name": "repository",
           "type": {
@@ -3540,12 +3495,13 @@
         {
           "abstract": true,
           "docs": {
-            "stability": "experimental"
+            "stability": "experimental",
+            "summary": "The name of the secret that holds the GitHub token (default is \"github-token\")."
           },
           "immutable": true,
           "locationInModule": {
             "filename": "src/app.ts",
-            "line": 30
+            "line": 52
           },
           "name": "repositoryTokenSecret",
           "type": {
@@ -3555,12 +3511,13 @@
         {
           "abstract": true,
           "docs": {
-            "stability": "experimental"
+            "stability": "experimental",
+            "summary": "The ID of the VPC."
           },
           "immutable": true,
           "locationInModule": {
             "filename": "src/app.ts",
-            "line": 29
+            "line": 47
           },
           "name": "vpcId",
           "type": {
@@ -3570,12 +3527,13 @@
         {
           "abstract": true,
           "docs": {
-            "stability": "experimental"
+            "stability": "experimental",
+            "summary": "The name of the secret that contains the DockerHub credentials (default \"dockerhub-credentials\")."
           },
           "immutable": true,
           "locationInModule": {
             "filename": "src/app.ts",
-            "line": 31
+            "line": 57
           },
           "name": "dockerHubSecret",
           "optional": true,
@@ -4241,7 +4199,7 @@
       "kind": "interface",
       "locationInModule": {
         "filename": "src/webservice.ts",
-        "line": 160
+        "line": 166
       },
       "name": "MetricScalingProps",
       "properties": [
@@ -4253,7 +4211,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webservice.ts",
-            "line": 162
+            "line": 168
           },
           "name": "max",
           "type": {
@@ -4268,7 +4226,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webservice.ts",
-            "line": 161
+            "line": 167
           },
           "name": "min",
           "type": {
@@ -4283,7 +4241,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webservice.ts",
-            "line": 163
+            "line": 169
           },
           "name": "cpu",
           "optional": true,
@@ -4299,7 +4257,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webservice.ts",
-            "line": 164
+            "line": 170
           },
           "name": "memory",
           "optional": true,
@@ -4315,7 +4273,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webservice.ts",
-            "line": 165
+            "line": 171
           },
           "name": "requestCount",
           "optional": true,
@@ -5012,14 +4970,15 @@
         {
           "abstract": true,
           "docs": {
-            "default": "- Every day of the month",
+            "default": "* (Every day of the month)",
+            "remarks": "Possible values \"0\"-\"30\" to\nrun at a specific day or \"*\" to run every day.",
             "stability": "experimental",
             "summary": "The day of the month to run this rule at."
           },
           "immutable": true,
           "locationInModule": {
             "filename": "src/webservice.ts",
-            "line": 133
+            "line": 136
           },
           "name": "day",
           "optional": true,
@@ -5030,14 +4989,15 @@
         {
           "abstract": true,
           "docs": {
-            "default": "- Every hour",
+            "default": "* (Every hour)",
+            "remarks": "Possible values \"0\"-\"23\" to run at a\nspecific hour or \"*\" to run every hour.",
             "stability": "experimental",
             "summary": "The hour to run this rule at."
           },
           "immutable": true,
           "locationInModule": {
             "filename": "src/webservice.ts",
-            "line": 127
+            "line": 129
           },
           "name": "hour",
           "optional": true,
@@ -5048,14 +5008,15 @@
         {
           "abstract": true,
           "docs": {
-            "default": "- Every minute",
+            "default": "* (Every minute)",
+            "remarks": "Possible values \"0\"-\"59\" to run at a\nspecific minute or \"*\" to run every minute.",
             "stability": "experimental",
             "summary": "The minute to run this rule at."
           },
           "immutable": true,
           "locationInModule": {
             "filename": "src/webservice.ts",
-            "line": 121
+            "line": 122
           },
           "name": "minute",
           "optional": true,
@@ -5066,14 +5027,15 @@
         {
           "abstract": true,
           "docs": {
-            "default": "- Every month",
+            "default": "* (Every month)",
+            "remarks": "Possible values \"0\"-\"11\" to run at a\nspecific month or \"*\" to run every day.",
             "stability": "experimental",
             "summary": "The month to run this rule at."
           },
           "immutable": true,
           "locationInModule": {
             "filename": "src/webservice.ts",
-            "line": 139
+            "line": 143
           },
           "name": "month",
           "optional": true,
@@ -5084,14 +5046,15 @@
         {
           "abstract": true,
           "docs": {
-            "default": "- Any day of the week",
+            "default": "* (Any day of the week)",
+            "remarks": "Possible values \"0\"-\"6\" or \"*\"\nto run on any day of the week.",
             "stability": "experimental",
             "summary": "The day of the week to run this rule at."
           },
           "immutable": true,
           "locationInModule": {
             "filename": "src/webservice.ts",
-            "line": 151
+            "line": 157
           },
           "name": "weekDay",
           "optional": true,
@@ -5102,14 +5065,15 @@
         {
           "abstract": true,
           "docs": {
-            "default": "- Every year",
+            "default": "* (Every year)",
+            "remarks": "Possible values are the literal year or \"*\"\nto run every year.",
             "stability": "experimental",
             "summary": "The year to run this rule at."
           },
           "immutable": true,
           "locationInModule": {
             "filename": "src/webservice.ts",
-            "line": 145
+            "line": 150
           },
           "name": "year",
           "optional": true,
@@ -5130,7 +5094,7 @@
       "kind": "interface",
       "locationInModule": {
         "filename": "src/webservice.ts",
-        "line": 154
+        "line": 160
       },
       "name": "ScheduleScalingProps",
       "properties": [
@@ -5142,7 +5106,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webservice.ts",
-            "line": 156
+            "line": 162
           },
           "name": "max",
           "type": {
@@ -5157,7 +5121,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webservice.ts",
-            "line": 155
+            "line": 161
           },
           "name": "min",
           "type": {
@@ -5172,7 +5136,7 @@
           "immutable": true,
           "locationInModule": {
             "filename": "src/webservice.ts",
-            "line": 157
+            "line": 163
           },
           "name": "schedule",
           "type": {
@@ -5658,7 +5622,7 @@
         },
         "locationInModule": {
           "filename": "src/webservice.ts",
-          "line": 222
+          "line": 228
         },
         "parameters": [
           {
@@ -5693,7 +5657,7 @@
       "kind": "class",
       "locationInModule": {
         "filename": "src/webservice.ts",
-        "line": 188
+        "line": 194
       },
       "methods": [
         {
@@ -5702,7 +5666,7 @@
           },
           "locationInModule": {
             "filename": "src/webservice.ts",
-            "line": 376
+            "line": 382
           },
           "name": "alarms",
           "parameters": [
@@ -5721,7 +5685,7 @@
           },
           "locationInModule": {
             "filename": "src/webservice.ts",
-            "line": 345
+            "line": 351
           },
           "name": "scaleOnMetric",
           "parameters": [
@@ -5739,7 +5703,7 @@
           },
           "locationInModule": {
             "filename": "src/webservice.ts",
-            "line": 333
+            "line": 339
           },
           "name": "scaleOnSchedule",
           "parameters": [
@@ -5760,7 +5724,7 @@
           },
           "locationInModule": {
             "filename": "src/webservice.ts",
-            "line": 331
+            "line": 337
           },
           "name": "fargateService",
           "type": {
@@ -5773,7 +5737,7 @@
           },
           "locationInModule": {
             "filename": "src/webservice.ts",
-            "line": 327
+            "line": 333
           },
           "name": "hostOutput",
           "type": {
@@ -5786,7 +5750,7 @@
           },
           "locationInModule": {
             "filename": "src/webservice.ts",
-            "line": 329
+            "line": 335
           },
           "name": "vars",
           "type": {
@@ -6154,5 +6118,5 @@
     }
   },
   "version": "0.0.1",
-  "fingerprint": "ReMv/30iaDqCU9oEDrOnqBalK1jwUlJzxiDLwdFWPyU="
+  "fingerprint": "rm/T9yfteBth9Qfwp7+zMxGwgWi4n64IPDhpul6fRSY="
 }

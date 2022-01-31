@@ -2,7 +2,7 @@
 slug: "installation"
 order: 2
 title: "Installation"
-category: "getting-started"
+category: "overview"
 ---
 
 Learn how to install CloudCamp on your machine.

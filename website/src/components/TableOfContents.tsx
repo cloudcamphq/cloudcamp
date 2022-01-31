@@ -38,28 +38,36 @@ interface Toc {
   };
 }
 
+function isItemHighlighted(link: string, pathname: string) {
+  const indexPaths = ["/docs", "/docs/guide", "/docs/api", "/docs/command"];
+  link = _.trimEnd(link, "/");
+  pathname = _.trimEnd(pathname, "/");
+  if (indexPaths.includes(link)) {
+    return link === pathname;
+  } else {
+    return pathname.startsWith(link);
+  }
+}
+
 function TableOfContentsItem(props: {
   title: string;
   // can't use the name 'key' because it is used internally by React.
   uniqueKey: string;
   link: string;
   location: any;
+  className?: string;
 }) {
-  let highlighted = false;
-  if (_.trimEnd(props.link, "/") === "/docs") {
-    if (_.trimEnd(props.location.pathname, "/") === "/docs") {
-      highlighted = true;
-    }
-  } else if (props.location.pathname.startsWith(props.link)) {
-    highlighted = true;
-  }
+  let highlighted = isItemHighlighted(props.link, props.location.pathname);
+
+  const className = props.className ? props.className + " " : "text-sm ";
   return (
     <li key={props.uniqueKey}>
       <Link
         className={
-          highlighted
-            ? "flex items-center group py-2 px-4 text-sm rounded-md bg-indigo-50 text-indigo-800 font-medium"
-            : "flex items-center group py-2 px-4 text-sm rounded-md text-gray-700 hover:bg-gray-100"
+          className +
+          (highlighted
+            ? "flex items-center group py-2 px-4 rounded-md bg-indigo-50 text-indigo-800 font-medium"
+            : "flex items-center group py-2 px-4 rounded-md text-gray-700 hover:bg-gray-100")
         }
         to={props.link}
       >
@@ -84,10 +92,10 @@ export function prepareTocData({
   );
 
   const gettingStarted: MarkdownNode[] = docNodes.filter(
-    (node) => node.frontmatter.category == "getting-started"
+    (node) => node.frontmatter.category == "overview"
   );
   const operationsGuide: MarkdownNode[] = docNodes.filter(
-    (node) => node.frontmatter.category == "operations-guide"
+    (node) => node.frontmatter.category == "guide"
   );
 
   let commandNodes: CommandNode[] = Object.values(
@@ -120,28 +128,18 @@ export function prepareTocData({
   return [gettingStarted, operationsGuide, apiNodes, commandNodes];
 }
 
-const navigation = [
-  { name: "Dashboard", href: "#", current: true },
-  { name: "Team", href: "#", current: false },
-  { name: "Projects", href: "#", current: false },
-  { name: "Calendar", href: "#", current: false },
-];
-
 function MobileTableOfContentsItem(props: {
   title: string;
   // can't use the name 'key' because it is used internally by React.
   uniqueKey: string;
   link: string;
   location: any;
+  className?: string;
 }) {
-  let highlighted = false;
-  if (_.trimEnd(props.link, "/") === "/docs") {
-    if (_.trimEnd(props.location.pathname, "/") === "/docs") {
-      highlighted = true;
-    }
-  } else if (props.location.pathname.startsWith(props.link)) {
-    highlighted = true;
-  }
+  let highlighted = isItemHighlighted(props.link, props.location.pathname);
+
+  const className = props.className ? props.className + " " : "text-base pl-8 ";
+
   return (
     <Disclosure.Button
       key={props.uniqueKey}
@@ -151,7 +149,8 @@ function MobileTableOfContentsItem(props: {
         highlighted
           ? "bg-indigo-50 text-indigo-800"
           : "text-gray-700 hover:bg-gray-100",
-        "flex h-10 pl-8 pr-4 py-2 text-base font-medium"
+        "flex h-10 pr-4 py-2 font-medium",
+        className
       )}
     >
       {props.title}
@@ -179,17 +178,20 @@ export function MobileTableOfContents({
   return (
     <Disclosure.Panel className="lg:hidden h-full overflow-y-auto border-b">
       <div className="pb-3">
-        <div
-          key="getting-started"
-          className="pl-3 pr-4 py-2 text-xs h-10 flex items-center font-medium uppercase"
-        >
-          Getting Started
-        </div>
-        {gettingStarted.map((node) => (
+        <MobileTableOfContentsItem
+          key={gettingStarted[0].frontmatter.slug}
+          link="/docs/"
+          uniqueKey={gettingStarted[0].frontmatter.slug}
+          title={gettingStarted[0].frontmatter.title}
+          location={location}
+          className="font-medium uppercase pl-3 text-xs flex items-center  h-10"
+        />
+
+        {gettingStarted.slice(1).map((node) => (
           <MobileTableOfContentsItem
             key={node.frontmatter.slug}
             link={
-              node.frontmatter.slug == "overview"
+              node.frontmatter.slug == "index"
                 ? "/docs/"
                 : `/docs/${node.frontmatter.slug}`
             }
@@ -200,13 +202,15 @@ export function MobileTableOfContents({
         ))}
       </div>
       <div className="pb-3">
-        <div
-          key="using-cloudcamp"
-          className="pl-3 pr-4 py-2 text-xs h-10 flex items-center font-medium uppercase"
-        >
-          Using CloudCamp
-        </div>
-        {operationsGuide.map((node) => (
+        <MobileTableOfContentsItem
+          key={operationsGuide[0].frontmatter.slug}
+          link={`/docs/guide/`}
+          uniqueKey={operationsGuide[0].frontmatter.slug}
+          title={operationsGuide[0].frontmatter.title}
+          location={location}
+          className="font-medium uppercase pl-3 text-xs flex items-center  h-10"
+        />
+        {operationsGuide.slice(1).map((node) => (
           <MobileTableOfContentsItem
             key={node.frontmatter.slug}
             link={`/docs/${node.frontmatter.slug}`}
@@ -217,12 +221,14 @@ export function MobileTableOfContents({
         ))}
       </div>
       <div className="pb-3">
-        <div
+        <MobileTableOfContentsItem
           key="api-reference"
-          className="pl-3 pr-4 py-2 text-xs h-10 flex items-center font-medium uppercase"
-        >
-          API Reference
-        </div>
+          link="/docs/api/"
+          uniqueKey="api-reference"
+          title="API Reference"
+          location={location}
+          className="font-medium uppercase pl-3 text-xs flex items-center  h-10"
+        />
         {apiNodes.map((node) => (
           <MobileTableOfContentsItem
             key={node.name}
@@ -234,12 +240,14 @@ export function MobileTableOfContents({
         ))}
       </div>
       <div className="pb-3">
-        <div
+        <MobileTableOfContentsItem
           key="command-reference"
-          className="pl-3 pr-4 py-2 text-xs h-10 flex items-center font-medium uppercase"
-        >
-          Command Reference
-        </div>
+          link="/docs/command/"
+          uniqueKey="command-reference"
+          title="Command Reference"
+          location={location}
+          className="font-medium uppercase pl-3 text-xs flex items-center  h-10"
+        />
         {commandNodes.map((node) => (
           <MobileTableOfContentsItem
             key={node.name}
@@ -271,11 +279,16 @@ export function TableOfContents({
   return (
     <>
       <nav>
-        <h1 className="tracking-wide font-semibold text-xs uppercase py-2 px-4 ">
-          Getting Started
-        </h1>
         <ul>
-          {gettingStarted.map((node) => (
+          <TableOfContentsItem
+            key={gettingStarted[0].frontmatter.slug}
+            link="/docs/"
+            uniqueKey={gettingStarted[0].frontmatter.slug}
+            title={gettingStarted[0].frontmatter.title}
+            location={location}
+            className="tracking-wide font-semibold text-xs uppercase"
+          />
+          {gettingStarted.slice(1).map((node) => (
             <TableOfContentsItem
               key={node.frontmatter.slug}
               link={
@@ -291,11 +304,16 @@ export function TableOfContents({
         </ul>
       </nav>
       <nav>
-        <h1 className="tracking-wide font-semibold text-xs uppercase py-2 px-4">
-          Using CloudCamp
-        </h1>
         <ul>
-          {operationsGuide.map((node) => (
+          <TableOfContentsItem
+            key={operationsGuide[0].frontmatter.slug}
+            link={`/docs/guide/`}
+            uniqueKey={operationsGuide[0].frontmatter.slug}
+            title={operationsGuide[0].frontmatter.title}
+            location={location}
+            className="tracking-wide font-semibold text-xs uppercase"
+          />
+          {operationsGuide.slice(1).map((node) => (
             <TableOfContentsItem
               key={node.frontmatter.slug}
               link={`/docs/${node.frontmatter.slug}`}
@@ -307,10 +325,15 @@ export function TableOfContents({
         </ul>
       </nav>
       <nav>
-        <h1 className="tracking-wide font-semibold text-xs uppercase py-2 px-4">
-          API Reference
-        </h1>
         <ul>
+          <TableOfContentsItem
+            key="docs-index"
+            link="/docs/api/"
+            uniqueKey="docs-index"
+            title="API Reference"
+            location={location}
+            className="tracking-wide font-semibold text-xs uppercase"
+          />
           {apiNodes.map((node) => (
             <TableOfContentsItem
               key={node.name}
@@ -323,10 +346,15 @@ export function TableOfContents({
         </ul>
       </nav>
       <nav>
-        <h1 className="tracking-wide font-semibold text-xs uppercase py-2 px-4">
-          Command Reference
-        </h1>
         <ul>
+          <TableOfContentsItem
+            key="command-index"
+            link="/docs/command/"
+            uniqueKey="command-index"
+            title="Command Reference"
+            location={location}
+            className="tracking-wide font-semibold text-xs uppercase"
+          />
           {commandNodes.map((node) => (
             <TableOfContentsItem
               key={node.name}

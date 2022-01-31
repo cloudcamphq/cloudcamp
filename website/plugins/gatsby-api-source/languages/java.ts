@@ -1,5 +1,6 @@
 import { Language } from "./language";
 import * as jsiispec from "@jsii/spec";
+import ApiSource from "../api-source";
 
 let _ = require("lodash");
 
@@ -36,26 +37,24 @@ export class Java extends Language {
     return `<a href="${url}" class="signature-type" target="_blank">${name}</a>`;
   }
 
-  propsTableHeader(
-    className: string,
-    method: jsiispec.Method,
-    param: jsiispec.Parameter,
-    type: jsiispec.Type
-  ): string {
-    const id = _.kebabCase(method.name) + "-" + _.kebabCase(type.name);
+  propsTableHeader(methodOrPropName: string, typeName: string): string {
+    const id = _.kebabCase(methodOrPropName) + "-" + _.kebabCase(typeName);
     return `
     <h4 class="text-xl ml-6 font-bold mt-6 mb-6 font-display">
-      <a href="#${id}" id="${id}">new ${type.name}.Builder()</a>
+      <a href="#${id}" id="${id}" name="${id}">new ${typeName}.Builder()</a>
     </h4>
     `;
   }
 
   propsTable(
-    className: string,
-    method: jsiispec.Method,
-    param: jsiispec.Parameter,
-    type: jsiispec.ClassType | jsiispec.InterfaceType
+    methodOrPropName: string,
+    type: jsiispec.ClassType | jsiispec.InterfaceType,
+    showDefaults: boolean,
+    apiSource: ApiSource
   ): string {
+    if (!type.properties) {
+      return undefined;
+    }
     const tbody = type.properties
       .map((prop, ix) => {
         let defaultValue = "";
@@ -68,38 +67,51 @@ export class Java extends Language {
       <tr class="${ix % 2 == 0 ? "bg-gray-50" : ""}">
         <td class="px-6 py-2 border font-mono text-sm whitespace-nowrap">${
           prop.name
-        } (${this.translateType(method.name, prop.type as any)} ${
+        } (${this.translateType(methodOrPropName, prop.type as any)} ${
           prop.name
         })</td>
-        <td class="px-6 py-2 border font-mono text-sm whitespace-nowrap">${defaultValue}</td>
+        ${
+          showDefaults
+            ? '<td class="px-6 py-2 border font-mono text-sm whitespace-nowrap">' +
+              defaultValue +
+              "</td>"
+            : ""
+        }
         <td class="px-6 py-2 border">
-         ${prop.docs?.summary || ""}
+        ${apiSource.parseMarkdown(prop.docs?.summary) || ""}
+        ${apiSource.parseMarkdown(prop.docs?.remarks) || ""}
         </td>
       </tr>
     `;
       })
       .join("\n");
-    const header = this.propsTableHeader(className, method, param, type);
+    const header = this.propsTableHeader(methodOrPropName, type.name);
     return `
       ${header}
       <table class="w-full border overflow-x-auto block">
         <thead>
           <tr class="bg-gray-50">
             <td class="border px-6 font-medium w-1/4">Method</td>
-            <td class="border px-6 font-medium w-1/4">Default</td>
+            ${
+              showDefaults
+                ? '<td class="border px-6 font-medium w-1/4">Default</td>'
+                : ""
+            }
             <td class="border px-6 font-medium w-1/2">Description</td>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td class="px-6 py-2 border font-mono text-sm whitespace-nowrap">new ${type.name}.Builder()</td>
-            <td class="px-6 py-2 border font-mono text-sm whitespace-nowrap"></td>
+            <td class="px-6 py-2 border font-mono text-sm whitespace-nowrap">new ${
+              type.name
+            }.Builder()</td>
             <td class="px-6 py-2 border">Construct a ${type.name} builder.</td>
           </tr>
           ${tbody}
           <tr>
-            <td class="px-6 py-2 border font-mono text-sm whitespace-nowrap">${type.name} build()</td>
-            <td class="px-6 py-2 border font-mono text-sm whitespace-nowrap"></td>
+            <td class="px-6 py-2 border font-mono text-sm whitespace-nowrap">${
+              type.name
+            } build()</td>
             <td class="px-6 py-2 border">Build ${type.name}.</td>
           </tr>
         </tbody>

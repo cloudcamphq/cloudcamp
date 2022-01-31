@@ -2,10 +2,11 @@ import React, { useContext } from "react";
 import { Context } from "./Store";
 import { SearchIcon } from "@heroicons/react/solid";
 import { detect } from "detect-browser";
+import { DocSearch } from "@docsearch/react";
 
 export default function SearchButton(props?: { noml?: boolean }) {
   // @ts-ignore
-  const [, dispatch] = useContext(Context);
+  // const [, dispatch] = useContext(Context);
 
   const browser = detect();
 
@@ -30,31 +31,41 @@ export default function SearchButton(props?: { noml?: boolean }) {
   if (props?.noml === false) {
     ml = "";
   }
+  // return (
+  //   <button
+  //     className={
+  //       ml +
+  //       " flex-1 flex rounded-md items-center bg-white py-2 overflow-hidden mr-6 group focus:ring-indigo-500 focus:ring-2 focus:ring-offset-2 focus:outline-none"
+  //     }
+  //     // onClick={() => dispatch({ type: "SET_SEARCHBOX_VISIBLE", payload: true })}
+  //     id="docsearch-container"
+  //     tabIndex={0}
+  //   >
+  //     <div className="inset-y-0 pl-3 flex items-center pointer-events-none">
+  //       <SearchIcon
+  //         className="h-6 w-6 text-gray-400 group-hover:text-gray-500"
+  //         aria-hidden="true"
+  //       />
+  //     </div>
+  //     <div className="block text-md ml-4 w-full text-gray-600 font-medium overflow-ellipsis overflow-hidden whitespace-nowrap text-left">
+  //       Search Documentation{" "}
+  //       {shortcut && (
+  //         <span className="text-gray-400 border rounded-md px-2 py-1 border-gray-300 ml-4 text-sm min-w-max inline-flex">
+  //           {shortcut}
+  //         </span>
+  //       )}
+  //     </div>
+  //   </button>
+  // );
 
   return (
-    <button
-      className={
-        ml +
-        " flex-1 flex rounded-md items-center bg-white py-2 overflow-hidden mr-6 group focus:ring-indigo-500 focus:ring-2 focus:ring-offset-2 focus:outline-none"
-      }
-      onClick={() => dispatch({ type: "SET_SEARCHBOX_VISIBLE", payload: true })}
-      id="global-search-button"
-      tabIndex={0}
-    >
-      <div className="inset-y-0 pl-3 flex items-center pointer-events-none">
-        <SearchIcon
-          className="h-6 w-6 text-gray-400 group-hover:text-gray-500"
-          aria-hidden="true"
-        />
-      </div>
-      <div className="block text-md ml-4 w-full text-gray-600 font-medium overflow-ellipsis overflow-hidden whitespace-nowrap text-left">
-        Search Documentation{" "}
-        {shortcut && (
-          <span className="text-gray-400 border rounded-md px-2 py-1 border-gray-300 ml-4 text-sm min-w-max inline-flex">
-            {shortcut}
-          </span>
-        )}
-      </div>
-    </button>
+    <div className={ml + " flex-1 flex"}>
+      <DocSearch
+        appId="EQFJK7W42N"
+        indexName="cloudcamphq"
+        apiKey="e5a0500d315666c971300f4d8d9f3609"
+        placeholder="Search Documentation"
+      />
+    </div>
   );
 }

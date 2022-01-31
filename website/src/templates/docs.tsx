@@ -51,24 +51,26 @@ export default function Docs({
           {data.markdownRemark.frontmatter.title}
         </h1>
         <HtmlWithCode className="space-y-6 leading-7" html={html} />
-        {data.markdownRemark.frontmatter.slug == "overview" && (
+        {data.markdownRemark.frontmatter.slug == "index" && (
           <>
             <h2
               className="text-2xl font-bold pt-7 font-display"
-              id="introduction"
+              id="table-of-contents"
             >
               <a href="#table-of-contents">Table of contents</a>
             </h2>
             <ul className="pt-2 ml-4">
               <li className="mb-8 font-medium">
-                Getting Started
+                <Link style={{ color: "#d63200" }} to="/docs/">
+                  {gettingStarted[0].frontmatter.title}
+                </Link>
                 <ul className="ml-4 text-base normal-case font-normal">
-                  {gettingStarted.map((node) => (
+                  {gettingStarted.slice(1).map((node) => (
                     <li key={node.frontmatter.slug} className="mt-2">
                       <Link
                         style={{ color: "#d63200" }}
                         to={
-                          node.frontmatter.slug == "overview"
+                          node.frontmatter.slug == "index"
                             ? "/docs/"
                             : `/docs/${node.frontmatter.slug}`
                         }
@@ -80,9 +82,11 @@ export default function Docs({
                 </ul>
               </li>
               <li className="mb-8 font-medium">
-                Using CloudCamp
+                <Link style={{ color: "#d63200" }} to={`/docs/guide/`}>
+                  {operationsGuide[0].frontmatter.title}
+                </Link>
                 <ul className="ml-4 text-base normal-case font-normal">
-                  {operationsGuide.map((node) => (
+                  {operationsGuide.slice(1).map((node) => (
                     <li key={node.frontmatter.slug} className="mt-2">
                       <Link
                         style={{ color: "#d63200" }}
@@ -95,7 +99,9 @@ export default function Docs({
                 </ul>
               </li>
               <li className="mb-8 font-medium">
-                API Reference
+                <Link style={{ color: "#d63200" }} to={`/docs/api/`}>
+                  API Reference
+                </Link>
                 <ul className="ml-4 text-base normal-case font-normal">
                   {apiNodes.map((node) => (
                     <li key={node.name} className="mt-2">
@@ -110,7 +116,93 @@ export default function Docs({
                 </ul>
               </li>
               <li className="mb-8 font-medium">
-                Command Reference
+                <Link style={{ color: "#d63200" }} to={`/docs/command/`}>
+                  Command Reference
+                </Link>
+                <ul className="ml-4 text-base normal-case font-normal">
+                  {commandNodes.map((node) => (
+                    <li key={node.name} className="mt-2">
+                      <Link
+                        style={{ color: "#d63200" }}
+                        to={`/docs/command/${_.kebabCase(node.name)}`}
+                      >
+                        {node.name}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </li>
+            </ul>
+          </>
+        )}
+        {data.markdownRemark.frontmatter.slug == "guide/index" && (
+          <>
+            <h2 className="text-2xl font-bold pt-7 font-display" id="guide-toc">
+              <a href="#table-of-contents">Table of contents</a>
+            </h2>
+            <ul className="pt-2 ml-4">
+              <li className="mb-8 font-medium">
+                <Link style={{ color: "#d63200" }} to={`/docs/guide/`}>
+                  {operationsGuide[0].frontmatter.title}
+                </Link>
+                <ul className="ml-4 text-base normal-case font-normal">
+                  {operationsGuide.slice(1).map((node) => (
+                    <li key={node.frontmatter.slug} className="mt-2">
+                      <Link
+                        style={{ color: "#d63200" }}
+                        to={`/docs/${node.frontmatter.slug}`}
+                      >
+                        {node.frontmatter.title}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </li>
+            </ul>
+          </>
+        )}
+        {data.markdownRemark.frontmatter.slug == "api/index" && (
+          <>
+            <h2
+              className="text-2xl font-bold pt-7 font-display"
+              id="table-of-contents"
+            >
+              <a href="#table-of-contents">Table of contents</a>
+            </h2>
+            <ul className="pt-2 ml-4">
+              <li className="mb-8 font-medium">
+                <Link style={{ color: "#d63200" }} to={`/docs/api/`}>
+                  API Reference
+                </Link>
+                <ul className="ml-4 text-base normal-case font-normal">
+                  {apiNodes.map((node) => (
+                    <li key={node.name} className="mt-2">
+                      <Link
+                        style={{ color: "#d63200" }}
+                        to={`/docs/api/${_.kebabCase(node.name)}`}
+                      >
+                        {node.name}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </li>
+            </ul>
+          </>
+        )}
+        {data.markdownRemark.frontmatter.slug == "command/index" && (
+          <>
+            <h2
+              className="text-2xl font-bold pt-7 font-display"
+              id="table-of-contents"
+            >
+              <a href="#table-of-contents">Table of contents</a>
+            </h2>
+            <ul className="pt-2 ml-4">
+              <li className="mb-8 font-medium">
+                <Link style={{ color: "#d63200" }} to={`/docs/command/`}>
+                  Command Reference
+                </Link>
                 <ul className="ml-4 text-base normal-case font-normal">
                   {commandNodes.map((node) => (
                     <li key={node.name} className="mt-2">

@@ -2,7 +2,7 @@
 slug: "tutorial"
 order: 3
 title: "Tutorial"
-category: "getting-started"
+category: "overview"
 ---
 
 This tutorial will walk you through building and deploying an application with

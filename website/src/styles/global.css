@@ -31,9 +31,31 @@ code {
  * code - short code pieces
  */
 li > code.language-text,
-p > code.language-text {
+p > code.language-text,
+span > code.language-text {
   color: #d63200 !important;
   @apply p-0 shadow-none rounded font-normal border-none bg-transparent text-sm !important;
+}
+
+/*
+ * code - links
+ */
+code.language-text a {
+  border-bottom: 1px dotted #d63200;
+}
+
+/*
+ * regular links
+ */
+#document a {
+  border-bottom: 1px dotted #d63200;
+}
+
+#document h1 a,
+#document h2 a,
+#document h3 a,
+#document h4 a {
+  border-bottom: none;
 }
 
 /*
@@ -63,6 +85,26 @@ pre[class*="language-"] {
 .language-autohotkey .token.selector {
   color: #d63200 !important;
   @apply font-normal !important;
+}
+
+/*
+ *
+ */
+
+a .signature-type {
+  border-bottom: 1px dotted rgb(76, 29, 149) !important;
+}
+
+/*
+ * ensure that type links in tables have the right color
+ */
+
+table .signature-type {
+  color: #d63200 !important;
+}
+
+table .signature-type a {
+  border-bottom: 1px dotted #d63200 !important;
 }
 
 .token.string,
@@ -106,10 +148,6 @@ pre[class*="language-"] {
   @apply text-purple-900 !important;
 }
 
-a.signature-type {
-  @apply hover:border-b border-purple-900 !important;
-}
-
 /*
  * Don't line break in li
  */
@@ -131,4 +169,41 @@ li p {
 
 .api li {
   @apply py-1;
+}
+
+/*
+ * DocSearch
+ */
+
+.DocSearch.DocSearch-Button {
+  background-color: white;
+  @apply flex-1 flex h-12 rounded-md items-center bg-white py-2 overflow-hidden mr-6 focus:ring-indigo-500 focus:ring-2 focus:ring-offset-2 focus:outline-none;
+}
+
+.DocSearch-Button-Placeholder {
+  @apply ml-4 text-gray-600 font-medium overflow-ellipsis overflow-hidden whitespace-nowrap text-left;
+}
+
+.DocSearch-Button-Key {
+  background: none !important;
+  box-shadow: none !important;
+  /* display: block !important; */
+  width: 30px !important;
+  height: 30px !important;
+  display: table-cell;
+  vertical-align: middle;
+  @apply text-gray-400 border rounded-md border-gray-300 text-sm min-w-max;
+}
+
+.DocSearch-Commands {
+  display: none !important;
+}
+
+.DocSearch-Footer {
+  box-shadow: none !important;
+  border-top: 1px solid lightgrey;
+}
+
+.DocSearch-Modal {
+  background: white !important;
 }

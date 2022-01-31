@@ -1,8 +1,8 @@
 ---
-slug: "internals"
+slug: "guide/internals"
 order: 100
 title: "Internals"
-category: "operations-guide"
+category: "guide"
 ---
 
 This guide documents the internals of CloudCamp. It might come in handy if you

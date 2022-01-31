@@ -67,6 +67,8 @@ export default class ApiSource {
   ): jsiispec.ClassType | (jsiispec.InterfaceType & { initializer: any }) {
     // TODO filter private and inherited and ignored
 
+    console.log("Transforming type: ", name);
+
     let summary = type.docs?.summary;
     if (summary) {
       // hack to allow multi line summaries
@@ -101,85 +103,86 @@ export default class ApiSource {
   }
 
   private generatePropsAllLanguages(
-    className: string,
-    method: jsiispec.Method,
-    param: jsiispec.Parameter,
-    type: jsiispec.ClassType | jsiispec.InterfaceType
+    methodOrPropName: string,
+    type: jsiispec.ClassType | jsiispec.InterfaceType,
+    showDefaults: boolean = true
   ): string {
+    const id = _.kebabCase(methodOrPropName) + "-" + _.kebabCase(type.name);
     let result = [
       ...this.languages.map(
         (lang) =>
           `<span data-language="${lang.languageCode}">` +
-          lang.propsTable(className, method, param, type as any) +
+          lang.propsTable(methodOrPropName, type as any, showDefaults, this) +
           "</span>"
       ),
     ].join("");
-    return result;
+    return `<span id="${id}">${result}</span>`;
   }
 
-  generatePropsTable(
-    className: string,
-    method: jsiispec.Method
+  generatePropsTableForProperty(
+    property: jsiispec.Property
   ): string | undefined {
+    if (!property.type["fqn"]) {
+      return undefined;
+    }
+    if (!this.assembly.types[property.type["fqn"]]) {
+      return undefined;
+    }
+    const type = this.assembly.types[property.type["fqn"]];
+    return this.generatePropsAllLanguages(property.name, type as any, false);
+  }
+
+  generatePropsTableForMethod(method: jsiispec.Method): string | undefined {
     const params = method.parameters || [];
-    if (params.length) {
-      const lastParam = params[params.length - 1] as any;
-      const type = this.assembly.types[lastParam.type.fqn];
-      if (!type) {
-        return undefined;
-      }
-      if (type.kind == "interface") {
-        let result = this.generatePropsAllLanguages(
-          className,
-          method,
-          lastParam,
-          type as any
-        );
+    if (!params.length) {
+      return undefined;
+    }
+    const lastParam = params[params.length - 1] as any;
+    const type = this.assembly.types[lastParam.type.fqn];
+    if (!type) {
+      return undefined;
+    }
+    if (type.kind == "interface") {
+      let result = this.generatePropsAllLanguages(method.name, type as any);
 
-        const types = {};
-        const typeNames = [];
-        let props: jsiispec.Property[] = _.clone(type.properties);
+      const types = {};
+      const typeNames = [];
+      let props: jsiispec.Property[] = _.clone(type.properties);
 
-        props = props.sort((a, b) =>
-          a.locationInModule?.line > b.locationInModule?.line ? 1 : -1
-        );
+      props = props.sort((a, b) =>
+        a.locationInModule?.line > b.locationInModule?.line ? 1 : -1
+      );
 
-        for (let prop of props || []) {
-          const type = this.assembly.types[(prop.type as any).fqn];
+      for (let prop of props || []) {
+        const type = this.assembly.types[(prop.type as any).fqn];
+        if (type && type.kind == "interface") {
+          if (!typeNames.includes(type.fqn)) {
+            types[type.fqn] = type;
+            typeNames.push(type.fqn);
+          }
+        } else if (
+          (prop.type as any)?.collection?.kind == "array" &&
+          (prop.type as any)?.collection?.elementtype?.fqn
+        ) {
+          const type =
+            this.assembly.types[
+              (prop.type as any)?.collection?.elementtype?.fqn
+            ];
           if (type && type.kind == "interface") {
             if (!typeNames.includes(type.fqn)) {
               types[type.fqn] = type;
               typeNames.push(type.fqn);
             }
-          } else if (
-            (prop.type as any)?.collection?.kind == "array" &&
-            (prop.type as any)?.collection?.elementtype?.fqn
-          ) {
-            const type =
-              this.assembly.types[
-                (prop.type as any)?.collection?.elementtype?.fqn
-              ];
-            if (type && type.kind == "interface") {
-              if (!typeNames.includes(type.fqn)) {
-                types[type.fqn] = type;
-                typeNames.push(type.fqn);
-              }
-            }
           }
         }
-
-        for (let typeName of typeNames) {
-          const type = types[typeName];
-          result += this.generatePropsAllLanguages(
-            className,
-            method,
-            lastParam,
-            type as any
-          );
-        }
-
-        return result;
       }
+
+      for (let typeName of typeNames) {
+        const type = types[typeName];
+        result += this.generatePropsAllLanguages(method.name, type as any);
+      }
+
+      return result;
     }
     return undefined;
   }
@@ -226,7 +229,7 @@ export default class ApiSource {
             className,
             method
           ),
-          propsTable: this.generatePropsTable(className, method),
+          propsTable: this.generatePropsTableForMethod(method),
         },
         stability: method.docs?.stability,
       },
@@ -299,6 +302,9 @@ export default class ApiSource {
             className,
             prop
           ),
+          propsTable: prop.docs?.custom?.inline
+            ? this.generatePropsTableForProperty(prop)
+            : undefined,
         },
         stability: prop.docs?.stability,
       },
@@ -310,27 +316,34 @@ export default class ApiSource {
       return undefined;
     }
 
-    return showdownConverter
-      .makeHtml(text)
-      .replaceAll("<code>", `<code class="language-text">`)
-      .replaceAll("<em>", `<em style="font-weight: 500;">`)
-      .replaceAll(
-        /{@link\s*"([a-zA-Z0-9\#\/-]*?)"\s*\|\s*(.*?)}/g,
-        (match, $1, $2) => `<a href="/docs/${$1}">${$2}</a>`
-      )
-      .replaceAll(
-        /{@link\s*([a-zA-Z0-9\#]*?)\s*\|\s*(.*?)}/g,
-        (match, $1, $2) => `<a href="/docs/api/${_.kebabCase($1)}">${$2}</a>`
-      )
-      .replaceAll(
-        /{@link\s*([a-zA-Z0-9]*?)\.(.*?)\s*\|\s*(.*?)}/g,
-        (match, $1, $2, $3) =>
-          `<a href="/docs/api/${_.kebabCase($1)}#${_.kebabCase($2)}">${$3}</a>`
-      )
-      .replaceAll(
-        /{@link\s*([a-zA-Z0-9]*?)\s*\|\s*(.*?)}/g,
-        (match, $1, $2) => `<a href="/docs/api/${_.kebabCase($1)}">${$2}</a>`
-      );
+    return (
+      showdownConverter
+        .makeHtml(text)
+        .replaceAll("<code>", `<code class="language-text">`)
+        .replaceAll("<em>", `<em style="font-weight: 500;">`)
+        .replaceAll(
+          /{@link\s*"([a-zA-Z0-9\#\/-]*?)"\s*\|\s*(.*?)}/g,
+          (match, $1, $2) => `<a href="/docs/${$1}">${$2}</a>`
+        )
+        .replaceAll(
+          /{@link\s*([a-zA-Z0-9\#]*?)\s*\|\s*(.*?)}/g,
+          (match, $1, $2) => `<a href="/docs/api/${_.kebabCase($1)}">${$2}</a>`
+        )
+        .replaceAll(
+          /{@link\s*([a-zA-Z0-9]*?)\.(.*?)\s*\|\s*(.*?)}/g,
+          (match, $1, $2, $3) =>
+            `<a href="/docs/api/${_.kebabCase($1)}#${_.kebabCase(
+              $2
+            )}">${$3}</a>`
+        )
+        .replaceAll(
+          /{@link\s*([a-zA-Z0-9]*?)\s*\|\s*(.*?)}/g,
+          (match, $1, $2) => `<a href="/docs/api/${_.kebabCase($1)}">${$2}</a>`
+        )
+        // jsii introduces a period at the end of a summary. When the sentence
+        // ends with a colon, remove the period.
+        .replaceAll(/:\./g, ":")
+    );
   }
 
   translateCode(

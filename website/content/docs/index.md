@@ -1,8 +1,8 @@
 ---
-slug: "overview"
+slug: "index"
 order: 1
-title: "Overview"
-category: "getting-started"
+title: "Getting Started"
+category: "overview"
 ---
 
 Welcome to CloudCamp.

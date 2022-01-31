@@ -38,6 +38,8 @@ function makeLinks(nodes: CommandDefinition[][]) {
         link: `/docs/command/${makeSlug(prevGroup[0].group)}`,
         title: prevGroup[0].group,
       };
+    } else {
+      prev = { link: `/docs/command/`, title: "Command Reference" };
     }
     if (i + 1 < nodes.length) {
       const nextGroup = nodes[i + 1];
@@ -115,8 +117,69 @@ export async function createPages(createPage, graphql) {
     }
   `);
 
+  const index = (
+    await graphql(`
+      query ApiIndex {
+        markdownRemark(frontmatter: { slug: { eq: "command/index" } }) {
+          frontmatter {
+            category
+            order
+            slug
+            title
+          }
+          headings(depth: h1) {
+            value
+          }
+          html
+        }
+      }
+    `)
+  ).data.markdownRemark;
+
+  const prev = (
+    await graphql(`
+      query MyQuery {
+        allApiDocs(
+          filter: {
+            kind: { eq: "class" }
+            docs: { custom: { ignore: { ne: "true" } } }
+          }
+          sort: { order: DESC, fields: docs___custom___order }
+          limit: 1
+        ) {
+          nodes {
+            name
+          }
+        }
+      }
+    `)
+  ).data;
+
   const groups = groupedNodes(data.allCommandDocs.nodes);
   const links = makeLinks(groups);
+
+  createPage({
+    path: `/docs/command/`,
+    component: path.resolve("./src/templates/docs.tsx"),
+    context: {
+      slug: index.frontmatter.slug,
+      onThisPage: index.headings.map((item) => ({
+        title: item.value,
+        id: _.kebabCase(item.value),
+        children: [],
+      })),
+      links: {
+        next: {
+          link: `/docs/command/${makeSlug(groups[0][0].group)}`,
+          title: groups[0][0].group,
+        },
+        prev: {
+          link: `/docs/api/${_.kebabCase(prev.allApiDocs.nodes[0].name)}`,
+          title: prev.allApiDocs.nodes[0].name,
+        },
+      },
+    },
+  });
 
   groups.forEach((group) => {
     const onThisPage = extractOnThisPage(group);

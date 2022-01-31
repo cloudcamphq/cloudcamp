@@ -115,7 +115,7 @@ function H1Link(props: { title: string; children: any }) {
 function H2Link(props: { title: string; children: any }) {
   const id = _.kebabCase(props.title);
   return (
-    <h2 className="text-2xl font-bold mt-10 font-display" id={id}>
+    <h2 className="text-2xl font-bold font-display" id={id}>
       <Link to={`#${id}`}>{props.children}</Link>
     </h2>
   );
@@ -126,7 +126,7 @@ function ApiProperty(props: { klass: string; property: jsiispec.Property }) {
     return null;
   }
   return (
-    <div className="space-y-6 pb-6">
+    <div className="space-y-6">
       {props.property.docs.custom.topic && (
         <H2Link title={props.property.docs.custom.topic}>
           {props.property.docs.custom.topic}
@@ -139,7 +139,7 @@ function ApiProperty(props: { klass: string; property: jsiispec.Property }) {
             html={props.property.docs.custom.remarks}
           />
         )}
-      <div className="font-mono flex items-center pt-6">
+      <div className="font-mono flex items-center">
         <h3 id={_.kebabCase(props.property.name)}>
           <a
             href={`#${_.kebabCase(props.property.name)}`}
@@ -160,6 +160,16 @@ function ApiProperty(props: { klass: string; property: jsiispec.Property }) {
           className="space-y-6"
           html={props.property.docs.summary}
         />
+      )}
+      {props.property.docs?.custom.propsTable && (
+        <>
+          <div
+            className="space-y-6 leading-7"
+            dangerouslySetInnerHTML={{
+              __html: props.property.docs?.custom.propsTable,
+            }}
+          />
+        </>
       )}
       {props.property.docs.remarks && (
         <HtmlWithCode
@@ -190,7 +200,7 @@ function ApiMethod(props: { className: string; meth: jsiispec.Method }) {
   const [context] = useContext(Context);
 
   return (
-    <div className="space-y-6 pb-6">
+    <div className="space-y-6">
       {props.meth.docs.custom.topic && (
         <H2Link title={props.meth.docs.custom.topic}>
           {props.meth.docs.custom.topic}
@@ -202,7 +212,7 @@ function ApiMethod(props: { className: string; meth: jsiispec.Method }) {
           html={props.meth.docs.custom.remarks}
         />
       )}
-      <div className="font-mono flex items-center whitespace-nowrap overflow-x-auto pt-6">
+      <div className="font-mono flex items-center whitespace-nowrap overflow-x-auto">
         <h3 id={_.kebabCase(props.meth.name ? props.meth.name : "constructor")}>
           <a
             href={`#${_.kebabCase(
@@ -365,6 +375,7 @@ export const query = graphql`
             ignore
             signature
             simpleSignature
+            propsTable
           }
           remarks
           stability

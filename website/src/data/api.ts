@@ -90,10 +90,14 @@ function makeLinks(nodes: jsiispec.ClassType[]) {
     if (i != 0) {
       const prevNode = nodes[i - 1];
       prev = { link: `/docs/api/${makeSlug(prevNode)}`, title: prevNode.name };
+    } else {
+      prev = { link: `/docs/api/`, title: "API Reference" };
     }
     if (i + 1 < nodes.length) {
       const nextNode = nodes[i + 1];
       next = { link: `/docs/api/${makeSlug(nextNode)}`, title: nextNode.name };
+    } else {
+      next = { link: `/docs/command/`, title: "Command Reference" };
     }
     links[makeSlug(node)] = { prev: prev, next: next };
   }
@@ -212,8 +216,67 @@ export async function createPages(createPage: any, graphql: any) {
     }
   `);
 
+  const index = (
+    await graphql(`
+      query ApiIndex {
+        markdownRemark(frontmatter: { slug: { eq: "api/index" } }) {
+          frontmatter {
+            category
+            order
+            slug
+            title
+          }
+          headings(depth: h1) {
+            value
+          }
+          html
+        }
+      }
+    `)
+  ).data.markdownRemark;
+
+  const prev = (
+    await graphql(`
+      query PrevItem {
+        allMarkdownRemark(
+          sort: { order: DESC, fields: frontmatter___order }
+          filter: { frontmatter: { category: { eq: "guide" } } }
+          limit: 1
+        ) {
+          nodes {
+            frontmatter {
+              title
+              order
+              slug
+            }
+          }
+        }
+      }
+    `)
+  ).data;
+
   const nodes = sortedNodes(data.allApiDocs.nodes);
   const links = makeLinks(nodes);
+
+  createPage({
+    path: `/docs/api/`,
+    component: path.resolve("./src/templates/docs.tsx"),
+    context: {
+      slug: index.frontmatter.slug,
+      onThisPage: index.headings.map((item) => ({
+        title: item.value,
+        id: _.kebabCase(item.value),
+        children: [],
+      })),
+      links: {
+        next: { link: `/docs/api/${makeSlug(nodes[0])}`, title: nodes[0].name },
+        prev: {
+          link: `/docs/${prev.allMarkdownRemark.nodes[0].frontmatter.slug}`,
+          title: prev.allMarkdownRemark.nodes[0].frontmatter.title,
+        },
+      },
+    },
+  });
 
   nodes.forEach((node) => {
     if (node.docs?.custom?.ignore) {

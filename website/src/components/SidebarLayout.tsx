@@ -56,7 +56,7 @@ export default function SidebarLayout({
 
   return (
     <Store>
-      <Search />
+      {/* <Search /> */}
       <div className="h-screen overflow-y-hidden flex justify-center">
         {/* Table of Contents */}
 
@@ -77,7 +77,8 @@ export default function SidebarLayout({
             <div className="hidden lg:block h-12 pointer-events-none absolute inset-x-0 z-10 bg-gradient-to-b from-white"></div>
 
             <div
-              className={`${leftBarWidth} ${leftBarPadding} h-full overflow-auto min-w-0 flex flex-col pt-12 space-y-6 pb-12`}
+              className={`${leftBarWidth} ${leftBarPadding} h-full overflow-auto min-w-0 flex flex-col pt-12 space-y-6 pb-12 `}
+              id="sidebar"
             >
               <TableOfContents
                 data={data}
@@ -123,7 +124,10 @@ export default function SidebarLayout({
                 location={location}
                 onThisPage={pageContext.onThisPage}
               />
-              <div className="h-full overflow-hidden min-w-0 flex flex-col">
+              <div
+                className="h-full overflow-hidden min-w-0 flex flex-col"
+                id="document"
+              >
                 {children}
               </div>
             </>

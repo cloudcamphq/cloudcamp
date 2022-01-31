@@ -114,39 +114,45 @@ export interface WebServiceAlarmProps {
 export interface ScalingSchedule {
   readonly id: string;
   /**
-   * The minute to run this rule at.
+   * The minute to run this rule at. Possible values "0"-"59" to run at a
+   * specific minute or "*" to run every minute.
    *
-   * @default - Every minute
+   * @default * (Every minute)
    */
   readonly minute?: string;
   /**
-   * The hour to run this rule at.
+   * The hour to run this rule at. Possible values "0"-"23" to run at a
+   * specific hour or "*" to run every hour.
    *
-   * @default - Every hour
+   * @default * (Every hour)
    */
   readonly hour?: string;
   /**
-   * The day of the month to run this rule at.
+   * The day of the month to run this rule at. Possible values "0"-"30" to
+   * run at a specific day or "*" to run every day.
    *
-   * @default - Every day of the month
+   * @default * (Every day of the month)
    */
   readonly day?: string;
   /**
-   * The month to run this rule at.
+   * The month to run this rule at. Possible values "0"-"11" to run at a
+   * specific month or "*" to run every day.
    *
-   * @default - Every month
+   * @default * (Every month)
    */
   readonly month?: string;
   /**
-   * The year to run this rule at.
+   * The year to run this rule at. Possible values are the literal year or "*"
+   * to run every year.
    *
-   * @default - Every year
+   * @default * (Every year)
    */
   readonly year?: string;
   /**
-   * The day of the week to run this rule at.
+   * The day of the week to run this rule at. Possible values "0"-"6" or "*"
+   * to run on any day of the week.
    *
-   * @default - Any day of the week
+   * @default * (Any day of the week)
    */
   readonly weekDay?: string;
 }

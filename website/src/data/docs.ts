@@ -12,27 +12,38 @@ function sortedNodes(nodes: any[]) {
   );
 
   const gettingStarted = allNodes.filter(
-    (node) => node.frontmatter.category == "getting-started"
+    (node) => node.frontmatter.category == "overview"
   );
   const operationsGuide = allNodes.filter(
-    (node) => node.frontmatter.category == "operations-guide"
+    (node) => node.frontmatter.category == "guide"
   );
 
   return [allNodes, gettingStarted, operationsGuide];
 }
 
-function makeLinks(gettingStarted: any[], operationsGuide: any[]) {
+function makeLinks(overview: any[], guide: any[], lastOverview: any) {
   const links = {};
-  for (let nodes of [gettingStarted, operationsGuide]) {
+  for (let nodes of [overview, guide]) {
     for (var i = 0; i < nodes.length; i++) {
       let node = nodes[i];
       let prev = undefined;
       let next = undefined;
       if (i != 0) {
         const prevNode = nodes[i - 1];
+        let link = `/docs/${prevNode.frontmatter.slug}`;
+        if (prevNode.frontmatter.slug == "index") {
+          link = "/docs/";
+        } else if (prevNode.frontmatter.slug == "guide/index") {
+          link = "/docs/guide/";
+        }
         prev = {
-          link: `/docs/${prevNode.frontmatter.slug}`,
+          link: link,
           title: prevNode.frontmatter.title,
+        };
+      } else if (guide.includes(node)) {
+        prev = {
+          link: `/docs/${lastOverview.allMarkdownRemark.nodes[0].frontmatter.slug}`,
+          title: lastOverview.allMarkdownRemark.nodes[0].frontmatter.title,
         };
       }
       if (i + 1 < nodes.length) {
@@ -40,6 +51,16 @@ function makeLinks(gettingStarted: any[], operationsGuide: any[]) {
         next = {
           link: `/docs/${nextNode.frontmatter.slug}`,
           title: nextNode.frontmatter.title,
+        };
+      } else if (overview.includes(node)) {
+        next = {
+          link: `/docs/guide/`,
+          title: "Using CloudCamp",
+        };
+      } else if (guide.includes(node)) {
+        next = {
+          link: `/docs/api/`,
+          title: "API Reference",
         };
       }
       links[node.frontmatter.slug] = { prev: prev, next: next };
@@ -80,17 +101,42 @@ export async function createPages(createPage: any, graphql: any) {
     }
   `);
 
-  const [allNodes, gettingStarted, operationsGuide] = sortedNodes(
-    data.allMarkdownRemark.nodes
-  );
+  const lastOverview = (
+    await graphql(`
+      query PrevItem {
+        allMarkdownRemark(
+          sort: { order: DESC, fields: frontmatter___order }
+          filter: { frontmatter: { category: { eq: "overview" } } }
+          limit: 1
+        ) {
+          nodes {
+            frontmatter {
+              title
+              order
+              slug
+            }
+          }
+        }
+      }
+    `)
+  ).data;
 
-  const links = makeLinks(gettingStarted, operationsGuide);
+  const [allNodes, overview, guide] = sortedNodes(data.allMarkdownRemark.nodes);
+
+  const links = makeLinks(overview, guide, lastOverview);
 
   allNodes.forEach((node) => {
     const onThisPage = extractOnThisPage(node);
     let pagePath = "/docs/" + node.frontmatter.slug;
-    if (node.frontmatter.slug === "overview") {
+    if (node.frontmatter.slug === "index") {
       pagePath = "/docs/";
+    } else if (node.frontmatter.slug === "guide/index") {
+      pagePath = "/docs/guide/";
+    } else if (
+      node.frontmatter.slug === "api/index" ||
+      node.frontmatter.slug === "command/index"
+    ) {
+      return;
     }
     createPage({
       path: pagePath,

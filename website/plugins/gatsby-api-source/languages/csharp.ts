@@ -11,7 +11,6 @@ export class CSharp extends Language {
   cdkDocsLink(fqn: string): string {
     // https://docs.aws.amazon.com/cdk/api/v2/dotnet/api/Amazon.CDK.Annotations.html
     // https://docs.aws.amazon.com/cdk/api/v2/dotnet/api/Amazon.CDK.Alexa.Ask.CfnSkill.html
-
     const parts = fqn.split(".");
     let url: string;
     let name: string;

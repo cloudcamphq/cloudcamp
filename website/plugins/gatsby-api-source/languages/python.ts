@@ -99,16 +99,11 @@ export class Python extends Language {
     return _.snakeCase(paramName);
   }
 
-  propsTableHeader(
-    className: string,
-    method: jsiispec.Method,
-    param: jsiispec.Parameter,
-    type: jsiispec.Type
-  ): string {
-    let id = _.kebabCase(method.name) + "-" + _.kebabCase(type.name);
+  propsTableHeader(methodOrPropName: string, typeName: string): string {
+    let id = _.kebabCase(methodOrPropName) + "-" + _.kebabCase(typeName);
     return `
     <h4 class="text-xl ml-6 font-bold mt-6 mb-6 font-display">
-      <a href="#${id}" id="${id}">**kwargs</a>
+      <a href="#${id}" id="${id}" name="${id}">**kwargs</a>
     </h4>
     `;
   }

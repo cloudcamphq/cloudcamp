@@ -15,7 +15,7 @@ export default function Footer({
         <div className="flex-1 text-gray-500 pl-4">
           {links.prev && (
             <Link
-              className="transition-colors duration-200 hover:text-gray-900"
+              className="transition-colors duration-200 hover:text-gray-900 !border-0"
               to={links.prev.link}
             >
               ← {links.prev.title}
@@ -25,7 +25,7 @@ export default function Footer({
         <div className="flex-1 text-gray-500 text-right transition-colors duration-200 hover:text-gray-900 pr-4">
           {links.next && (
             <Link
-              className="transition-colors duration-200 hover:text-gray-900"
+              className="transition-colors duration-200 hover:text-gray-900 !border-0"
               to={links.next.link}
             >
               {links.next.title} →

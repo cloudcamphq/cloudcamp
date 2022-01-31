@@ -21,26 +21,57 @@ import { Stack } from "./stack";
 import { Step } from "aws-cdk-lib/pipelines";
 
 export interface Configuration {
+  /**
+   * The unique name of the app.
+   */
   readonly name: string;
+  /**
+   * URL of the git source repository.
+   */
   readonly repository: string;
-  readonly account: string;
-  readonly region: string;
+  /**
+   * The name of the branch to use for deployments.
+   */
   readonly branch: string;
+  /**
+   * AWS account ID.
+   */
+  readonly account: string;
+  /**
+   * AWS region code.
+   */
+  readonly region: string;
+  /**
+   * The ID of the VPC.
+   */
   readonly vpcId: string;
+  /**
+   * The name of the secret that holds the GitHub token (default is
+   * "github-token").
+   */
   readonly repositoryTokenSecret: string;
+  /**
+   * The name of the secret that contains the DockerHub credentials (default
+   * "dockerhub-credentials").
+   */
   readonly dockerHubSecret?: string;
 }
 
 /**
- * App represents your application running in the cloud․ Every app contains one
- * or more ``{@link Stack | Stacks}``, which you can use to add your own resources, like a
- * ``{@link WebService | WebService}`` or a ``{@link Database | Database}``.
+ * App serves as an entry point to your CloudCamp application․ It's typically
+ * instantiated in the beginning of your program and sets up your application's
+ * ``{@link "api/app#configuration" | configuration}`` and build pipeline․ An
+ * ``App`` instance contains one or more
+ * ``{@link Stack | Stacks}``, which you can use to add your own resources, for
+ * example  a ``{@link WebService | WebService}`` or a
+ * ``{@link Database | Database}``.
  *
- * An app can be as big or small as you like - from a single webserver to
- * dozens of load-balanced instances serving different parts of your
- * application.
+ * Apps can be as big or small as you like - from a single webserver to dozens
+ * of load-balanced instances serving different parts of your application.
  *
- * This example adds a ``{@link WebService | WebService}`` to the
+ * This example illustrates how to run a simple app that contains a webservice
+ * created from a ``Dockerfile``. We make a new ``App`` instance, then we add a
+ * ``{@link WebService | WebService}`` to the
  * ``{@link App.production | production}`` stack:
  *
  * ```ts
@@ -60,10 +91,11 @@ export class App extends cdk.App {
   private static INSTANCE?: App;
 
   /**
-   * Initialize your cloudcamp application.
+   * Create a CloudCamp application.
    *
-   * @remarks App is a singleton class - it is instantiated exactly once, before
-   * any other resources are created.
+   * @remarks To create a CloudCamp application, instantiate an ``App`` object.
+   * ``App`` is a singleton - i.e. there can only be a single instance at a
+   * time.
    *
    * @topic Initialization
    *
@@ -126,7 +158,7 @@ export class App extends cdk.App {
   }
 
   /**
-   * The global App singleton instance.
+   * Access the global singleton instance.
    */
   public static get instance(): App {
     if (!App.INSTANCE) {
@@ -138,65 +170,49 @@ export class App extends cdk.App {
   }
 
   /**
-   * Use this stack for anything related to the network, for example DNS entries.
+   * The app's configuration parameters as specified in the config file
+   * ``cdk.json`` in your app's home directory.
+   * @inline
+   */
+  configuration: Configuration;
+
+  /**
+   * Use this stack for anything related to the network, for example to set up
+   * DNS entries.
    *
    * @topic Stacks
    *
    * @remarks To deploy resources to the cloud, they are added to a ``Stack``.
+   * Stacks come in handy to isolate different environments from each other. For
+   * example, you might have a stack for testing your application and another
+   * one for the production version.
+   *
    * CloudCamp comes with three default stacks:
    */
   get network(): Stack {
-    return this.getOrAddStage("network").stack;
+    return this.stage("network").stack;
   }
 
   /**
-   * This stack can be used to create an environment for testing changes before
+   * Use this stack to create an environment for testing changes before
    * deploying to production.
    */
   get staging(): Stack {
-    return this.getOrAddStage("staging").stack;
+    return this.stage("staging").stack;
   }
 
   /**
    * The production stack.
    */
   get production(): Stack {
-    return this.getOrAddStage("production").stack;
+    return this.stage("production").stack;
   }
 
   /**
-   * The order in which stages are created.
+   * Add a new stack or access an existing one.
    *
-   * @default ["network", "staging", "production"]
-   */
-  public stageOrder: string[] = ["network", "staging", "production"];
-
-  /**
-   * Get an existing stack by name.
-   *
-   * @param name The name of the stack.
-   *
-   * @topic Adding custom stacks
-   *
-   * @remarks In addition to the default stacks provided by cloudcamp, you can
-   * create your own stacks.
-   */
-  public getStack(name: string): Stack {
-    try {
-      return this.getStage(name).stack;
-    } catch (e) {
-      if ((e as Error).message.startsWith("Stage doesn't exist")) {
-        throw new Error("Stack doesn't exist: " + name);
-      } else {
-        throw e;
-      }
-    }
-  }
-
-  /**
-   * Add a new stack to your application.
-   *
-   * Pass a stack name to create a new, empty stack:
+   * Pass a stack name to create a new, empty stack. If the stack does not exist
+   * already, a new one will be created.
    *
    * ```ts
    * void 0;
@@ -208,32 +224,20 @@ export class App extends cdk.App {
    *
    * @param name The name of the stack.
    *
+   * @topic Adding custom stacks
+   *
+   * @remarks In addition to the default stacks provided by CloudCamp, you can
+   * create your own stacks.
    *
    */
   public stack(name: string): Stack {
-    if (this.stages.get(name)) {
-      throw new Error("Stack already exists: " + name);
-    }
-    return this.getOrAddStage(name).stack;
+    return this.stage(name).stack;
   }
 
   private stages: Map<string, Stage> = new Map();
 
-  private getOrAddStage(id: string) {
-    const existingStage = this.stages.get(id);
-    if (existingStage) {
-      return existingStage;
-    }
-    const stage = new Stage(this, _.upperFirst(_.camelCase(id)));
-    const stack = new Stack(stage, id);
-    stage.stack = stack;
-    this.stages.set(id, stage);
-
-    return stage;
-  }
-
   /**
-   * Get an existing stage by name.
+   * Add a new stage or access an existing one.
    *
    * Stages can be obtained by their name to modify their attributes. A common
    * use case is to require manual approval to deploy to the production stage:
@@ -243,29 +247,7 @@ export class App extends cdk.App {
    * stage.needsManualApproval = true;
    * ```
    *
-   * @param name The name of the stage.
-   *
-   * @topic Stages
-   *
-   * @remarks Stages are responsible for building your stacks. By default,
-   * CloudCamp creates a stage for each stack and gives it the same name. You
-   * can customize this behaviour by adding your own stages.
-   */
-
-  public getStage(name: string): Stage {
-    if (name in ["network", "staging", "production"]) {
-      return this.getOrAddStage(name);
-    }
-    if (!this.stages.has(name)) {
-      throw new Error("Stage doesn't exist: " + name);
-    }
-    return this.stages.get(name)!;
-  }
-
-  /**
-   * Add a new stage.
-   *
-   * This method can be used to add a stage with a custom ``Stack`` subclass.
+   * You can also add a stage with a custom ``Stack`` subclass:
    * ```ts
    * import { App, WebService, Stack } from "@cloudcamp/aws-runtime";
    *
@@ -292,21 +274,49 @@ export class App extends cdk.App {
    *
    * @param name The name of the stage.
    *
+   *
    * @param stage An optional stage object. If not specifed, CloudCamp will
    * create and return an empty stage.
+   *
+   * @topic Stages
+   *
+   * @remarks Stages are responsible for building your stacks. By default,
+   * CloudCamp creates a stage for each stack and gives it the same name. You
+   * can customize this behaviour by adding your own stages.
    */
-  public stage(name: string, stage?: Stage): Stage {
-    if (this.stages.has(name)) {
-      throw new Error("Stage already exists: " + name);
+
+  stage(name: string, stage?: Stage) {
+    const existingStage = this.stages.get(name);
+    if (existingStage) {
+      return existingStage;
     }
     if (!stage) {
       stage = new Stage(this, _.upperFirst(_.camelCase(name)));
+      const stack = new Stack(stage, name);
+      stage.stack = stack;
     }
+
     this.stages.set(name, stage);
+
     return stage;
   }
 
-  configuration: Configuration;
+  /**
+   * The order in which stages are executed. For example, to ensure the custom
+   * stage ``"development"`` is always executed before production:
+   *
+   * ```ts
+   * void 0;
+   * import { App, WebService, Stack} from "@cloudcamp/aws-runtime";
+   * const app = new App();
+   * void 'show';
+   * app.stageOrder = ["development", "production"];
+   * ```
+   *
+   * @default ["network", "staging", "production"]
+   */
+  public stageOrder: string[] = ["network", "staging", "production"];
+
   /**
    * @ignore
    */

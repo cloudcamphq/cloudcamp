@@ -3,6 +3,7 @@ import "@fontsource/karla/variable.css";
 import "@fontsource/inter/variable.css";
 import "@fontsource/roboto-mono";
 import "prism-themes/themes/prism-ghcolors.css";
+import "@docsearch/css";
 
 import React from "react";
 
