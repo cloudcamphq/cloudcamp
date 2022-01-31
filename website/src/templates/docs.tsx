@@ -51,10 +51,10 @@ export default function Docs({
         canonical={"/docs/" + data.markdownRemark.frontmatter.slug}
       />
       <Main>
-        <div id="algolia-lvl0">{lvl0}</div>
         <h1 className="font-display text-4xl font-bold flex items-center">
           {data.markdownRemark.frontmatter.title}
         </h1>
+        <div id="algolia-lvl0">{lvl0}</div>
         <HtmlWithCode className="space-y-6 leading-7" html={html} />
         {data.markdownRemark.frontmatter.slug == "index" && (
           <>
